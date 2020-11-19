@@ -1,26 +1,31 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:legall_rimac_virtual/repositories/repositories.dart';
+import 'package:legall_rimac_virtual/storage/firebase_storage_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:legall_rimac_virtual/repositories/settings_repository.dart';
 
 List<RepositoryProvider> getRepositoryProviders(final SharedPreferences preferences) {
   return [
     RepositoryProvider<SettingsRepository>(
       create: (context) => SettingsRepository(preferences),
-    )/*,
-    RepositoryProvider<AccountRepository>(
-      create: (context) => AccountRepository(),
     ),
-    RepositoryProvider<RaffleCategoriesRepository>(
-        create: (context) => FirebaseRaffleCategoriesRepository()
+    RepositoryProvider<BrandsRepository>(
+      create: (context) => BrandsRepository()
     ),
-    RepositoryProvider<RafflesRepository>(
-        create: (context) => FirebaseRafflesRepository()
+    RepositoryProvider<ChatsRepository>(
+      create: (context) => ChatsRepository()
     ),
-    RepositoryProvider<PaymentMethodsRepository>(
-      create: (context) => FirebasePaymentMethodsRepository()
+    RepositoryProvider<InspectionsRepository>(
+      create: (context) => InspectionsRepository()
     ),
-    RepositoryProvider<TransactionsRepository>(
-      create: (context) => FirebaseTransactionsRepository()
-    )*/
+    RepositoryProvider<PhotosRepository>(
+      create: (context) => PhotosRepository(
+        storage: FirebaseStorageStorage()
+      ),
+    ),
+    RepositoryProvider<VideosRepository>(
+      create: (context) => VideosRepository(
+          storage: FirebaseStorageStorage()
+      ),
+    )
   ];
 }

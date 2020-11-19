@@ -1,6 +1,11 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:legall_rimac_virtual/blocs/blocs.dart';
+import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
+import 'package:legall_rimac_virtual/blocs/blocs.dart';
+import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 import 'package:legall_rimac_virtual/widgets/inspection_widget.dart';
 
@@ -12,79 +17,48 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   ThemeData _t;
+  AppLocalizations _l;
 
   @override
   Widget build(BuildContext context) {
     _t = Theme.of(context);
-
-    var _models = [
-      InspectionModel(
-        status: InspectionStatus.complete,
-        dateTime: DateTime.now(),
-        plate: 'MG 23456',
-        brand: 'Nissan',
-        model: 'NP300',
-        fullName: 'Hilda Patricia Perez Delgado',
-      ),
-      InspectionModel(
-        status: InspectionStatus.scheduled,
-        dateTime: DateTime.now(),
-        plate: 'MG 23456',
-        brand: 'Nissan',
-        model: 'NP300',
-        fullName: 'Hilda Patricia Perez Delgado',
-      )
-    ];
+    _l = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rimac Virtual'),
+        title: Text(_l.translate('app title')),
         actions: [
-          FlatButton(
+          IconButton(
+            icon: Icon(Icons.add),
             onPressed: () {
-
+              Navigator.pushNamed(context, AppRoutes.scheduleInspectionStep1);
             },
-            child: Icon(Icons.add,
-                color: _t.accentTextTheme.button.color,
-            )
           )
         ],
       ),
-      drawer: Drawer(
-
-      ),
-      body: ListView(
-        children: <Widget>[]
-          ..addAll(_models.map((model) =>
-            InspectionWidget(
-              model: model,
-              onTap: () {
-                Navigator.pushNamed(context, AppRoutes.inspection,arguments: model);
-              }
-            )
-          ))..add(
-            InkWell(
-              onTap: () {
-                //
-              },
-              child:Padding(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    Icon(Icons.add,
-                      color: Colors.indigo,
-                    ),
-                    Text('Agendar una nueva inspección',
-                      style: TextStyle(
-                          color: Colors.indigo
-                      ),
+      body: BlocBuilder<InspectionBloc,InspectionState>(
+        builder: (context,state) {
+          if (state is InspectionLoaded) {
+            return ListView(
+                children: state.inspectionModel.schedule.map((schedule) =>
+                    InspectionWidget(
+                        model: state.inspectionModel,
+                        schedule: schedule,
+                        onTap: schedule.type == InspectionScheduleType.scheduled
+                            && state.inspectionModel.status != InspectionStatus.complete?
+                        () {
+                          Navigator.pushNamed(context, AppRoutes.inspection);
+                        }: null
                     )
-                  ],
-                ),
-              )
-            )
-          )
-        )
-      );
+                ).toList()
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        }
+      )
+    );
   }
 }

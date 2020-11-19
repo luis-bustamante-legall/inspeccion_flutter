@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
 import 'package:legall_rimac_virtual/routes.dart';
-import 'package:legall_rimac_virtual/widgets/image_card.dart';
+import 'package:legall_rimac_virtual/widgets/chat_button.dart';
+import 'package:legall_rimac_virtual/widgets/phone_call_button.dart';
 
 class InspectionStep4Screen extends StatefulWidget {
 
@@ -11,34 +13,24 @@ class InspectionStep4Screen extends StatefulWidget {
 }
 
 class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
-  ThemeData _t;
-
   final _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final InspectionModel model =  ModalRoute.of(context).settings.arguments;
-    _t = Theme.of(context);
-
+    ThemeData _t = Theme.of(context);
+    AppLocalizations _l = AppLocalizations.of(context);
     return Scaffold(
         appBar: AppBar(
-          title: Text('Inspección Virtual - Paso 4'),
+          title: Text(_l.translate('inspection step',arguments: {"step": "4" })),
           actions: [
-            IconButton(
-                icon: Icon(Icons.chat),
-                onPressed: () {
-                  //TODO: pass chat ID
-                  Navigator.pushNamed(context, AppRoutes.chat,
-                      arguments: ''
-                  );
-                }
-            )
+            PhoneCallButton(),
+            ChatButton()
           ],
         ),
         body: ListView(
             padding: EdgeInsets.all(20),
             children: [
-              Text('Favor ingresar información adicional de su vehículo. e.g. accesorios.'),
+              Text(_l.translate('additional info')),
               SizedBox(height: 20,),
               Container(
                 padding: EdgeInsets.all(5),
@@ -60,12 +52,12 @@ class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: RaisedButton(
-                  child: Text('FINALIZAR INSPECIÓN',
+                  child: Text(_l.translate('finish inspection').toUpperCase(),
                       style: _t.accentTextTheme.button
                   ),
                   color: _t.accentColor,
                   onPressed: () {
-
+                    Navigator.pushNamed(context, AppRoutes.inspectionComplete);
                   },
                 ),
               )

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:legall_rimac_virtual/models/inspection_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:legall_rimac_virtual/blocs/photo_bloc.dart';
+import 'package:legall_rimac_virtual/localizations.dart';
+import 'package:legall_rimac_virtual/models/photo_model.dart';
+import 'package:legall_rimac_virtual/models/resource_model.dart';
+import 'package:legall_rimac_virtual/repositories/repositories.dart';
 import 'package:legall_rimac_virtual/routes.dart';
+import 'package:legall_rimac_virtual/widgets/chat_button.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:legall_rimac_virtual/widgets/phone_call_button.dart';
 
 class InspectionStep2Screen extends StatefulWidget {
 
@@ -12,88 +19,149 @@ class InspectionStep2Screen extends StatefulWidget {
 }
 
 class InspectionStep2ScreenState extends State<InspectionStep2Screen> {
-  ThemeData _t;
   final ImagePicker _picker = ImagePicker();
+  SettingsRepository _settingsRepository;
+  PhotoBloc _photoBloc;
+  List<PhotoModel> _photos = [];
+  List<String> _uploadingPhotos = [];
 
-  final _photos = [
-    'Frontal',
-    'Posterior',
-    'Lateral derecho',
-    'Lateral izquierdo',
-    'Consola',
-    'Motor',
-    'Llanta instalada',
-    'Tacómetro',
-    'PuertaPiloto',
-    'Timón',
-    'Radio',
-    'A/C',
-    'Cambio de llanta',
-    'SOAT',
-    'VIN de vehículo',
-    'DNI Frontal',
-    'DNI Reverso',
-    'Tarjeta de propiedad Frontal',
-    'Tarjeta de propiedad Reverso'];
+  @override
+  void initState() {
+    super.initState();
+    _settingsRepository = RepositoryProvider.of<SettingsRepository>(context);
+    _photoBloc = BlocProvider.of<PhotoBloc>(context);
+    _photoBloc.add(LoadPhoto(
+        _settingsRepository.getInspectionId(),
+        PhotoType.predefined));
+  }
+
+  IconData _iconFromStatus(ResourceStatus status) {
+    switch(status) {
+      case ResourceStatus.empty:
+        return Icons.add;
+      case ResourceStatus.uploaded:
+        return Icons.update;
+      case ResourceStatus.approved:
+        return Icons.check_circle;
+      default:
+        return Icons.cancel;
+    }
+  }
+
+  Color _colorFromStatus(ResourceStatus status) {
+    switch(status) {
+      case ResourceStatus.empty:
+        return Colors.indigo;
+      case ResourceStatus.uploaded:
+        return Colors.amber;
+      case ResourceStatus.approved:
+        return Colors.green;
+      default:
+        return Colors.red;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final InspectionModel model =  ModalRoute.of(context).settings.arguments;
-    _t = Theme.of(context);
+    ThemeData _t = Theme.of(context);
+    AppLocalizations _l = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inspección Virtual - Paso 2'),
+        title: Text(_l.translate('inspection step',arguments:{"step": "2" })),
         actions: [
-          IconButton(
-              icon: Icon(Icons.chat),
-              onPressed: () {
-                //TODO: pass chat ID
-                Navigator.pushNamed(context, AppRoutes.chat,
-                    arguments: ''
-                );
-              }
-          )
+          PhoneCallButton(),
+          ChatButton()
         ],
       ),
-      body: ListView(
-        padding: EdgeInsets.all(20),
-        children: [
-          Text('Seleccione las fotos de su vehiculo para iniciar la inspección.'),
-          SizedBox(height: 20,),
-          GridView.count(
-            primary: false,
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            children: _photos.map((desc) =>
-              GridTile(
-               child: ImageCard(
-                 height: 100,
-                 icon: Icons.add,
-                 title: Text(desc,
-                   style: _t.textTheme.button,
-                   textAlign: TextAlign.center,
-                 ),
-                 onTap: () async {
-
-                 },
-               )
-              )
-            ).toList()
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: RaisedButton(
-              child: Text('CONTINUAR',
-                style: _t.accentTextTheme.button
-              ),
-              color: _t.accentColor,
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.inspectionStep3);
-              },
-            ),
-          )
-        ]
+      body: BlocBuilder<PhotoBloc,PhotoState>(
+        builder: (context,state) {
+          if (state is PhotoLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is PhotoLoaded || state is PhotoUploading) {
+            if (state is PhotoLoaded) {
+              if (state.success) {
+                _photos = state.photos;
+              } else {
+                print(state.errorMessage);
+                Future.delayed(Duration(milliseconds: 100),() {
+                  var messenger = ScaffoldMessenger.of(context);
+                  messenger.hideCurrentSnackBar();
+                  messenger.showSnackBar(SnackBar(
+                    duration: Duration(seconds: 4),
+                    backgroundColor: Colors.red,
+                    content: ListTile(
+                      leading: Icon(Icons.announcement_rounded),
+                      title: Text(_l.translate('problems loading photos'),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ));
+                });
+              }
+            } else if (state is PhotoUploading) {
+              _uploadingPhotos = state.uploadingPhotos;
+            }
+            return ListView(
+                padding: EdgeInsets.all(20),
+                children: [
+                  Text(_l.translate('pick photos')),
+                  SizedBox(height: 20,),
+                  GridView.count(
+                      primary: false,
+                      shrinkWrap: true,
+                      crossAxisCount: 2,
+                      children: _photos.map((photo) =>
+                          GridTile(
+                              child: ImageCard(
+                                icon: _iconFromStatus(photo.status),
+                                working: _uploadingPhotos.contains(photo.id),
+                                color: _colorFromStatus(photo.status),
+                                image: photo.resourceUrl != null ? NetworkImage(photo.resourceUrl): null,
+                                title: Text(photo.description,
+                                  style: _t.textTheme.button,
+                                  textAlign: TextAlign.center,
+                                ),
+                                onTap: () async {
+                                  if (photo.status == ResourceStatus.empty||
+                                      photo.status == ResourceStatus.rejected) {
+                                    var photoFile = await _picker.getImage(
+                                        source: ImageSource.camera);
+                                    if (photoFile != null) {
+                                      _photoBloc.add(UploadPhoto(
+                                          photo,
+                                          await photoFile.readAsBytes()));
+                                    }
+                                  }
+                                },
+                              )
+                          )
+                      ).toList()
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Visibility(
+                      visible: _photos.length > 0 && !(_photos.any((photo) =>
+                          photo.status != ResourceStatus.approved)),
+                      child: RaisedButton(
+                        child: Text(_l.translate('continue').toUpperCase(),
+                            style: _t.accentTextTheme.button
+                        ),
+                        color: _t.accentColor,
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRoutes.inspectionStep3);
+                        },
+                      ),
+                    )
+                  )
+                ]
+            );
+          } else {
+            return Container();
+          }
+        },
       )
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:legall_rimac_virtual/models/chat_model.dart';
 
 class MessageClipRight extends CustomClipper<Path> {
   @override
@@ -53,33 +54,101 @@ class MessageClipLeft extends CustomClipper<Path> {
   bool shouldReclip(MessageClipLeft oldClipper) => false;
 }
 
-class MessageWidget extends StatelessWidget {
-  final isOwn;
+class ChatWidget extends StatelessWidget {
+  final ChatSource source;
   final String body;
   final DateTime dateTime;
   final _dateFormat = DateFormat('dd MMM, yyyy hh:mm a');
 
-  MessageWidget({
-    this.isOwn,
+  ChatWidget({
+    this.source,
     this.dateTime,
     this.body
   });
+
+  Alignment _getAlignment() {
+    switch(source) {
+      case ChatSource.insured:
+        return Alignment.centerRight;
+      case ChatSource.inspector:
+        return Alignment.centerLeft;
+      case ChatSource.system:
+        return Alignment.center;
+    }
+    return null;
+  }
+
+  Alignment _getDateAlignment() {
+    switch(source) {
+      case ChatSource.insured:
+        return Alignment.centerLeft;
+      case ChatSource.inspector:
+        return Alignment.centerRight;
+      case ChatSource.system:
+        return Alignment.center;
+    }
+    return null;
+  }
+
+  EdgeInsets _getMargin() {
+    switch(source) {
+      case ChatSource.inspector:
+        return EdgeInsets.only(left: 0,right: 100, top: 7, bottom: 7);
+      case ChatSource.insured:
+        return EdgeInsets.only(left: 100,right: 0, top: 7, bottom: 7);
+      case ChatSource.system:
+        return EdgeInsets.only(left: 100,right: 100, top: 7, bottom: 7);
+    }
+    return null;
+  }
+
+  EdgeInsets _getPadding() {
+    switch(source) {
+      case ChatSource.inspector:
+        return EdgeInsets.only(left: 30, right: 10, top: 10, bottom: 10);
+      case ChatSource.insured:
+        return EdgeInsets.only(left: 10, right: 30, top: 10, bottom: 10);
+      case ChatSource.system:
+        return EdgeInsets.all(10);
+    }
+    return null;
+  }
+
+  Color _getColor() {
+    switch(source) {
+      case ChatSource.inspector:
+        return Colors.white;
+      case ChatSource.insured:
+        return Color.fromARGB(255,220, 238, 255);
+      case ChatSource.system:
+        return Color.fromARGB(255,180, 255,180 );
+    }
+    return null;
+  }
+
+  CustomClipper<Path> _getClip() {
+    switch(source) {
+      case ChatSource.inspector:
+        return MessageClipLeft();
+      case ChatSource.insured:
+        return  MessageClipRight();
+      case ChatSource.system:
+        return null;
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData _t = Theme.of(context);
     return Align(
-      alignment: (isOwn??false) ? Alignment.centerRight: Alignment.centerLeft,
+      alignment: _getAlignment(),
       child: ClipPath(
         child: Card(
-          margin: EdgeInsets.only(left: (isOwn??false) ? 100: 0,right: (isOwn??false) ? 0: 100, top: 7, bottom: 7),
-          color: (isOwn??false) ? Colors.white: Color.fromARGB(255,220, 238, 255),
+          margin: _getMargin(),
+          color: _getColor(),
           child: Padding(
-            padding: EdgeInsets.only(
-                left: (isOwn??false) ? 10: 30,
-                top: 10,
-                right: !(isOwn??false) ? 10: 30,
-                bottom: 10),
+            padding: _getPadding(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -88,7 +157,7 @@ class MessageWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 5,),
                 Align(
-                  alignment: (isOwn??false) ? Alignment.bottomLeft: Alignment.bottomRight,
+                  alignment: _getDateAlignment(),
                   child: Text(_dateFormat.format(dateTime),
                     style: _t.textTheme.caption,
                   )
@@ -97,7 +166,7 @@ class MessageWidget extends StatelessWidget {
             ),
           )
         ),
-        clipper: (isOwn??false) ? MessageClipRight(): MessageClipLeft(),
+        clipper: _getClip(),
       ),
     );
   }

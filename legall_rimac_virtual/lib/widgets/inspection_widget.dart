@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
+import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 
 class InspectionWidget extends StatelessWidget {
   final InspectionModel model;
+  final InspectionSchedule schedule;
   final Function() onTap;
 
   final _dayFormat = new DateFormat('dd');
@@ -11,23 +14,28 @@ class InspectionWidget extends StatelessWidget {
   final _yearFormat = new DateFormat('yyyy');
   final _timeFormat = new DateFormat.jm();
 
-  Color _colorFromStatus() {
-    switch(model.status) {
-      case InspectionStatus.complete:
+  Color _colorFromSchedule() {
+    switch(schedule.type) {
+      case InspectionScheduleType.scheduled:
         return Color.fromARGB(255, 41, 113, 48);
-      case InspectionStatus.scheduled:
+      case InspectionScheduleType.rescheduled:
+        return Color.fromARGB(255, 185, 42 , 44);
+      case InspectionScheduleType.complete:
         return Color.fromARGB(255, 115, 114, 28);
       default:
         return Colors.black87;
     }
   }
 
-  String _statusText() {
-    switch(model.status) {
-      case InspectionStatus.complete:
-        return 'Completa';
-      case InspectionStatus.scheduled:
-        return 'Agendada';
+  String _scheduleText(BuildContext context) {
+    AppLocalizations _l = AppLocalizations.of(context);
+    switch(schedule.type) {
+      case InspectionScheduleType.complete:
+        return _l.translate('complete');
+      case InspectionScheduleType.scheduled:
+        return _l.translate('scheduled');
+      case InspectionScheduleType.rescheduled:
+        return _l.translate('rescheduled');
       default:
         return '';
     }
@@ -35,6 +43,7 @@ class InspectionWidget extends StatelessWidget {
 
   InspectionWidget({
     @required this.model,
+    @required this.schedule,
     this.onTap
   });
 
@@ -53,14 +62,14 @@ class InspectionWidget extends StatelessWidget {
                 child:Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(model.plate,
+                    Text(model.plate??'-',
                       style: _t.textTheme.headline6,
                     ),
-                    Text('${model.brand} - ${model.model}',
+                    Text('${model.brandName} - ${model.modelName}',
                       style: _t.textTheme.button,
                     ),
                     SizedBox( height: 10),
-                    Text(model.fullName)
+                    Text(model.insuredName??'-')
                   ],
                 )
             ),
@@ -73,12 +82,12 @@ class InspectionWidget extends StatelessWidget {
                         bottomLeft: Radius.circular(5),
                         topRight: Radius.circular(5)
                     ),
-                    color: _colorFromStatus(),
+                    color: _colorFromSchedule(),
                   ),
                   child: SizedBox(
                       width: 100,
                       child: Center(
-                        child: Text(_statusText().toUpperCase(),
+                        child: Text(_scheduleText(context).toUpperCase(),
                             style: _t.accentTextTheme.button
                         ),
                       )
@@ -90,15 +99,15 @@ class InspectionWidget extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Text(_dayFormat.format(model.dateTime),
+                          Text(_dayFormat.format(schedule.dateTime),
                             style: _t.textTheme.headline4,
                           ),
                           Column(
                             children: [
-                              Text(_monthFormat.format(model.dateTime).toUpperCase(),
+                              Text(_monthFormat.format(schedule.dateTime).toUpperCase(),
                                 style: _t.textTheme.button,
                               ),
-                              Text(_yearFormat.format(model.dateTime),
+                              Text(_yearFormat.format(schedule.dateTime),
                                 style: _t.textTheme.button,
                               ),
                             ],
@@ -111,7 +120,7 @@ class InspectionWidget extends StatelessWidget {
                             size: 15,
                           ),
                           SizedBox( width: 5,),
-                          Text(_timeFormat.format(model.dateTime))
+                          Text(_timeFormat.format(schedule.dateTime))
                         ],
                       )
                     ],
