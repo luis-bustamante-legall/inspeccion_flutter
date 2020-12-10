@@ -247,14 +247,12 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                                         listener: (context,newInspectionState) {
                                           if (newInspectionState is InspectionUpdated) {
                                             if (newInspectionState.success) {
-                                              Navigator.pushNamedAndRemoveUntil(context,AppRoutes.home,
-                                                  (Route<dynamic> route) => false);
-                                            } else {
-                                              //TODO: handle error
-                                              print(newInspectionState.errorMessage);
+                                              Navigator.pushNamedAndRemoveUntil(
+                                                context, AppRoutes.home,
+                                                    (Route<
+                                                    dynamic> route) => false);
                                             }
                                           }
-                                          print(newInspectionState);
                                         },
                                         child: Text(_l.translate('schedule inspection').toUpperCase(),
                                           style: _t.accentTextTheme.button,
@@ -266,20 +264,15 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                                               .inspectionModel.schedule;
                                           if (schedule.isEmpty) {
                                             schedule.add(InspectionSchedule(
-                                                dateTime: DateTime.now(),
+                                                dateTime: _datePicked,
                                                 type: InspectionScheduleType
                                                     .scheduled
                                             ));
                                           } else {
-                                            schedule.forEach((sch) {
-                                              sch.type = InspectionScheduleType
-                                                  .rescheduled;
-                                            });
-                                            schedule.add(InspectionSchedule(
-                                                dateTime: _getDateTime(schedule),
-                                                type: InspectionScheduleType
-                                                    .scheduled
-                                            ));
+                                            schedule.last.type = InspectionScheduleType
+                                                .scheduled;
+                                            schedule.last.dateTime = _getDateTime(inspectionState
+                                                .inspectionModel.schedule);
                                           }
                                           var inspectionModel = inspectionState
                                               .inspectionModel.copyWith(

@@ -48,5 +48,11 @@
   "a call was requested": "Se solicitó una llamada",
   "pick datetime": "Elija una fecha y hora",
   "problems reschedule inspection": "Ocurrió un problema al reprogramar la inspección",
-  "locating": "Localizando"
+  "locating": "Localizando",
+  "invalid link": "Enlace invalido",
+  "empty link": "Enlace vacio",
+  "new chat": "Nuevo mensaje:\n$text",
+  "no valid link available": "No se puede iniciar la aplicación, debe iniciarse desde un enlace válido",
+  "capture link invalid": "El enlace usado es invalido",
+  "close app": "Cerrar"
 }

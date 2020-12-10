@@ -21,12 +21,14 @@ class MainActivity: FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
         val intent = intent
-        startString = intent.dataString
+        if (intent.dataString != null) {
+            startString = intent.dataString
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent.action === Intent.ACTION_VIEW) {
+        if (intent.action === Intent.ACTION_VIEW && intent.dataString != null) {
             linksReceiver?.onReceive(this.applicationContext, intent)
         }
     }
@@ -42,24 +44,24 @@ class MainActivity: FlutterActivity() {
     }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
-        GeneratedPluginRegistrant.registerWith(flutterEngine)
-
         MethodChannel(flutterEngine.dartExecutor, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "initialLink") {
-                result.success(startString)
+                if (startString == null && intent.dataString != null)
+                    result.success(intent.dataString)
+                else
+                    result.success(startString)
             }
         }
-
         EventChannel(flutterEngine.dartExecutor, EVENTS).setStreamHandler(
-            object : EventChannel.StreamHandler {
-                override fun onListen(args: Any?, events: EventChannel.EventSink) {
-                    linksReceiver = createChangeReceiver(events)
+                object : EventChannel.StreamHandler {
+                    override fun onListen(args: Any?, events: EventChannel.EventSink) {
+                        linksReceiver = createChangeReceiver(events)
+                    }
+                    override fun onCancel(args: Any?) {
+                        linksReceiver = null
+                    }
                 }
-
-                override fun onCancel(args: Any?) {
-                    linksReceiver = null
-                }
-            }
         )
+        GeneratedPluginRegistrant.registerWith(flutterEngine)
     }
 }

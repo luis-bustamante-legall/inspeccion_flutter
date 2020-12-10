@@ -85,7 +85,7 @@ class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
                         Text(_l.translate('gps coors'),
                           style: _t.textTheme.subtitle2,
                         ),
-                        Text('${model.location.latitude}, ${model.location.longitude}}')
+                        Text('${model.location.latitude}, ${model.location.longitude}')
                       ],
                     )
                   )

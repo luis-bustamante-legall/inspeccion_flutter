@@ -1,18 +1,31 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:legall_rimac_virtual/blocs/blocs.dart';
+import 'package:legall_rimac_virtual/blocs/deeplink_bloc.dart';
 import 'package:legall_rimac_virtual/blocs/inspection_bloc.dart';
 import 'package:legall_rimac_virtual/blocs/photo_bloc.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
 import 'package:legall_rimac_virtual/screens/screens.dart';
 
 var routes = {
-  AppRoutes.splash: (context) => SplashScreen(),
+  AppRoutes.splash: (context) => BlocProvider(
+    create: (context) => DeepLinkBloc(
+      settingsRepository: RepositoryProvider.of<SettingsRepository>(context),
+      inspectionsRepository: RepositoryProvider.of<InspectionsRepository>(context),
+    ),
+    child: SplashScreen(),
+  ),
   AppRoutes.home: (context) =>  MultiBlocProvider(
     providers: [
       BlocProvider(
           create: (context) => InspectionBloc(
               repository: RepositoryProvider.of<InspectionsRepository>(context),
               settings: RepositoryProvider.of<SettingsRepository>(context))
+      ),
+      BlocProvider(
+        create: (context) => DeepLinkBloc(
+          settingsRepository: RepositoryProvider.of<SettingsRepository>(context),
+          inspectionsRepository: RepositoryProvider.of<InspectionsRepository>(context),
+        )
       )
     ],
     child: HomeScreen(),

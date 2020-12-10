@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "76133841436",
-    "firebase_url": "https://legall-cbcc7.firebaseio.com",
-    "project_id": "legall-cbcc7",
-    "storage_bucket": "legall-cbcc7.appspot.com"
+    "project_number": "1007521182877",
+    "firebase_url": "https://inspeccion-virtual-5f607.firebaseio.com",
+    "project_id": "inspeccion-virtual-5f607",
+    "storage_bucket": "inspeccion-virtual-5f607.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:76133841436:android:c5852e118bbcc44f3bbdd9",
+        "mobilesdk_app_id": "1:1007521182877:android:801bce02127be835525074",
         "android_client_info": {
           "package_name": "com.giniem.rimac_virtual"
         }
       },
       "oauth_client": [
         {
-          "client_id": "76133841436-ltltlfcvnm1hdja4g0vip9juf8jfh6b4.apps.googleusercontent.com",
+          "client_id": "1007521182877-ej594pmc56ievdkpe2auinrkm8epj290.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC84mszzsxohACSeU_0_bIKTNfR3BPgQs8"
+          "current_key": "AIzaSyAPaE_Bj6nmAMND7yFFGnuFvv83b4hvCGk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "76133841436-ltltlfcvnm1hdja4g0vip9juf8jfh6b4.apps.googleusercontent.com",
+              "client_id": "1007521182877-ej594pmc56ievdkpe2auinrkm8epj290.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

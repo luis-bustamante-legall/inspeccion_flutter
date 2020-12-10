@@ -1,8 +1,14 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:legall_rimac_virtual/blocs/deeplink_bloc.dart';
 import 'package:legall_rimac_virtual/data_helper.dart';
+import 'package:legall_rimac_virtual/localizations.dart';
+import 'package:legall_rimac_virtual/models/inspection_model.dart';
+import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 
@@ -13,72 +19,95 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen>{
-  ThemeData _t;
-  var _height = 0.0;
+  var _height = 115.0;
+  DeepLinkBloc _deepLinkBloc;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 2),() async {
-      var platform = MethodChannel('https.legall_rimac_virtual/channel');
-      var _settingsRepository = RepositoryProvider.of<SettingsRepository>(context);
-      var _inspectionsRepository = RepositoryProvider.of<InspectionsRepository>(context);
-      setState(() {
-        _height = 115.0;
-      });
-      String initialLink = await platform.invokeMethod('initialLink');
-      if (initialLink != null && validateLink(initialLink)) {
-        var token = getToken(initialLink);
-        var inspection = await _inspectionsRepository.fromToken(token);
-        if (inspection != null) {
-          _settingsRepository.setInspectionId(inspection.inspectionId);
-        }
-      }
+    _deepLinkBloc = BlocProvider.of<DeepLinkBloc>(context);
+    _deepLinkBloc.add(CaptureDeepLink());
+  }
+
+  void _ready(InspectionModel inspectionModel) {
+    if (inspectionModel.schedule.isEmpty || inspectionModel.schedule.first.type == InspectionScheduleType.unconfirmed) {
+      Navigator.pushReplacementNamed(context, AppRoutes.scheduleInspectionStep1,
+        arguments: inspectionModel
+      );
+    } else {
       Navigator.pushReplacementNamed(context, AppRoutes.home);
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    _t = Theme.of(context);
+    ThemeData _t = Theme.of(context);
+    AppLocalizations _l = AppLocalizations.of(context);
 
     return Container(
       color: Colors.white,
-      child:  Column(
-        children: [
-          Expanded(
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/images/legal-logo.png', height: 200,),
-                  AnimatedContainer(
-                    height: _height,
-                    duration: Duration(milliseconds: 300),
-                    child: Padding(
-                      padding: EdgeInsets.all(40),
-                      child: Center(
-                        child: SizedBox(
-                          height: 35,
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    ),
-                  )
+      child: BlocListener<DeepLinkBloc,DeepLinkState>(
+        listener: (context,state) {
+          if (state is DeepLinkCaptured) {
+            _ready(state.inspectionModel);
+          } else if (state is DeepLinkInitial) {
+            _ready(state.inspectionModel);
+          } else if (state is DeepLinkEmpty || state is DeepLinkInvalid) {
+            var isInvalid = state is DeepLinkInvalid;
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              child: AlertDialog(
+                title: Text(_l.translate(isInvalid ?'invalid link': 'empty link')),
+                content: Text(_l.translate('no valid link available')),
+                actions: [
+                  FlatButton(
+                    onPressed: () {
+                      exit(0);
+                    },
+                    child: Text(_l.translate('close app'))
+                  ),
                 ],
+              )
+            );
+          }
+        },
+        child:  Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/images/legal-logo.png', height: 200,),
+                      AnimatedContainer(
+                        height: _height,
+                        duration: Duration(milliseconds: 300),
+                        child: Padding(
+                          padding: EdgeInsets.all(40),
+                          child: Center(
+                            child: SizedBox(
+                              height: 35,
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-          Center(
-            child: Padding(
-              padding: EdgeInsets.all(20),
-              child: Text('v1.1',
-                style: _t.textTheme.headline6,
-              ),
-            ),
-          )
-        ]
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Text('v1.1',
+                    style: _t.textTheme.headline6,
+                  ),
+                ),
+              )
+            ]
+        ),
       ),
     );
   }

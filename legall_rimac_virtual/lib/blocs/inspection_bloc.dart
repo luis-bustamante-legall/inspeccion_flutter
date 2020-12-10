@@ -25,6 +25,12 @@ class InspectionBloc
   @override
   InspectionState get initialState => InspectionUninitialized();
 
+  void updateInspection() {
+    var inspectionId = _settingsRepository.getInspectionId();
+    if (inspectionId != null)
+      add(LoadInspection(inspectionId));
+  }
+
   @override
   Stream<InspectionState> mapEventToState(
       InspectionEvent event) async* {

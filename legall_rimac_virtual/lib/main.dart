@@ -13,10 +13,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseAuth.instance.signInAnonymously();
-
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //TODO: For test only
-  preferences.setString('inspectionId', '3f3Xh6Wtw2cYuhyzTrbJ');
   runApp(MultiRepositoryProvider(
       providers: getRepositoryProviders(preferences),
       child:  LegallRimacVirtualApp()));

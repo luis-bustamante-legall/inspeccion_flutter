@@ -25,5 +25,5 @@ class InspectionSchedule {
   }
 }
 
-enum InspectionScheduleType { scheduled,rescheduled,complete }
+enum InspectionScheduleType { unconfirmed, scheduled,rescheduled,complete }
 

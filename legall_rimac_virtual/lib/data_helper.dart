@@ -1,16 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-const _linkPrefix = 'https://www.mydeeplink.com/link?token=';
-
-bool validateLink(String link) {
-  return (link?.startsWith(_linkPrefix) ?? false);
-}
-
-String getToken(String link) {
-  return link?.substring(_linkPrefix.length);
-}
-
 void copyCollection(String collection) async {
   var coll = await FirebaseFirestore.instance.collection(collection).get();
   /*var firebaseSecondary = await Firebase.initializeApp(name:'secondary',options: FirebaseOptions(

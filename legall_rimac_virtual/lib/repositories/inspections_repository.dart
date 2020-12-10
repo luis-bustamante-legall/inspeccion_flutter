@@ -11,9 +11,9 @@ class InspectionsRepository {
         .map((docs) => docs.docs.length > 0 ? InspectionModel.fromJSON(docs.docs.first.data(),id: inspectionId) : null);
   }
 
-  Future<InspectionModel> fromToken(String token) async {
+  Future<InspectionModel> fromId(String id) async {
     var inspections = await _inspectionCollection
-        .where('token',isEqualTo: token)
+        .where(FieldPath.documentId,isEqualTo: id)
         .get();
 
     if (inspections.docs.isEmpty) {
