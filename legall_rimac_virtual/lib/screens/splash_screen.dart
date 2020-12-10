@@ -19,7 +19,6 @@ class SplashScreenState extends State<SplashScreen>{
   @override
   void initState() {
     super.initState();
-    /*
     Future.delayed(Duration(seconds: 2),() async {
       var platform = MethodChannel('https.legall_rimac_virtual/channel');
       var _settingsRepository = RepositoryProvider.of<SettingsRepository>(context);
@@ -35,12 +34,8 @@ class SplashScreenState extends State<SplashScreen>{
           _settingsRepository.setInspectionId(inspection.inspectionId);
         }
       }
-      if (initialLink != null) {
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
-      }
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
     });
-
-     */
   }
 
   @override

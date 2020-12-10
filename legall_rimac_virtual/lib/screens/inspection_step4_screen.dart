@@ -65,7 +65,7 @@ class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
                   listener: (context,state) {
                     if (state is InspectionUpdated) {
                       if (state.success) {
-                        Navigator.pushReplacementNamed(context, AppRoutes.inspectionComplete);
+                        Navigator.pushReplacementNamed(context, AppRoutes.inspectionComplete, arguments: state.inspectionModel);
                       } else {
                         Future.delayed(Duration(milliseconds: 100),() {
                           var messenger = Scaffold.of(context);

@@ -1,11 +1,13 @@
 import 'dart:async';
-
+import 'package:geocoder/geocoder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geocoder/services/base.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:legall_rimac_virtual/routes.dart';
+import 'package:intl/intl.dart';
 
 
 class InspectionCompleteScreen extends StatefulWidget {
@@ -15,17 +17,29 @@ class InspectionCompleteScreen extends StatefulWidget {
 
 class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
   Completer<GoogleMapController> _controller = Completer();
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(12.0904977, 77.0473731),
-    zoom: 1.4746,
-  );
+  final Geocoding _geocoding = Geocoder.local;
+  String _addressDesc = null;
 
   @override
   Widget build(BuildContext context) {
     final InspectionModel model =  ModalRoute.of(context).settings.arguments;
     ThemeData _t = Theme.of(context);
     AppLocalizations _l = AppLocalizations.of(context);
+
+    final CameraPosition _kGooglePlex = CameraPosition(
+      target: LatLng(model.location.latitude, model.location.longitude),
+      zoom: 1.4746,
+    );
+
+    _geocoding.findAddressesFromCoordinates(Coordinates(model.location.latitude, model.location.longitude))
+    .then((address) {
+      if (address.isNotEmpty) {
+        setState(() {
+          var firstAddress = address.first;
+          _addressDesc = "${firstAddress.countryName}, ${firstAddress.addressLine}";
+        });
+      }
+    });
 
     return Scaffold(
         appBar: AppBar(
@@ -44,32 +58,36 @@ class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
                       color: Colors.green,
                     ),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(_l.translate('inspection is complete'),
-                          style: _t.textTheme.headline6
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Text('Lima, JR Moquegua 718 Dpto 603',
-                        style: _t.textTheme.subtitle1,
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text('2 Ago 2020, 4:45 PM',
-                          style: _t.textTheme.subtitle1
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(_l.translate('gps coors'),
-                        style: _t.textTheme.subtitle2,
-                      ),
-                      Text('12.0904977, 77.0473731')
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(_l.translate('inspection is complete'),
+                            style: _t.textTheme.headline6
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(_addressDesc ?? _l.translate('locating'),
+                          style: _t.textTheme.subtitle1,
+
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text('${DateFormat('d MMM yyyy, hh:mm a').format(DateTime.now())}',
+                            style: _t.textTheme.subtitle1
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(_l.translate('gps coors'),
+                          style: _t.textTheme.subtitle2,
+                        ),
+                        Text('${model.location.latitude}, ${model.location.longitude}}')
+                      ],
+                    )
                   )
                 ],
               ),
