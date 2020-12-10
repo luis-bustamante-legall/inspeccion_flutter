@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:path_provider/path_provider.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
 
@@ -45,6 +47,13 @@ class VideoBloc
   }
 
   Stream<VideoState> _updateVideo(UpdateVideo event) async* {
+    var appDir = await getApplicationDocumentsDirectory();
+    for(var video in event.videos) {
+      var cacheFile = File('${appDir.path}/${video.id}.mp4');
+      if (await cacheFile.exists()) {
+        video.localCache = cacheFile.path;
+      }
+    }
     yield VideoLoaded.successfully(event.videos);
   }
 
@@ -54,7 +63,7 @@ class VideoBloc
       yield VideoUploading(_uploadingVideos);
       await _videosRepository.uploadVideo(event.videoModel, event.data);
       _uploadingVideos.remove(event.videoModel.id);
-    } catch(e,stackTrace) {
+    } catch(e) {
       _uploadingVideos.remove(event.videoModel.id);
       add(LoadVideo(event.videoModel.inspectionId));
     }

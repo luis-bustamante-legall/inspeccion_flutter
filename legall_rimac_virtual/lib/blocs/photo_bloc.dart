@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:path_provider/path_provider.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
 
@@ -47,6 +49,13 @@ class PhotoBloc
   }
 
   Stream<PhotoState> _updatePhoto(UpdatePhoto event) async* {
+    var appDir = await getApplicationDocumentsDirectory();
+    for(var photo in event.photos) {
+      var cacheFile = File('${appDir.path}/${photo.id}.png');
+      if (await cacheFile.exists()) {
+        photo.localCache = cacheFile.path;
+      }
+    }
     yield PhotoLoaded.successfully(event.photos);
   }
 

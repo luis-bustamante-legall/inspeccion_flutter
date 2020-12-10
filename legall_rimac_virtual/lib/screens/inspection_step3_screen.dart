@@ -88,7 +88,7 @@ class InspectionStep3ScreenState extends State<InspectionStep3Screen> {
                 } else {
                   print(state.errorMessage);
                   Future.delayed(Duration(milliseconds: 100),() {
-                    var messenger = ScaffoldMessenger.of(context);
+                    var messenger = Scaffold.of(context);
                     messenger.hideCurrentSnackBar();
                     messenger.showSnackBar(SnackBar(
                       duration: Duration(seconds: 4),

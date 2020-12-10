@@ -46,5 +46,6 @@
   "scheduled": "Agendada",
   "rescheduled": "Re-Agendada",
   "a call was requested": "Se solicitó una llamada",
-  "pick datetime": "Elija una fecha y hora"
+  "pick datetime": "Elija una fecha y hora",
+  "problems reschedule inspection": "Ocurrió un problema al reprogramar la inspección"
 }

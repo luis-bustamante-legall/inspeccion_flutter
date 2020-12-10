@@ -5,8 +5,6 @@ import 'package:legall_rimac_virtual/blocs/photo_bloc.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
 import 'package:legall_rimac_virtual/screens/screens.dart';
 
-import 'blocs/chat_bloc.dart';
-
 var routes = {
   AppRoutes.splash: (context) => SplashScreen(),
   AppRoutes.home: (context) =>  MultiBlocProvider(
@@ -82,6 +80,11 @@ var routes = {
       BlocProvider(
         create: (context) => ChatsBloc(
             repository: RepositoryProvider.of<ChatsRepository>(context))
+      ),
+      BlocProvider(
+          create: (context) => InspectionBloc(
+              repository: RepositoryProvider.of<InspectionsRepository>(context),
+              settings: RepositoryProvider.of<SettingsRepository>(context))
       )
     ],
     child: InspectionStep4Screen(),
@@ -128,7 +131,6 @@ class AppRoutes {
   static final String home = '/home';
   static final String inspection = '/inspection';
   static final String chat = '/chat';
-  static final String videoRecording = '/video_recording';
   static final String inspectionStep1 = '$inspection/step1';
   static final String inspectionStep2 = '$inspection/step2';
   static final String inspectionStep3 = '$inspection/step3';

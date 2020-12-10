@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:legall_rimac_virtual/blocs/blocs.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
+import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 import 'package:legall_rimac_virtual/widgets/chat_button.dart';
 import 'package:legall_rimac_virtual/widgets/phone_call_button.dart';
@@ -14,6 +17,13 @@ class InspectionStep4Screen extends StatefulWidget {
 
 class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
   final _textController = TextEditingController();
+  InspectionBloc _inspectionBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _inspectionBloc = BlocProvider.of<InspectionBloc>(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,15 +61,52 @@ class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: RaisedButton(
-                  child: Text(_l.translate('finish inspection').toUpperCase(),
-                      style: _t.accentTextTheme.button
-                  ),
-                  color: _t.accentColor,
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.inspectionComplete);
+                child: BlocListener<InspectionBloc,InspectionState>(
+                  listener: (context,state) {
+                    if (state is InspectionUpdated) {
+                      if (state.success) {
+                        Navigator.pushReplacementNamed(context, AppRoutes.inspectionComplete);
+                      } else {
+                        Future.delayed(Duration(milliseconds: 100),() {
+                          var messenger = Scaffold.of(context);
+                          messenger.hideCurrentSnackBar();
+                          messenger.showSnackBar(SnackBar(
+                            duration: Duration(seconds: 4),
+                            backgroundColor: Colors.red,
+                            content: ListTile(
+                              leading: Icon(Icons.announcement_rounded),
+                              title: Text(_l.translate('problems finish inspection'),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ));
+                        });
+                      }
+                    }
                   },
-                ),
+                  child: RaisedButton(
+                    child: Text(_l.translate('finish inspection').toUpperCase(),
+                        style: _t.accentTextTheme.button
+                    ),
+                    color: _t.accentColor,
+                    onPressed: () {
+                      var currentState = _inspectionBloc.state;
+                      if (currentState is InspectionLoaded) {
+                        var newInspection = currentState.inspectionModel.copyWith(
+                          additionalInfo: _textController.text,
+                          status: InspectionStatus.complete
+                        );
+                        newInspection.schedule.forEach((sch) {
+                          if (sch.type == InspectionScheduleType.scheduled) {
+                            sch.type = InspectionScheduleType.complete;
+                          }
+                        });
+                        _inspectionBloc.add(UpdateInspectionData(
+                            newInspection, UpdateInspectionType.status));
+                      }
+                    },
+                  ),
+                )
               )
             ]
         )

@@ -19,7 +19,7 @@ class ChatButtonState extends State<ChatButton> {
   ChatsBloc _chatsBloc;
 
   void _messageIncomming(String text) {
-    var messenger = ScaffoldMessenger.of(context);
+    var messenger = Scaffold.of(context);
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(SnackBar(
       duration: Duration(seconds: 4),

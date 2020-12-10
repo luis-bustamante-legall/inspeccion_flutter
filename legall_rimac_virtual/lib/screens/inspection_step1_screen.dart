@@ -28,11 +28,18 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
   List<String> _uploadingVideos = [];
 
 
-  Widget _videoPlayer(String resourceUrl) {
-    if (resourceUrl == null)
+  Widget _videoPlayer({String resourceUrl, String cache}) {
+    VideoPlayerController _playerController;
+    if (resourceUrl == null || cache == null) {
       return null;
-    VideoPlayerController _playerController = 
-      VideoPlayerController.network(resourceUrl);
+    }
+    else if (cache != null) {
+      _playerController = VideoPlayerController.file(File(cache));
+    }
+    else {
+      _playerController = VideoPlayerController.network(resourceUrl);
+    }
+
     _playerController.initialize();
     return Transform.scale(
         scale: 1 / _playerController.value.aspectRatio,
@@ -100,9 +107,8 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
               if (state.success) {
                 _videos = state.videos;
               } else {
-                print(state.errorMessage);
                 Future.delayed(Duration(milliseconds: 100),() {
-                  var messenger = ScaffoldMessenger.of(context);
+                  var messenger = Scaffold.of(context);
                   messenger.hideCurrentSnackBar();
                   messenger.showSnackBar(SnackBar(
                     duration: Duration(seconds: 4),
@@ -128,9 +134,11 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
                   SizedBox(
                     height: 420,
                     child: ImageCard(
-                      child: _videoPlayer(video.resourceUrl),
+                      child: _videoPlayer(
+                          resourceUrl: video.resourceUrl,
+                          cache: video.localCache),
                       working: _uploadingVideos.contains(video.id),
-                      title: Text(_l.translate('video 360'),
+                      title: Text(video?.description??'',
                         style: _t.textTheme.button,
                       ),
                       icon: _iconFromStatus(video.status),

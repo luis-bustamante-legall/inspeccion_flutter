@@ -1,9 +1,11 @@
 import 'dart:typed_data';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:legall_rimac_virtual/models/models.dart';
 import 'package:legall_rimac_virtual/models/resource_model.dart';
 import 'package:legall_rimac_virtual/storage/storage.dart';
+import 'package:path_provider/path_provider.dart';
 
 class VideosRepository {
   final _videosCollection = FirebaseFirestore.instance.collection('videos');
@@ -20,7 +22,15 @@ class VideosRepository {
   }
 
   Future<void> uploadVideo(VideoModel video,Uint8List data) async {
+    var appDir = await getApplicationDocumentsDirectory();
+    //Upload video
     await storage.upload('/videos/${video.id}.mp4', data, 'video/mp4');
+    //Cache file
+    var cacheFile = File('${appDir.path}/${video.id}.mp4');
+    if (! await cacheFile.exists())
+      await cacheFile.create(recursive: true);
+    await cacheFile.writeAsBytes(data, flush: true);
+    //Updating Firebase
     video.resourceUrl = await storage.downloadURL('/videos/${video.id}.mp4');
     video.status = ResourceStatus.uploaded;
     return _videosCollection.doc(video.id)

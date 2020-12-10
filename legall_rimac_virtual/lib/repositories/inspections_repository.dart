@@ -28,30 +28,21 @@ class InspectionsRepository {
   Future<void> updateStatus(InspectionModel inspectionModel) {
     return _inspectionCollection
         .doc(inspectionModel.inspectionId)
-        .set(inspectionModel.toJSONWithUpdateStatus(),
-        SetOptions(
-          merge: true
-        )
+        .update(inspectionModel.toJSONWithUpdateStatus()
       );
   }
 
   Future<void> updateData(InspectionModel inspectionModel) {
     return _inspectionCollection
         .doc(inspectionModel.inspectionId)
-        .set(inspectionModel.toJSONWithInspectionData(),
-        SetOptions(
-            merge: true
-        )
+        .update(inspectionModel.toJSONWithInspectionData()
     );
   }
 
   Future<void> updateSchedule(InspectionModel inspectionModel) {
     return _inspectionCollection
         .doc(inspectionModel.inspectionId)
-        .set(inspectionModel.toJSONWithSchedule(),
-        SetOptions(
-            merge: true
-        )
+        .update(inspectionModel.toJSONWithSchedule()
     );
   }
 }

@@ -91,7 +91,8 @@ class ChatScreenState extends State<ChatScreen> {
                         ).toList(),
                       );
                     } else {
-                      var messenger = ScaffoldMessenger.of(context);
+                      var messenger = Scaffold.of(context);
+                      //var messenger = ScaffoldMessenger.of(context);
                       messenger.hideCurrentSnackBar();
                       messenger.showSnackBar(SnackBar(
                         duration: Duration(seconds: 4),

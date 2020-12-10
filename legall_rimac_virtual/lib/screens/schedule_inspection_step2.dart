@@ -170,7 +170,7 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                               } else {
                                 print(state.errorMessage);
                                 Future.delayed(Duration(milliseconds: 100),() {
-                                  var messenger = ScaffoldMessenger.of(context);
+                                  var messenger = Scaffold.of(context);
                                   messenger.hideCurrentSnackBar();
                                   messenger.showSnackBar(SnackBar(
                                     duration: Duration(seconds: 4),

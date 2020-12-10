@@ -71,10 +71,11 @@ class InspectionBloc
           await _inspectionsRepository.updateSchedule(event.inspectionModel);
           break;
       }
-      yield InspectionUpdated.successfully(event.inspectionModel);
+      yield InspectionUpdated.successfully(event.type, event.inspectionModel);
       yield InspectionLoaded.successfully(event.inspectionModel);
     } catch(ex,stackTrace) {
       yield InspectionUpdated.withError(ex.toString(),stackTrace: stackTrace);
+      yield InspectionLoaded.successfully(event.inspectionModel);
     }
   }
 
@@ -137,22 +138,24 @@ class InspectionLoading extends InspectionState {}
 
 class InspectionUpdated extends InspectionState {
   final bool success;
+  final UpdateInspectionType type;
   final String errorMessage;
   final StackTrace stackTrace;
   final InspectionModel inspectionModel;
 
-  const InspectionUpdated(this.success, this.inspectionModel, this.errorMessage, this.stackTrace);
+  const InspectionUpdated(this.success,this.type, this.inspectionModel, this.errorMessage, this.stackTrace);
 
   factory InspectionUpdated.successfully(
+      UpdateInspectionType type,
       InspectionModel inspectionModel) {
     assert(inspectionModel != null);
-    return InspectionUpdated(true, inspectionModel, null, null);
+    return InspectionUpdated(true,type, inspectionModel, null, null);
   }
 
   factory InspectionUpdated.withError(final String errorMessage,
       {final StackTrace stackTrace}) {
     assert(errorMessage != null);
-    return InspectionUpdated(false, null, errorMessage, stackTrace);
+    return InspectionUpdated(false,null, null, errorMessage, stackTrace);
   }
 
 }

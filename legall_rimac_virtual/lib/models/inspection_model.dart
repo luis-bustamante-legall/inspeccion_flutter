@@ -1,10 +1,13 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:legall_rimac_virtual/data_helper.dart';
 import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 
 class InspectionModel {
   //Inspection data
   String inspectionId;
+  String additionalInfo;
+  GeoPoint location;
 
   //App configuration
   String appColor;
@@ -30,6 +33,8 @@ class InspectionModel {
   InspectionModel({
     this.inspectionId,
     this.appColor,
+    this.additionalInfo,
+    this.location,
     this.insuranceCompany,
     this.showLegallLogo,
     this.status,
@@ -50,6 +55,8 @@ class InspectionModel {
     String appColor,
     String insuranceCompany,
     bool showLegallLogo,
+    String additionalInfo,
+    GeoPoint location,
     InspectionStatus status,
     String plate,
     String brandId,
@@ -66,6 +73,8 @@ class InspectionModel {
     appColor: appColor??this.appColor,
     insuranceCompany: insuranceCompany??this.insuranceCompany,
     showLegallLogo: showLegallLogo??this.showLegallLogo,
+    additionalInfo: additionalInfo??this.additionalInfo,
+    location: location??this.location,
     status: status??this.status,
     plate: plate??this.plate,
     brandId: brandId??this.brandId,
@@ -85,6 +94,8 @@ class InspectionModel {
       appColor: json['app_color'],
       insuranceCompany: json['insurance_company'],
       showLegallLogo: json['show_legall_logo']??true,
+      additionalInfo: json['additional_information'],
+      location: json['location'],
       status: enumFromMap(InspectionStatus.values, json['status']) ?? InspectionStatus.onHold,
       plate: json['plate'],
       brandId: json['brand_id'],
@@ -102,12 +113,15 @@ class InspectionModel {
 
   Map<String,dynamic> toJSONWithUpdateStatus() {
     return {
+      'additional_information': additionalInfo,
+      'schedule': schedule.map((sch) => sch.toJSON()).toList(),
       'status': enumToMap(status),
     };
   }
 
   Map<String,dynamic> toJSONWithInspectionData() {
     return {
+      'location': location,
       'brand_id': brandId,
       'brand_name': brandName,
       'model_name': modelName,
@@ -128,9 +142,5 @@ class InspectionModel {
 enum InspectionStatus {
   onHold,
   available,
-  onStep1,
-  onStep2,
-  onStep3,
-  onStep4,
   complete
 }

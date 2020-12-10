@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 
 const _linkPrefix = 'https://www.mydeeplink.com/link?token=';
 
@@ -72,7 +68,6 @@ int intOrZero(dynamic value) {
 }
 
 DateTime dateTimeOrNull(dynamic value) {
-  print(value);
   if (value is DateTime) {
     return value;
   } else if (value is String) {

@@ -37,15 +37,15 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
 
-  #Map
+  #location
   google_maps_flutter: ^1.0.5
+  location: ^3.1.0
+  geocoder: ^0.2.1
 
-  #Video capture
-  camera: ^0.5.8+11
+  #Video/Image capture
   path_provider: ^1.6.21
   video_player: ^0.11.1+2
   image_picker: ^0.6.7+12
-
 
   #Firebase stuff
   firebase_core: ^0.5.1
