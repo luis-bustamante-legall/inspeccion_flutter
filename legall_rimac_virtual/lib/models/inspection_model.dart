@@ -93,7 +93,7 @@ class InspectionModel {
       inspectionId: id,
       appColor: json['app_color'],
       insuranceCompany: json['insurance_company'],
-      showLegallLogo: json['show_legall_logo']??true,
+      showLegallLogo: json['show_legall_logo']??false,
       additionalInfo: json['additional_information'],
       location: json['location'],
       status: enumFromMap(InspectionStatus.values, json['status']) ?? InspectionStatus.onHold,

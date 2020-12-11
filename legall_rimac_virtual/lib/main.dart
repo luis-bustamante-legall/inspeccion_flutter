@@ -19,12 +19,26 @@ Future<void> main() async {
       child:  LegallRimacVirtualApp()));
 }
 
-class LegallRimacVirtualApp extends StatelessWidget {
-  // This widget is the root of your application.
+class LegallRimacVirtualApp extends StatefulWidget  {
+  @override
+  State<StatefulWidget> createState() => LegallRimacVirtualAppState();
+}
+
+class LegallRimacVirtualAppState extends State<LegallRimacVirtualApp> {
+  ThemeData _theme = themeData;
+
+  updatePrimaryTheme(Color color) {
+    setState(() {
+      _theme = _theme.copyWith(
+          primaryColor: color
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: themeData,
+      theme: _theme,
       supportedLocales: [Locale('es', '')],
       localizationsDelegates: [
         AppLocalizations.delegate,

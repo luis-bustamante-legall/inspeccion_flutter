@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:legall_rimac_virtual/blocs/deeplink_bloc.dart';
 import 'package:legall_rimac_virtual/data_helper.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
+import 'package:legall_rimac_virtual/main.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
 import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
@@ -30,6 +31,21 @@ class SplashScreenState extends State<SplashScreen>{
   }
 
   void _ready(InspectionModel inspectionModel) {
+    if (inspectionModel.appColor != null) {
+      Color selectedColor = Colors.indigo;
+      RegExp hexColor = RegExp(r'^([0-9a-fA-F]{6})$');
+      if (hexColor.hasMatch(inspectionModel.appColor)) {
+        var rgb = [
+          inspectionModel.appColor.substring(0,2),
+          inspectionModel.appColor.substring(2,4),
+          inspectionModel.appColor.substring(4,6)]
+          .map((hex) => int.parse(hex,radix: 16))
+          .toList();
+        selectedColor = Color.fromARGB(255, rgb[0], rgb[1], rgb[2]);
+      }
+      var state =  context.findAncestorStateOfType<LegallRimacVirtualAppState>();
+      state.updatePrimaryTheme(selectedColor);
+    }
     if (inspectionModel.schedule.isEmpty || inspectionModel.schedule.first.type == InspectionScheduleType.unconfirmed) {
       Navigator.pushReplacementNamed(context, AppRoutes.scheduleInspectionStep1,
         arguments: inspectionModel

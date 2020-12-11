@@ -58,18 +58,31 @@ class HomeScreenState extends State<HomeScreen> {
         child: BlocBuilder<InspectionBloc,InspectionState>(
           builder: (context,state) {
             if (state is InspectionLoaded) {
+              var children = <Widget>[];
+              children.addAll(state.inspectionModel.schedule.map((schedule) =>
+                  InspectionWidget(
+                      model: state.inspectionModel,
+                      schedule: schedule,
+                      onTap: schedule.type == InspectionScheduleType.scheduled
+                          && state.inspectionModel.status != InspectionStatus.complete?
+                          () {
+                        Navigator.pushNamed(context, AppRoutes.inspection);
+                      }: null
+                  )
+              ));
+              if (state.inspectionModel.showLegallLogo??false) {
+                children.addAll([
+                  Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: Image.asset('assets/images/legal-logo.png', height: 70)
+                    ),
+                  )
+                ]);
+              }
               return ListView(
-                  children: state.inspectionModel.schedule.map((schedule) =>
-                      InspectionWidget(
-                          model: state.inspectionModel,
-                          schedule: schedule,
-                          onTap: schedule.type == InspectionScheduleType.scheduled
-                              && state.inspectionModel.status != InspectionStatus.complete?
-                              () {
-                            Navigator.pushNamed(context, AppRoutes.inspection);
-                          }: null
-                      )
-                  ).toList()
+                children: children
               );
             } else {
               return Center(
