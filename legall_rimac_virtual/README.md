@@ -64,6 +64,7 @@ If you not have a database you will need create one
 
 ## Authentication
 The application uses anonymous authentication so you need enable the sign-in method
+
 1. Click `Authentication` on sidebar
 2. Click `Sign-in method`
 3. Switch on `Enable` on `Anonymous` sign-in method
