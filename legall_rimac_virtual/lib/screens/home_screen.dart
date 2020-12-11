@@ -63,10 +63,16 @@ class HomeScreenState extends State<HomeScreen> {
                   InspectionWidget(
                       model: state.inspectionModel,
                       schedule: schedule,
-                      onTap: schedule.type == InspectionScheduleType.scheduled
-                          && state.inspectionModel.status != InspectionStatus.complete?
-                          () {
-                        Navigator.pushNamed(context, AppRoutes.inspection);
+                      onTap: state.inspectionModel.status != InspectionStatus.complete && (
+                          schedule.type == InspectionScheduleType.scheduled ||
+                          schedule.type == InspectionScheduleType.unconfirmed
+                      ) ? () {
+                        if (schedule.type == InspectionScheduleType.scheduled)
+                          Navigator.pushNamed(context, AppRoutes.inspection);
+                        else
+                          Navigator.pushNamed(context, AppRoutes.scheduleInspectionStep1,
+                            arguments: state.inspectionModel
+                          );
                       }: null
                   )
               ));

@@ -271,50 +271,53 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                                   SizedBox(height: 10,),
                                   Align(
                                     alignment: Alignment.centerRight,
-                                    child: RaisedButton(
-                                      color: _t.accentColor,
-                                      child: BlocListener<InspectionBloc,InspectionState>(
-                                        listener: (context,newInspectionState) {
-                                          if (newInspectionState is InspectionUpdated) {
-                                            if (newInspectionState.success) {
-                                              Navigator.pushNamedAndRemoveUntil(
-                                                context, AppRoutes.home,
-                                                    (Route<
-                                                    dynamic> route) => false);
+                                    child: Visibility(
+                                      visible: !_photos.entries.any((map) => map.value.any((photo) => photo.status != ResourceStatus.approved)),
+                                      child: RaisedButton(
+                                        color: _t.accentColor,
+                                        child: BlocListener<InspectionBloc,InspectionState>(
+                                          listener: (context,newInspectionState) {
+                                            if (newInspectionState is InspectionUpdated) {
+                                              if (newInspectionState.success) {
+                                                Navigator.pushNamedAndRemoveUntil(
+                                                    context, AppRoutes.home,
+                                                        (Route<
+                                                        dynamic> route) => false);
+                                              }
                                             }
+                                          },
+                                          child: Text(_l.translate('schedule inspection').toUpperCase(),
+                                            style: _t.accentTextTheme.button,
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          if (inspectionState is InspectionLoaded) {
+                                            var schedule = inspectionState
+                                                .inspectionModel.schedule;
+                                            if (schedule.isEmpty) {
+                                              schedule.add(InspectionSchedule(
+                                                  dateTime: _datePicked,
+                                                  type: InspectionScheduleType
+                                                      .scheduled
+                                              ));
+                                            } else {
+                                              schedule.last.type = InspectionScheduleType
+                                                  .scheduled;
+                                              schedule.last.dateTime = _getDateTime(inspectionState
+                                                  .inspectionModel.schedule);
+                                            }
+                                            var inspectionModel = inspectionState
+                                                .inspectionModel.copyWith(
+                                                schedule: schedule
+                                            );
+                                            _inspectionBloc.add(
+                                                UpdateInspectionData(
+                                                    inspectionModel,
+                                                    UpdateInspectionType.schedule
+                                                ));
                                           }
                                         },
-                                        child: Text(_l.translate('schedule inspection').toUpperCase(),
-                                          style: _t.accentTextTheme.button,
-                                        ),
                                       ),
-                                      onPressed: () {
-                                        if (inspectionState is InspectionLoaded) {
-                                          var schedule = inspectionState
-                                              .inspectionModel.schedule;
-                                          if (schedule.isEmpty) {
-                                            schedule.add(InspectionSchedule(
-                                                dateTime: _datePicked,
-                                                type: InspectionScheduleType
-                                                    .scheduled
-                                            ));
-                                          } else {
-                                            schedule.last.type = InspectionScheduleType
-                                                .scheduled;
-                                            schedule.last.dateTime = _getDateTime(inspectionState
-                                                .inspectionModel.schedule);
-                                          }
-                                          var inspectionModel = inspectionState
-                                              .inspectionModel.copyWith(
-                                              schedule: schedule
-                                          );
-                                          _inspectionBloc.add(
-                                              UpdateInspectionData(
-                                                  inspectionModel,
-                                                  UpdateInspectionType.schedule
-                                              ));
-                                        }
-                                      },
                                     ),
                                   )
                                 ],

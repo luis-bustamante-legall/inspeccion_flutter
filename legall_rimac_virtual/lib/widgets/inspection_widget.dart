@@ -23,7 +23,7 @@ class InspectionWidget extends StatelessWidget {
       case InspectionScheduleType.complete:
         return Color.fromARGB(255, 115, 114, 28);
       default:
-        return Colors.black87;
+        return Colors.purple;
     }
   }
 
@@ -36,6 +36,8 @@ class InspectionWidget extends StatelessWidget {
         return _l.translate('scheduled');
       case InspectionScheduleType.rescheduled:
         return _l.translate('rescheduled');
+      case InspectionScheduleType.unconfirmed:
+        return _l.translate('unconfirmed');
       default:
         return '';
     }

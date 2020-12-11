@@ -96,7 +96,14 @@ class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
                 child: SizedBox(
                   height: 400,
                   child: GoogleMap(
+                    zoomControlsEnabled: true,
                     mapType: MapType.normal,
+                    markers: [
+                      Marker(
+                        markerId: MarkerId('primary'),
+                        position: LatLng(model.location.latitude, model.location.longitude)
+                      )
+                    ].toSet(),
                     initialCameraPosition: _kGooglePlex,
                     onMapCreated: (GoogleMapController controller) {
                       _controller.complete(controller);

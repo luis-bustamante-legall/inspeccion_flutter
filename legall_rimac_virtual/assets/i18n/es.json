@@ -46,6 +46,7 @@
   "complete": "Completa",
   "scheduled": "Agendada",
   "rescheduled": "Re-Agendada",
+  "unconfirmed": "Confirmar",
   "a call was requested": "Se solicitó una llamada",
   "pick datetime": "Elija una fecha y hora",
   "problems reschedule inspection": "Ocurrió un problema al reprogramar la inspección",

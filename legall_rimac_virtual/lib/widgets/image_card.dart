@@ -61,7 +61,9 @@ class ImageCard extends StatelessWidget {
                                 color: Colors.white,
                               )
                           ),
-                          Padding(
+                          Visibility(
+                            visible: onHelp != null,
+                            child: Padding(
                               padding: EdgeInsets.all(5),
                               child: InkWell(
                                 onTap: onHelp,
@@ -81,6 +83,7 @@ class ImageCard extends StatelessWidget {
                                   ],
                                 ),
                               )
+                            )
                           ),
                         ],
                       ),
