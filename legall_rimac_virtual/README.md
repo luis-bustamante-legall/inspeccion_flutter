@@ -71,3 +71,23 @@ The application uses anonymous authentication so you need enable the sign-in met
 4. Click `Save`
 
 ![](.README_images/09b0191.png)
+
+## Indexes
+Two indexes are required for the application, both with scope `Collection`
+
+1. Collection `chats` for fields:
+    - `inspection_id` order `Ascending`
+    - `datetime` order `Ascending`
+2. Collection `photos` for fields:
+    - `inspection_id` order `Ascending`
+    - `type` order `Ascending`
+    - `group` order `Descending`
+
+To add a new index:
+1. Click `Cloud Firestore` on sidebar
+2. Click `Indexes` tab
+3. Click `Add index`
+
+![](.README_images/e8d0dbc.png)
+
+
