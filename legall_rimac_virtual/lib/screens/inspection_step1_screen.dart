@@ -192,7 +192,7 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
                               source: ImageSource.camera,
                               maxDuration: Duration(seconds: 20)
                           );
-                          if (video != null) {
+                          if (videoPicker != null) {
                             _videoBloc.add(UploadVideo(
                                 video, await videoPicker.readAsBytes()));
                           }

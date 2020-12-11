@@ -196,6 +196,36 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                                     children: entry.value.map((photo) =>
                                         GridTile(
                                             child: ImageCard(
+                                              onHelp: () async {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (_) => AlertDialog(
+                                                      title: Text(_l.translate('how take photo')),
+                                                      content: Column(
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(photo.helpText??''),
+                                                          SizedBox(height: 10),
+                                                          Text(_l.translate('example'),
+                                                            style: _t.textTheme.button,
+                                                          ),
+                                                          SizedBox(height: 10),
+                                                          Image.network(photo.helpExampleUrl,
+                                                            fit: BoxFit.fitWidth,
+                                                          )
+                                                        ],
+                                                      ),
+                                                      actions: <Widget>[
+                                                        FlatButton(
+                                                          child: Text(_l.translate('accept')),
+                                                          onPressed: () {
+                                                            Navigator.of(context).pop();
+                                                          },
+                                                        )
+                                                      ],
+                                                    ));
+                                              },
                                               icon: _iconFromStatus(photo.status),
                                               working: _uploadingPhotos.contains(photo.id),
                                               color: _colorFromStatus(photo.status),

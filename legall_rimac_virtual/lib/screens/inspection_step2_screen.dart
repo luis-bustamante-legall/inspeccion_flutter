@@ -11,6 +11,7 @@ import 'package:legall_rimac_virtual/widgets/chat_button.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:legall_rimac_virtual/widgets/phone_call_button.dart';
+import 'package:video_player/video_player.dart';
 
 class InspectionStep2Screen extends StatefulWidget {
 
@@ -119,6 +120,36 @@ class InspectionStep2ScreenState extends State<InspectionStep2Screen> {
                                 icon: _iconFromStatus(photo.status),
                                 working: _uploadingPhotos.contains(photo.id),
                                 color: _colorFromStatus(photo.status),
+                                onHelp: () async {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text(_l.translate('how take photo')),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(photo.helpText??''),
+                                          SizedBox(height: 10),
+                                          Text(_l.translate('example'),
+                                            style: _t.textTheme.button,
+                                          ),
+                                          SizedBox(height: 10),
+                                          Image.network(photo.helpExampleUrl,
+                                            fit: BoxFit.fitWidth,
+                                          )
+                                        ],
+                                      ),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: Text(_l.translate('accept')),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        )
+                                      ],
+                                    ));
+                                },
                                 image: photo.resourceUrl != null ? NetworkImage(photo.resourceUrl): null,
                                 title: Text(photo.description,
                                   style: _t.textTheme.button,
