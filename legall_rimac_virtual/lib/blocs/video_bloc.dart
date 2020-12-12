@@ -64,6 +64,7 @@ class VideoBloc
       await _videosRepository.uploadVideo(event.videoModel, event.data);
       _uploadingVideos.remove(event.videoModel.id);
     } catch(e) {
+      print(e);
       _uploadingVideos.remove(event.videoModel.id);
       add(LoadVideo(event.videoModel.inspectionId));
     }

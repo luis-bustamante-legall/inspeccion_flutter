@@ -14,9 +14,4 @@ class FirebaseStorageStorage extends Storage {
     var ref = FirebaseStorage.instance.ref(path);
     return ref.getDownloadURL();
   }
-
-  Future<void> delete(String path) {
-    var ref = FirebaseStorage.instance.ref(path);
-    return ref.delete();
-  }
 }

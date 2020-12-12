@@ -84,6 +84,7 @@ Two indexes are required for the application, both with scope `Collection`
     - `group` order `Descending`
 
 To add a new index:
+
 1. Click `Cloud Firestore` on sidebar
 2. Click `Indexes` tab
 3. Click `Add index`
