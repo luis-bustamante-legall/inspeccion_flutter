@@ -52,9 +52,9 @@
   "problems reschedule inspection": "Ocurrió un problema al reprogramar la inspección",
   "locating": "Localizando",
   "invalid link": "Enlace invalido",
-  "empty link": "Enlace vacio",
+  "empty link": "Información",
   "new chat": "Nuevo mensaje:\n$text",
-  "no valid link available": "No se puede iniciar la aplicación, debe iniciarse desde un enlace válido",
+  "no valid link available": "La aplicación fue diseñada para cargar a partir de una insepección programada, pongase en contacto con su aseguradora para programar una inspección",
   "capture link invalid": "El enlace usado es invalido",
   "close app": "Cerrar"
 }
