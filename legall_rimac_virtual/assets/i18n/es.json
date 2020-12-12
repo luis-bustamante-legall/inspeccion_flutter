@@ -1,5 +1,6 @@
 {
   "app title": "Rimac Virtual",
+  "ok": "Ok",
   "scheduled inspection": "Inspección Programada",
   "inspection datetime": "Estimado asegurado, usted tiene programada su inspección virtual en la fecha",
   "request reschedule inspection": "Puedes solicitar una reprogramación para esta inspección previa coordinación",
@@ -56,5 +57,8 @@
   "new chat": "Nuevo mensaje:\n$text",
   "no valid link available": "La aplicación fue diseñada para cargar a partir de una insepección programada, pongase en contacto con su aseguradora para programar una inspección",
   "capture link invalid": "El enlace usado es invalido",
-  "close app": "Cerrar"
+  "close app": "Cerrar",
+  "geolocation unavailable": "Localización no disponible",
+  "geolocation service off": "No se pudo obtener su ubicación, esta información es necesaria para iniciar la inspección",
+  "geolocation permission denied": "La aplicación no obtuvo los permisos suficientes para obtener su ubicación, esta información es necesaria para iniciar la inspección"
 }

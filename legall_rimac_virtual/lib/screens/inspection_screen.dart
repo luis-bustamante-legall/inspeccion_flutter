@@ -21,6 +21,7 @@ class InspectionScreenState extends State<InspectionScreen> {
   InspectionBloc _inspectionBloc;
 
   Future<LocationData> _getLocation() async {
+    AppLocalizations _l = AppLocalizations.of(context);
     Location location = new Location();
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
@@ -29,6 +30,22 @@ class InspectionScreenState extends State<InspectionScreen> {
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          child: AlertDialog(
+            title: Text(_l.translate('geolocation unavailable')),
+            content: Text(_l.translate('geolocation service off')),
+            actions: [
+              FlatButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(_l.translate('ok'))
+              )
+            ],
+          )
+        );
         return null;
       }
     }
@@ -37,10 +54,43 @@ class InspectionScreenState extends State<InspectionScreen> {
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
+        await showDialog(
+            context: context,
+            barrierDismissible: false,
+            child: AlertDialog(
+              title: Text(_l.translate('geolocation unavailable')),
+              content: Text(_l.translate('geolocation permission denied')),
+              actions: [
+                FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(_l.translate('ok'))
+                )
+              ],
+            )
+        );
         return null;
       }
     }
-    return location.getLocation();
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        child: SimpleDialog(
+          title: Text(_l.translate('locating')),
+          children: [
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Center(
+                child: CircularProgressIndicator(),
+              )
+            )
+          ],
+        )
+    );
+    var result = await location.getLocation();
+    Navigator.pop(context);
+    return result;
   }
 
   @override
