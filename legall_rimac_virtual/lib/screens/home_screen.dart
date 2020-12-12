@@ -59,7 +59,7 @@ class HomeScreenState extends State<HomeScreen> {
           builder: (context,state) {
             if (state is InspectionLoaded) {
               var children = <Widget>[];
-              children.addAll(state.inspectionModel.schedule.map((schedule) =>
+              children.addAll(state.inspectionModel.schedule.reversed.map((schedule) =>
                   InspectionWidget(
                       model: state.inspectionModel,
                       schedule: schedule,
