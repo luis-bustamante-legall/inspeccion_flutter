@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/services.dart';
 import 'package:legall_rimac_virtual/app_theme_data.dart';
 import 'package:legall_rimac_virtual/repositories.dart';
 import 'package:legall_rimac_virtual/routes.dart';
@@ -37,6 +38,11 @@ class LegallRimacVirtualAppState extends State<LegallRimacVirtualApp> {
 
   @override
   Widget build(BuildContext context) {
+    //portrait only
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       theme: _theme,
       supportedLocales: [Locale('es', '')],
