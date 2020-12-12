@@ -79,54 +79,52 @@ class InspectionScreenState extends State<InspectionScreen> {
                 Text(_l.translate('request reschedule inspection'),
                   textAlign: TextAlign.center,
                 ),
-                InkWell(
-                  onTap: () async {
-                    var currentDate = DateTime.now();
-                    DateTime datePicked = await showDatePicker(
-                        context: context,
-                        initialDate: currentDate,
-                        initialDatePickerMode: DatePickerMode.day,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(Duration(days: 365))
-                    );
-                    if (datePicked != null) {
-                      TimeOfDay timePicked =  await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.fromDateTime(currentDate),
-                      );
-                      if (timePicked != null) {
-                        model.schedule.forEach((sch) {
-                          sch.type = InspectionScheduleType
-                              .rescheduled;
-                        });
-                        model.schedule.add(InspectionSchedule(
-                            dateTime: DateTime(
-                              datePicked.year,
-                              datePicked.month,
-                              datePicked.day,
-                              timePicked.hour,
-                              timePicked.minute
-                            ),
-                            type: InspectionScheduleType
-                                .scheduled
-                        ));
-                        _inspectionBloc.add(
-                            UpdateInspectionData(
-                                model,
-                                UpdateInspectionType.schedule
-                            )
+                Center(
+                  child: RaisedButton(
+                      onPressed: () async {
+                        var currentDate = DateTime.now();
+                        DateTime datePicked = await showDatePicker(
+                            context: context,
+                            initialDate: currentDate,
+                            initialDatePickerMode: DatePickerMode.day,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime.now().add(Duration(days: 365))
                         );
-                      }
-                    }
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(_l.translate('reschedule').toUpperCase(),
-                      textAlign: TextAlign.center,
-                      style: _t.textTheme.headline6.copyWith(
-                        color: Colors.indigo,
-                      ),
-                    ),
+                        if (datePicked != null) {
+                          TimeOfDay timePicked =  await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.fromDateTime(currentDate),
+                          );
+                          if (timePicked != null) {
+                            model.schedule.forEach((sch) {
+                              sch.type = InspectionScheduleType
+                                  .rescheduled;
+                            });
+                            model.schedule.add(InspectionSchedule(
+                                dateTime: DateTime(
+                                    datePicked.year,
+                                    datePicked.month,
+                                    datePicked.day,
+                                    timePicked.hour,
+                                    timePicked.minute
+                                ),
+                                type: InspectionScheduleType
+                                    .scheduled
+                            ));
+                            _inspectionBloc.add(
+                                UpdateInspectionData(
+                                    model,
+                                    UpdateInspectionType.schedule
+                                )
+                            );
+                          }
+                        }
+                      },
+                      color: _t.accentColor,
+                      child: Text(_l.translate('reschedule').toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: _t.accentTextTheme.button
+                      )
                   ),
                 ),
                 Container(
