@@ -256,9 +256,26 @@ class InspectionScreenState extends State<InspectionScreen> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: BlocListener<InspectionBloc,InspectionState>(
-                          listener: (context,state) {
+                          listener: (context,state) async {
                             if (state is InspectionUpdated) {
-                              if (state.success && state.type == UpdateInspectionType.data) {
+                              if (state.success && state.type == UpdateInspectionType.schedule) {
+                                await showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    child: AlertDialog(
+                                      title: Text(_l.translate('schedule inspection')),
+                                      content: Text(_l.translate('inspection rescheduled')),
+                                      actions: [
+                                        FlatButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(_l.translate('ok'))
+                                        )
+                                      ],
+                                    )
+                                );
+                              } else if (state.success && state.type == UpdateInspectionType.data) {
                                 Navigator.pushNamed(context, AppRoutes.inspectionStep1,arguments: state.inspectionModel);
                               } else if (state.type == UpdateInspectionType.data) {
                                 Future.delayed(Duration(milliseconds: 100),() {

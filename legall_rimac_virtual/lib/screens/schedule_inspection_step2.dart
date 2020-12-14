@@ -276,13 +276,30 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                                       child: RaisedButton(
                                         color: _t.accentColor,
                                         child: BlocListener<InspectionBloc,InspectionState>(
-                                          listener: (context,newInspectionState) {
+                                          listener: (context,newInspectionState) async {
                                             if (newInspectionState is InspectionUpdated) {
                                               if (newInspectionState.success) {
+                                                await showDialog(
+                                                  context: context,
+                                                  barrierDismissible: false,
+                                                  child: AlertDialog(
+                                                    title: Text(_l.translate('schedule inspection')),
+                                                    content: Text(_l.translate('the schedule was confirmed')),
+                                                    actions: [
+                                                      FlatButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Text(_l.translate('ok'))
+                                                      )
+                                                    ],
+                                                  )
+                                                );
                                                 Navigator.pushNamedAndRemoveUntil(
-                                                    context, AppRoutes.home,
-                                                        (Route<
-                                                        dynamic> route) => false);
+                                                  context, AppRoutes.home,
+                                                      (Route<
+                                                      dynamic> route) => false);
+
                                               }
                                             }
                                           },
