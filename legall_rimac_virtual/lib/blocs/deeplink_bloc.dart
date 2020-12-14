@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
+import 'package:legall_rimac_virtual/configuration.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
 
@@ -11,15 +12,30 @@ class DeepLinkBloc
   final events = EventChannel('https.legall_rimac_virtual/events');
   final SettingsRepository settingsRepository;
   final InspectionsRepository inspectionsRepository;
-  final _linkPrefix = 'https://www.dominio.com/inspeccion-virtual?hash=';
   StreamSubscription _streamSubscription;
 
   _validateLink(String link) {
-    return (link?.startsWith(_linkPrefix) ?? false);
+    try {
+      var uri = Uri.parse(link);
+      print(uri.path);
+      print(uri.scheme);
+      print(uri.queryParameters);
+      if (!uri.isScheme(Configuration.scheme))
+        return false;
+      if (uri.path != Configuration.path)
+        return false;
+      if (!uri.queryParametersAll.containsKey(Configuration.keyId))
+        return false;
+      return true;
+    } catch (_) {
+      print(_.toString());
+      return false;
+    }
   }
 
   _getToken(String link) {
-    return link?.substring(_linkPrefix.length);
+    var uri = Uri.parse(link);
+    return uri.queryParameters[Configuration.keyId];
   }
 
   DeepLinkBloc({this.settingsRepository,this.inspectionsRepository});
@@ -38,6 +54,7 @@ class DeepLinkBloc
       if (event.link != null && _validateLink(event.link)) {
         var model = await inspectionsRepository.fromId(
             _getToken(event.link));
+        print("'${_getToken(event.link)}'");
         if (model != null) {
           settingsRepository.setInspectionId(model.inspectionId);
           yield DeepLinkCaptured(model);

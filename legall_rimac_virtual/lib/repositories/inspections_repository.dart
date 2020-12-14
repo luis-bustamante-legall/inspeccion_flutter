@@ -13,9 +13,8 @@ class InspectionsRepository {
 
   Future<InspectionModel> fromId(String id) async {
     var inspections = await _inspectionCollection
-        .where(FieldPath.documentId,isEqualTo: id)
+        .where(FieldPath.documentId,isEqualTo: id.trim())
         .get();
-
     if (inspections.docs.isEmpty) {
       return null;
     }

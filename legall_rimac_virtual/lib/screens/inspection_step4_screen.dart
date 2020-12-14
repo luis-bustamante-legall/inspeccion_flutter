@@ -53,6 +53,8 @@ class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
                 child: TextField(
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
+                  maxLength: 500,
+                  maxLengthEnforced: true,
                   decoration: InputDecoration(
                       border: InputBorder.none
                   ),

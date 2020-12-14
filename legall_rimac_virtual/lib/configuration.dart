@@ -1,7 +1,10 @@
 class Configuration {
+  //Deep link config
   static final scheme = "https";
-  static final path = "www.dominio.com/inspeccion_virtual/";
+  static final path = "/inspeccion-virtual";
   static final keyId = "hash";
+
+  //Azure config
   static final azureStorageAccount = {
     'protocol': 'https',
     'accountName': 'legallstorageaccount',

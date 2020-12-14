@@ -278,7 +278,7 @@ class InspectionScreenState extends State<InspectionScreen> {
                               } else if (state.success && state.type == UpdateInspectionType.data) {
                                 Navigator.pushNamed(context, AppRoutes.inspectionStep1,arguments: state.inspectionModel);
                               } else if (state.type == UpdateInspectionType.data) {
-                                Future.delayed(Duration(milliseconds: 100),() {
+                                Future.delayed(Duration(milliseconds: 5),() {
                                   var messenger = Scaffold.of(context);
                                   messenger.hideCurrentSnackBar();
                                   messenger.showSnackBar(SnackBar(
