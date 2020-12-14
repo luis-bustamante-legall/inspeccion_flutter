@@ -25,7 +25,7 @@ class ScheduleInspectionStep1State extends State<ScheduleInspectionStep1> {
     _inspectionBloc = BlocProvider.of<InspectionBloc>(context);
   }
 
-  Future<String> _showTextDialog({String title,String label}) async {
+  Future<String> _showTextDialog({String title,String label,int maxLength,int maxLines, String Function(String) validator}) async {
     AppLocalizations _l = AppLocalizations.of(context);
     TextEditingController textController = TextEditingController();
     GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -41,10 +41,13 @@ class ScheduleInspectionStep1State extends State<ScheduleInspectionStep1> {
               children: [
                 TextFormField(
                   controller: textController,
+                  maxLength: maxLength,
+                  maxLengthEnforced: true,
+                  maxLines: maxLines,
                   decoration: InputDecoration(
                     hintText: label,
                   ),
-                  validator: (newText) =>
+                  validator: validator ?? (newText) =>
                     newText.trim().isEmpty ? _l.translate('required field'): null
                 )
               ],
@@ -206,7 +209,8 @@ class ScheduleInspectionStep1State extends State<ScheduleInspectionStep1> {
                               onTap: () async {
                                 var contactAddress = await _showTextDialog(
                                   title: _l.translate('contact address'),
-                                  label: _l.translate('contact address')
+                                  label: _l.translate('contact address'),
+                                  maxLength: 200
                                 );
                                 if (contactAddress != null) {
                                   var inspectionModel = state.inspectionModel
@@ -229,7 +233,14 @@ class ScheduleInspectionStep1State extends State<ScheduleInspectionStep1> {
                               onTap: () async {
                                 var contactEmail = await _showTextDialog(
                                     title: _l.translate('contact email'),
-                                    label: _l.translate('contact email')
+                                    label: _l.translate('contact email'),
+                                    maxLength: 32,
+                                    validator: (newEmail) {
+                                      var emailRegEx = RegExp("^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$");
+                                      if(!emailRegEx.hasMatch(newEmail))
+                                        return _l.translate('invalid email');
+                                      return null;
+                                    }
                                 );
                                 if (contactEmail != null) {
                                   var inspectionModel = state.inspectionModel
@@ -252,7 +263,14 @@ class ScheduleInspectionStep1State extends State<ScheduleInspectionStep1> {
                               onTap: () async {
                                 var contactPhone = await _showTextDialog(
                                     title: _l.translate('contact phone'),
-                                    label: _l.translate('contact phone')
+                                    label: _l.translate('contact phone'),
+                                    maxLength: 15,
+                                    validator: (newPhone) {
+                                      var phoneRegEx = RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
+                                      if(!phoneRegEx.hasMatch(newPhone))
+                                        return _l.translate('invalid phone');
+                                      return null;
+                                    }
                                 );
                                 if (contactPhone != null) {
                                   var inspectionModel = state.inspectionModel
