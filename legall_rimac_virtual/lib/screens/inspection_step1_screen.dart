@@ -30,7 +30,7 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
 
   Widget _videoPlayer({String resourceUrl, String cache}) {
     VideoPlayerController _playerController;
-    if (resourceUrl == null || cache == null) {
+    if (resourceUrl == null && cache == null) {
       return null;
     }
     else if (cache != null) {
@@ -41,14 +41,18 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
     }
 
     _playerController.initialize();
-    return Transform.scale(
-        scale: 1 / _playerController.value.aspectRatio,
-        child:Center(
-            child: AspectRatio(
-              aspectRatio: _playerController.value.aspectRatio,
-              child: VideoPlayer(_playerController),
-            )
-        )
+    return Container(
+      height: 180,
+      color: Colors.black,
+      child: Transform.scale(
+          scale: 1 / _playerController.value.aspectRatio,
+          child:Center(
+              child: AspectRatio(
+                aspectRatio: _playerController.value.aspectRatio,
+                child: VideoPlayer(_playerController),
+              )
+          )
+      )
     );
   }
 
@@ -132,7 +136,7 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
                 Column(
                 children: _videos.map((video) =>
                   SizedBox(
-                    height: 420,
+                    height: 250,
                     child: ImageCard(
                       child: _videoPlayer(
                           resourceUrl: video.resourceUrl,
