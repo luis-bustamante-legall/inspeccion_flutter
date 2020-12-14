@@ -20,6 +20,7 @@ class HomeScreenState extends State<HomeScreen> {
   AppLocalizations _l;
   DeepLinkBloc _deepLinkBloc;
   InspectionBloc _inspectionBloc;
+  String _homeTitle = "...";
 
   @override
   void initState() {
@@ -35,7 +36,7 @@ class HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_l.translate('app title'))
+        title: Text(_homeTitle)
       ),
       body: BlocListener<DeepLinkBloc,DeepLinkState>(
         listener: (context,state) {
@@ -58,6 +59,11 @@ class HomeScreenState extends State<HomeScreen> {
         child: BlocBuilder<InspectionBloc,InspectionState>(
           builder: (context,state) {
             if (state is InspectionLoaded) {
+              Future.delayed(Duration(milliseconds: 5),(){
+                setState(() {
+                  _homeTitle = state.inspectionModel.insuranceCompany??'Rimac Virtual';
+                });
+              });
               var children = <Widget>[];
               children.addAll(state.inspectionModel.schedule.reversed.map((schedule) =>
                   InspectionWidget(
