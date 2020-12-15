@@ -92,3 +92,49 @@ To add a new index:
 ![](.README_images/e8d0dbc.png)
 
 
+## Setup Google Maps
+
+The project require a `API KEY` for `Maps SDK for Android` so if you not have one will need create.
+
+## Enable the API
+1. Go to [Console](https://console.cloud.google.com/)
+2. Select the project
+3. Click `APIs & Services` on sidebar
+4. Click `Dashboard`
+
+![](.README_images/b7ad0ba.png)
+
+5. Click `ENABLE APIS AND SERVICES`
+
+![](.README_images/a35a41e.png)
+
+6. Click `Maps SDK for Android`
+
+![](.README_images/f51dff4.png)
+
+7. Click `Enable`
+
+![](.README_images/6337e37.png)
+
+## Create the API KEY
+
+1. Click `APIs & Services` on sidebar
+2. Click `Credentials`
+
+![](.README_images/1aeebce.png)
+
+3. Click `CREATE CREDENTIALS`
+4. Click `API key`
+
+![](.README_images/6a1d80b.png)
+
+5. Copy the API key on the dialog
+
+![](.README_images/4a7cdf4.png)
+
+## Setup API KEY
+
+The `API key` should be set on the file `android/app/src/main/AndroidManifest.xml` as in the image
+
+![](.README_images/1aac873.png)
+
