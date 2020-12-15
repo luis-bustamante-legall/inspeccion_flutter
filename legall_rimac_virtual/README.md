@@ -128,7 +128,7 @@ The project require a `API KEY` for `Maps SDK for Android` so if you not have on
 
 ![](.README_images/6a1d80b.png)
 
-5. Copy the API key on the dialog
+5. Copy the API key from the dialog
 
 ![](.README_images/4a7cdf4.png)
 
