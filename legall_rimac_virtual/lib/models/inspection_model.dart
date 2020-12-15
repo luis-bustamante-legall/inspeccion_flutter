@@ -13,6 +13,7 @@ class InspectionModel {
   String appColor;
   String insuranceCompany;
   bool showLegallLogo;
+  String titleToShow;
   InspectionStatus status;
 
   //Vehicle
@@ -33,6 +34,7 @@ class InspectionModel {
   InspectionModel({
     this.inspectionId,
     this.appColor,
+    this.titleToShow,
     this.additionalInfo,
     this.location,
     this.insuranceCompany,
@@ -54,6 +56,7 @@ class InspectionModel {
     String inspectionId,
     String appColor,
     String insuranceCompany,
+    String titleToShow,
     bool showLegallLogo,
     String additionalInfo,
     GeoPoint location,
@@ -73,6 +76,7 @@ class InspectionModel {
     appColor: appColor??this.appColor,
     insuranceCompany: insuranceCompany??this.insuranceCompany,
     showLegallLogo: showLegallLogo??this.showLegallLogo,
+    titleToShow: titleToShow??this.titleToShow,
     additionalInfo: additionalInfo??this.additionalInfo,
     location: location??this.location,
     status: status??this.status,
@@ -92,6 +96,7 @@ class InspectionModel {
     return InspectionModel(
       inspectionId: id,
       appColor: json['app_color'],
+      titleToShow: json['title_to_show'],
       insuranceCompany: json['insurance_company'],
       showLegallLogo: json['show_legall_logo']??false,
       additionalInfo: json['additional_information'],

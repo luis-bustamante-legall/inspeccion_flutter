@@ -59,9 +59,9 @@ class HomeScreenState extends State<HomeScreen> {
         child: BlocBuilder<InspectionBloc,InspectionState>(
           builder: (context,state) {
             if (state is InspectionLoaded) {
-              Future.delayed(Duration(milliseconds: 5),(){
+              Future.delayed(Duration(milliseconds: 1),(){
                 setState(() {
-                  _homeTitle = state.inspectionModel.insuranceCompany??'Rimac Virtual';
+                  _homeTitle = state.inspectionModel.titleToShow??'Rimac Virtual';
                 });
               });
               var children = <Widget>[];

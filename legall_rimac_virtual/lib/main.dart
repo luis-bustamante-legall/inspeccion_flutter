@@ -51,6 +51,10 @@ class LegallRimacVirtualAppState extends State<LegallRimacVirtualApp> {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate
       ],
+      builder: (context, child) =>
+        MediaQuery(data: MediaQuery.of(context).copyWith(
+          alwaysUse24HourFormat: false
+        ), child: child),
       routes: routes,
       initialRoute: AppRoutes.splash,
     );
