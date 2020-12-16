@@ -31,7 +31,8 @@ class LegallRimacVirtualAppState extends State<LegallRimacVirtualApp> {
   updatePrimaryTheme(Color color) {
     setState(() {
       _theme = _theme.copyWith(
-          primaryColor: color
+        primaryColor: color,
+        accentColor: color
       );
     });
   }

@@ -5,7 +5,6 @@ import 'package:legall_rimac_virtual/blocs/blocs.dart';
 import 'package:legall_rimac_virtual/blocs/deeplink_bloc.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
-import 'package:legall_rimac_virtual/blocs/blocs.dart';
 import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 import 'package:legall_rimac_virtual/widgets/inspection_widget.dart';
@@ -21,6 +20,7 @@ class HomeScreenState extends State<HomeScreen> {
   DeepLinkBloc _deepLinkBloc;
   InspectionBloc _inspectionBloc;
   String _homeTitle = "...";
+  bool _showLogo = false;
 
   @override
   void initState() {
@@ -37,6 +37,16 @@ class HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_homeTitle)
+      ),
+      floatingActionButton: Visibility(
+        visible: _showLogo,
+        child: Padding(
+        padding: EdgeInsets.all(15),
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: Image.asset('assets/images/legal-logo.png', height: 70)
+          )
+        )
       ),
       body: BlocListener<DeepLinkBloc,DeepLinkState>(
         listener: (context,state) {
@@ -62,6 +72,7 @@ class HomeScreenState extends State<HomeScreen> {
               Future.delayed(Duration(milliseconds: 1),(){
                 setState(() {
                   _homeTitle = state.inspectionModel.titleToShow??'Rimac Virtual';
+                  _showLogo = state.inspectionModel.showLegallLogo;
                 });
               });
               var children = <Widget>[];
@@ -82,17 +93,6 @@ class HomeScreenState extends State<HomeScreen> {
                       }: null
                   )
               ));
-              if (state.inspectionModel.showLegallLogo??false) {
-                children.addAll([
-                  Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: Image.asset('assets/images/legal-logo.png', height: 70)
-                    ),
-                  )
-                ]);
-              }
               return ListView(
                 children: children
               );
