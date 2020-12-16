@@ -17,8 +17,8 @@ class InspectionCompleteScreen extends StatefulWidget {
 
 class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
   Completer<GoogleMapController> _controller = Completer();
-  final Geocoding _geocoding = Geocoder.local;
-  String _addressDesc = null;
+  final Geocoding _geoCoding = Geocoder.local;
+  String _addressDesc;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +28,10 @@ class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
 
     final CameraPosition _kGooglePlex = CameraPosition(
       target: LatLng(model.location.latitude, model.location.longitude),
-      zoom: 1.4746,
+      zoom: 15.23,
     );
 
-    _geocoding.findAddressesFromCoordinates(Coordinates(model.location.latitude, model.location.longitude))
+    _geoCoding.findAddressesFromCoordinates(Coordinates(model.location.latitude, model.location.longitude))
     .then((address) {
       if (address.isNotEmpty) {
         setState(() {
@@ -96,7 +96,8 @@ class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
                 child: SizedBox(
                   height: 400,
                   child: GoogleMap(
-                    zoomControlsEnabled: true,
+                    zoomControlsEnabled: false,
+                    scrollGesturesEnabled: false,
                     mapType: MapType.normal,
                     markers: [
                       Marker(
