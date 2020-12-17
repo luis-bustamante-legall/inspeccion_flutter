@@ -234,7 +234,7 @@ class ScheduleInspectionStep1State extends State<ScheduleInspectionStep1> {
                                 var contactEmail = await _showTextDialog(
                                     title: _l.translate('contact email'),
                                     label: _l.translate('contact email'),
-                                    maxLength: 32,
+                                    maxLength: 100,
                                     validator: (newEmail) {
                                       var emailRegEx = RegExp("^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$");
                                       if(!emailRegEx.hasMatch(newEmail))
