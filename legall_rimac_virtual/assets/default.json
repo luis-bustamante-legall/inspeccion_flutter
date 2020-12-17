@@ -1,0 +1,108 @@
+{
+  "photos": [{
+    "group": "Suba las fotos de su DNI",
+    "description": "Frontal",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg",
+    "type": "initial"
+  },{
+    "group": "Suba las fotos de su DNI",
+    "description": "Posterior",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg",
+    "type": "initial"
+  },{
+    "group": "Suba las fotos de Tarjeta de Propiedad",
+    "description": "Frontal",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg",
+    "type": "initial"
+  },{
+    "group": "Suba las fotos de Tarjeta de Propiedad",
+    "description": "Posterior",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg",
+    "type": "initial"
+  },{
+    "description": "Certificado SOAT",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg",
+    "type": "initial"
+  },  {
+    "type": "predefined",
+    "description": "Frontal",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Posterior",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Lateral derecho",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Lateral izquierdo",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Consola",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Motor",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Llanta instalada",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Tacómetro",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Puerta Piloto",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Timón",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Radio",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "A/C",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Cambio de llanta",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Certificado SOAT",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "VIN del vehículo",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "DNI Frontal",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "DNI Reverso",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Tarjeta de propiedad Frontal",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  },  {
+    "type": "predefined",
+    "description": "Tarjeta de propiedad Reverso",
+    "help_example_url": "https://autodisplay.com.mx/wp-content/uploads/2017/07/AOM4JJ001AD.jpg"
+  }],
+  "videos": [{
+    "description": "Vídeo 360",
+    "help_example_url": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_5MB.mp4",
+    "help_text": "Empieze por la parte de en frente y gire al rededor del vehículo. El video solo puede durar 20 segundos, asegurese de tomar todos los angulos."
+  }]
+}
