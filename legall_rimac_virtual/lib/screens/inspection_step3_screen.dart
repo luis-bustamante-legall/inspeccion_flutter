@@ -26,6 +26,56 @@ class InspectionStep3ScreenState extends State<InspectionStep3Screen> {
   List<PhotoModel> _photos = [];
   List<String> _uploadingPhotos = [];
 
+  Future<String> _showTextDialog({String title,String label,int maxLength,int maxLines, String Function(String) validator}) async {
+    AppLocalizations _l = AppLocalizations.of(context);
+    TextEditingController textController = TextEditingController();
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    return showDialog<String>(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text(title),
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                    controller: textController,
+                    maxLength: maxLength,
+                    maxLengthEnforced: true,
+                    maxLines: maxLines,
+                    decoration: InputDecoration(
+                      hintText: label,
+                    ),
+                    validator: validator ?? (newText) =>
+                    newText.trim().isEmpty ? _l.translate('required field'):
+                    newText.length > (maxLength??1024) ? _l.translate('too long'): null
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(_l.translate('cancel')),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(_l.translate('save')),
+              onPressed: () {
+                if (formKey.currentState.validate()) {
+                  Navigator.of(context).pop(
+                      textController.text
+                  );
+                }
+              },
+            )
+          ],
+        ));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -143,42 +193,12 @@ class InspectionStep3ScreenState extends State<InspectionStep3Screen> {
                           child: Card(
                             child: InkWell(
                               onTap: () async {
-                                TextEditingController textController = TextEditingController();
-                                var description = await showDialog<String>(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                    title: Text(_l.translate('photo description')),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        TextField(
-                                          controller: textController,
-                                          decoration: InputDecoration(
-                                            hintText: _l.translate('description'),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    actions: <Widget>[
-                                      FlatButton(
-                                        child: Text(_l.translate('cancel')),
-                                        onPressed: () {
-                                            Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      FlatButton(
-                                        child: Text(_l.translate('save')),
-                                        onPressed: () {
-                                          if (textController.text.isNotEmpty) {
-                                            Navigator.of(context).pop(
-                                              textController.text
-                                            );
-                                          }
-                                        },
-                                      )
-                                    ],
-                                  ));
+                                var description = await _showTextDialog(
+                                  maxLength: 100,
+                                  label: _l.translate('description'),
+                                  title:  _l.translate('photo description')
+                                );
+
                                 if (description != null) {
                                   _photoBloc.add(AddPhoto(
                                     PhotoModel(

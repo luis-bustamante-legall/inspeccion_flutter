@@ -17,6 +17,7 @@ class InspectionStep4Screen extends StatefulWidget {
 
 class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
   final _textController = TextEditingController();
+  final _formKey = GlobalObjectKey<FormState>('form');
   InspectionBloc _inspectionBloc;
 
   @override
@@ -44,21 +45,25 @@ class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
               SizedBox(height: 20,),
               Container(
                 padding: EdgeInsets.all(5),
-                height: 150,
                 decoration: BoxDecoration(
                   border: Border.all(
                     width: 1
                   )
                 ),
-                child: TextField(
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  maxLength: 500,
-                  maxLengthEnforced: true,
-                  decoration: InputDecoration(
-                      border: InputBorder.none
+                child: Form(
+                  key: _formKey,
+                  child: TextFormField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    minLines: 5,
+                    maxLength: 500,
+                    maxLengthEnforced: true,
+                    decoration: InputDecoration(
+                        border: InputBorder.none
+                    ),
+                    controller: _textController,
+                    validator: (additionalInfo) => additionalInfo.length > 500 ? _l.translate('too long'): null,
                   ),
-                  controller: _textController,
                 ),
               ),
               Align(
@@ -94,17 +99,19 @@ class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
                     onPressed: () {
                       var currentState = _inspectionBloc.state;
                       if (currentState is InspectionLoaded) {
-                        var newInspection = currentState.inspectionModel.copyWith(
-                          additionalInfo: _textController.text,
-                          status: InspectionStatus.complete
-                        );
-                        newInspection.schedule.forEach((sch) {
-                          if (sch.type == InspectionScheduleType.scheduled) {
-                            sch.type = InspectionScheduleType.complete;
-                          }
-                        });
-                        _inspectionBloc.add(UpdateInspectionData(
-                            newInspection, UpdateInspectionType.status));
+                        if (_formKey.currentState.validate()) {
+                          var newInspection = currentState.inspectionModel.copyWith(
+                              additionalInfo: _textController.text,
+                              status: InspectionStatus.complete
+                          );
+                          newInspection.schedule.forEach((sch) {
+                            if (sch.type == InspectionScheduleType.scheduled) {
+                              sch.type = InspectionScheduleType.complete;
+                            }
+                          });
+                          _inspectionBloc.add(UpdateInspectionData(
+                              newInspection, UpdateInspectionType.status));
+                        }
                       }
                     },
                   ),

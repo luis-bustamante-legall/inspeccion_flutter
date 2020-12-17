@@ -48,7 +48,8 @@ class ScheduleInspectionStep1State extends State<ScheduleInspectionStep1> {
                     hintText: label,
                   ),
                   validator: validator ?? (newText) =>
-                    newText.trim().isEmpty ? _l.translate('required field'): null
+                    newText.trim().isEmpty ? _l.translate('required field'):
+                    newText.length > (maxLength??1024) ? _l.translate('too long'): null
                 )
               ],
             ),

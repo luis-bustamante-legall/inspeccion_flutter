@@ -40,6 +40,7 @@
   "gps coors": "Coordenadas GPS",
   "close": "CERRAR",
   "required field": "El campo es requerido",
+  "too long": "El valor es demasiado largo",
   "schedule inspection": "Programar inspección",
   "scheduled inspection greeting":"Estimado cliente, te saluda $insured_company, por favor proceda a programar su inspección virtual en linea",
   "confirm data":"CONFIRMAR DATOS",
