@@ -237,7 +237,7 @@ class ScheduleInspectionStep1State extends State<ScheduleInspectionStep1> {
                                     label: _l.translate('contact email'),
                                     maxLength: 100,
                                     validator: (newEmail) {
-                                      var emailRegEx = RegExp("^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*\$");
+                                      var emailRegEx = RegExp("^[a-zA-Z0-9.a-zA-Z0-9.!#\$%&'*+-\\/=?^_`{|}~]+@[a-zA-Z0-9]+\\.[a-zA-Z]+");
                                       if(!emailRegEx.hasMatch(newEmail))
                                         return _l.translate('invalid email');
                                       return null;
