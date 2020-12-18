@@ -15,9 +15,13 @@ class PhotosRepository {
   PhotosRepository({@required this.storage});
 
   Stream<List<PhotoModel>> get(String inspectionId, PhotoType photoType) {
+    List<String> types = [enumToMap(photoType)];
+    if (photoType == PhotoType.predefined)
+      types = [enumToMap(PhotoType.initial),enumToMap(PhotoType.predefined)];
+
     return _photosCollection
         .where('inspection_id',isEqualTo: inspectionId)
-        .where('type',isEqualTo: enumToMap(photoType))
+        .where('type',whereIn: types)
         .orderBy('group',descending: true)
         .snapshots()
         .map((docs) => docs.docs.map((doc) =>
