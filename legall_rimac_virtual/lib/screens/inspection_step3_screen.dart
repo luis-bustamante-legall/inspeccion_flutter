@@ -6,6 +6,7 @@ import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/photo_model.dart';
 import 'package:legall_rimac_virtual/models/resource_model.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
+import 'package:legall_rimac_virtual/resource_cache.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 import 'package:legall_rimac_virtual/widgets/chat_button.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
@@ -25,6 +26,8 @@ class InspectionStep3ScreenState extends State<InspectionStep3Screen> {
   PhotoBloc _photoBloc;
   List<PhotoModel> _photos = [];
   List<String> _uploadingPhotos = [];
+
+  ResourceCache _resourceCache = ResourceCache();
 
   Future<String> _showTextDialog({String title,String label,int maxLength,int maxLines, String Function(String) validator}) async {
     AppLocalizations _l = AppLocalizations.of(context);
@@ -170,7 +173,12 @@ class InspectionStep3ScreenState extends State<InspectionStep3Screen> {
                                   icon: _iconFromStatus(photo.status),
                                   working: _uploadingPhotos.contains(photo.id),
                                   color: _colorFromStatus(photo.status),
-                                  image: photo.resourceUrl != null ? NetworkImage(photo.resourceUrl): null,
+                                  image: _resourceCache.get(
+                                    id: photo.id,
+                                    dateTime: photo.dateTime,
+                                    localCache: photo.localCache,
+                                    resourceUrl: photo.resourceUrl
+                                  ),
                                   title: Text(photo.description,
                                     style: _t.textTheme.button,
                                     textAlign: TextAlign.center,

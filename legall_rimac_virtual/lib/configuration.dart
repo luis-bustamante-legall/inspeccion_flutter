@@ -8,6 +8,6 @@ class Configuration {
   static final azureStorageAccount = {
     'protocol': 'https',
     'accountName': 'legallstorageaccount',
-    'SASToken': 'sv=2019-12-12&ss=bfqt&srt=sco&sp=rwdlacupx&se=2020-12-31T11:23:28Z&st=2020-12-02T03:23:28Z&spr=https&sig=lM0R2M71IlEv5rOTF%2FAbDyOe45VrdzYXWBJUS1bFeWo%3D'
+    'SASToken': 'sv=2019-12-12&ss=bfqt&srt=sco&sp=rwdlacupx&se=2026-03-30T04:12:46Z&st=2021-01-05T20:12:46Z&spr=https&sig=pMeH%2FfYdKITmEKwqctmPl6Uxjn0%2B6RoUmsgbJxZ%2FZfM%3D'
   };
 }

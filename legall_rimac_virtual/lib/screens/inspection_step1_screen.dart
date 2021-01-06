@@ -13,6 +13,7 @@ import 'package:legall_rimac_virtual/widgets/image_card.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:legall_rimac_virtual/widgets/phone_call_button.dart';
 import 'package:video_player/video_player.dart';
+import 'package:open_file/open_file.dart';
 
 class InspectionStep1Screen extends StatefulWidget {
 
@@ -199,6 +200,12 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
                           if (videoPicker != null) {
                             _videoBloc.add(UploadVideo(
                                 video, await videoPicker.readAsBytes()));
+                          }
+                        } else {
+                          try {
+                            await OpenFile.open(video.localCache);
+                          } catch(ex) {
+                            print(ex.toString());
                           }
                         }
                       },

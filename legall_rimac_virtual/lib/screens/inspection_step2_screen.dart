@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,12 +8,13 @@ import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/photo_model.dart';
 import 'package:legall_rimac_virtual/models/resource_model.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
+import 'package:legall_rimac_virtual/resource_cache.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 import 'package:legall_rimac_virtual/widgets/chat_button.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:legall_rimac_virtual/widgets/phone_call_button.dart';
-import 'package:video_player/video_player.dart';
+import 'dart:io';
 
 class InspectionStep2Screen extends StatefulWidget {
 
@@ -25,6 +28,7 @@ class InspectionStep2ScreenState extends State<InspectionStep2Screen> {
   PhotoBloc _photoBloc;
   List<PhotoModel> _photos = [];
   List<String> _uploadingPhotos = [];
+  ResourceCache _resourceCache = ResourceCache();
 
   @override
   void initState() {
@@ -150,7 +154,12 @@ class InspectionStep2ScreenState extends State<InspectionStep2Screen> {
                                       ],
                                     ));
                                 },
-                                image: photo.resourceUrl != null ? NetworkImage(photo.resourceUrl): null,
+                                image: _resourceCache.get(
+                                  id: photo.id,
+                                  resourceUrl: photo.resourceUrl,
+                                  localCache: photo.localCache,
+                                  dateTime: photo.dateTime
+                                ),
                                 title: Text(photo.description,
                                   style: _t.textTheme.button,
                                   textAlign: TextAlign.center,

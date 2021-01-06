@@ -46,6 +46,7 @@ dependencies:
   path_provider: ^1.6.21
   video_player: ^0.11.1+2
   image_picker: ^0.6.7+12
+  open_file: ^3.0.3
 
   #Firebase stuff
   firebase_core: ^0.5.1

@@ -39,6 +39,7 @@ class PhotosRepository {
       await cacheFile.writeAsBytes(data, flush: true);
       //Updating Firebase
       photo.resourceUrl = await storage.downloadURL('/photos/${photo.id}.png');
+      photo.dateTime = DateTime.now();
       photo.status = ResourceStatus.uploaded;
       return _photosCollection.doc(photo.id)
           .set(

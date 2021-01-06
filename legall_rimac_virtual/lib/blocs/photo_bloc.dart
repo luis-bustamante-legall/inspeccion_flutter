@@ -62,10 +62,14 @@ class PhotoBloc
   Stream<PhotoState> _uploadPhoto(UploadPhoto event) async* {
     _uploadingPhotos.add(event.photoModel.id);
     try {
+      yield PhotoNewUpload(_uploadingPhotos);
       yield PhotoUploading(_uploadingPhotos);
-      await _photosRepository.uploadPhoto(event.photoModel, event.data);
-      _uploadingPhotos.remove(event.photoModel.id);
-    } catch(e,stackTrace) {
+      _photosRepository.uploadPhoto(event.photoModel, event.data)
+      .then((value) {
+          _uploadingPhotos.remove(event.photoModel.id);
+          add(LoadPhoto(event.photoModel.inspectionId, event.photoModel.type));
+      });
+    } catch(e) {
       print(e.toString());
       _uploadingPhotos.remove(event.photoModel.id);
       add(LoadPhoto(event.photoModel.inspectionId, event.photoModel.type));
@@ -167,6 +171,15 @@ class PhotoUploading extends PhotoState {
   final List<String> uploadingPhotos;
 
   const PhotoUploading(this.uploadingPhotos);
+
+  @override
+  List<Object> get props => [uploadingPhotos];
+}
+
+class PhotoNewUpload extends PhotoState {
+  final List<String> uploadingPhotos;
+
+  const PhotoNewUpload(this.uploadingPhotos);
 
   @override
   List<Object> get props => [uploadingPhotos];

@@ -7,6 +7,7 @@ import 'package:legall_rimac_virtual/models/models.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:legall_rimac_virtual/resource_cache.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
 
 import '../routes.dart';
@@ -25,6 +26,7 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
   PhotoBloc _photoBloc;
   Map<String,List<PhotoModel>> _photos = {};
   List<String> _uploadingPhotos = [];
+  ResourceCache _resourceCache = ResourceCache();
   DateTime _datePicked;
   
   @override
@@ -229,7 +231,12 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                                               icon: _iconFromStatus(photo.status),
                                               working: _uploadingPhotos.contains(photo.id),
                                               color: _colorFromStatus(photo.status),
-                                              image: photo.resourceUrl != null ? NetworkImage(photo.resourceUrl): null,
+                                              image: _resourceCache.get(
+                                                id: photo.id,
+                                                dateTime: photo.dateTime,
+                                                resourceUrl: photo.resourceUrl,
+                                                localCache: photo.localCache
+                                              ),
                                               title: Text(photo.description,
                                                 style: _t.textTheme.button,
                                                 textAlign: TextAlign.center,
