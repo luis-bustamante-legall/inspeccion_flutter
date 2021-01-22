@@ -14,7 +14,6 @@ import 'package:legall_rimac_virtual/widgets/chat_button.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:legall_rimac_virtual/widgets/phone_call_button.dart';
-import 'dart:io';
 
 class InspectionStep2Screen extends StatefulWidget {
 

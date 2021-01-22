@@ -7,7 +7,7 @@ class Configuration {
   //Azure config
   static final azureStorageAccount = {
     'protocol': 'https',
-    'accountName': 'legallstorageaccount',
-    'SASToken': 'sv=2019-12-12&ss=bfqt&srt=sco&sp=rwdlacupx&se=2026-03-30T04:12:46Z&st=2021-01-05T20:12:46Z&spr=https&sig=pMeH%2FfYdKITmEKwqctmPl6Uxjn0%2B6RoUmsgbJxZ%2FZfM%3D'
+    'accountName': 'legallstorage',
+    'SASToken': 'sv=2019-12-12&ss=f&srt=sco&sp=rwdlc&se=2021-01-23T05:24:49Z&st=2021-01-22T21:24:49Z&spr=https&sig=Nb9o%2FcanU8ov0AOZmGGnUlS4wnnweOFvkxq6xoBI%2FNA%3D'
   };
 }

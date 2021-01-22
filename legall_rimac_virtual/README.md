@@ -156,23 +156,34 @@ If you not have a Storage account o need create one follow the next steps:
 4. Go to `Panel` and click on your new storage account
 5. On sidebar click `Shared access signature`
 6. Check `File` on `Allowed services` the other services are not needed but nothing happens if they are left checked
-7. Check the permissions as on the next image
+7. On `Allowed resource types` check all
+8. Check the permissions as on the next image
 
 ![](.README_images/22e321d.png)
 
-8. Select the Start and expiry date/time, take into account that once the signature expires the app will not be able to connect with the service
+9. Select the Start and expiry date/time, take into account that once the signature expires the app will not be able to connect with the service
 
 ![](.README_images/d9135b1.png)
 
-9. Click `Generate SAS and connection string`
-10. Copy the SAS token
+10. Click `Generate SAS and connection string`
+11. Copy the SAS token
 
 ![](.README_images/0deccb4.png)
 
-11. On the project edit the file `lib/configuration.dart` change the `accountName` setting and paste the SAS token on the `SASToken` setting.
+12. On the project edit the file `lib/configuration.dart` change the `accountName` setting and paste the SAS token on the `SASToken` setting.
 `Note: Please note that the SAS token obtained starts with the sign '?' skip it when pasting`
 
 ![](.README_images/908b3c6.png)
+
+## Create the File shares
+The project use two file shares `photos` and `videos` to create it
+
+1. On sidebar click `File shares`
+2. Click `+ File share`
+3. Give a Name and Quota (make sure the name is exacly `photos` and `videos` respectively)
+4. Click on `Create`
+
+![](.README_images/5714078.png)
 
 
 
