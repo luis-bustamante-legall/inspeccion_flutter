@@ -67,22 +67,22 @@
     "type": "predefined",
     "description": "Tacómetro",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Ftacometro.png?alt=media&token=e90810a2-1859-48ce-9b7a-376594719878"
+    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Ftacometro.jpeg?alt=media&token=5f53c281-e362-4602-9898-bc93ba9b76e5"
   },  {
     "type": "predefined",
     "description": "Puerta Piloto",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fpuerta_del_piloto.png?alt=media&token=9724b669-6da3-4137-8b7c-c14f8fd685f0"
+    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fpuerta_del_piloto.jpeg?alt=media&token=21e40a92-66c3-4138-9592-e43514db0848"
   },  {
     "type": "predefined",
     "description": "Timón",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Ftimon.png?alt=media&token=18309ce3-fc34-4dc3-b29e-d668d749d55b"
+    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Ftimon.jpeg?alt=media&token=e71560e1-9404-456f-bf40-9ae5970f772f"
   },  {
     "type": "predefined",
     "description": "Radio",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fradio.png?alt=media&token=b7c3e929-2519-4a9f-a69b-3b8fc68e14c6"
+    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fradio.jpeg?alt=media&token=0bfbbd11-5707-4f5c-932e-b05c54f8e509"
   },  {
     "type": "predefined",
     "description": "A/C",
