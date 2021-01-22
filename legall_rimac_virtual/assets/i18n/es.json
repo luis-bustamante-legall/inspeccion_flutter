@@ -65,5 +65,9 @@
   "close app": "Cerrar",
   "geolocation unavailable": "Localización no disponible",
   "geolocation service off": "No se pudo obtener su ubicación, esta información es necesaria para iniciar la inspección",
-  "geolocation permission denied": "La aplicación no obtuvo los permisos suficientes para obtener su ubicación, esta información es necesaria para iniciar la inspección"
+  "geolocation permission denied": "La aplicación no obtuvo los permisos suficientes para obtener su ubicación, esta información es necesaria para iniciar la inspección",
+  "legend add": "No se ha enviando ningun archivo, debe subir uno para revisión.",
+  "legend waiting": "El archivo esta siendo enviado al inspector, espere su revisión.",
+  "legend rejected": "El archivo fue revisado pero no fue aceptado, por favor intente con uno nuevo o solicite más intrucciones por el chat.",
+  "legend approved": "El archivo fué revisado y fue aceptado. No necesita hacer nada más con este archivo."
 }

@@ -113,7 +113,103 @@ class InspectionStep2ScreenState extends State<InspectionStep2Screen> {
                 padding: EdgeInsets.all(20),
                 children: [
                   Text(_l.translate('pick photos')),
-                  SizedBox(height: 20,),
+                  SizedBox(height: 20),
+                  Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            margin: EdgeInsets.only(right: 10),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.indigo
+                            ),
+                            child: Icon(Icons.add,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(_l.translate('legend add'),
+                              style: _t.textTheme.bodyText2,
+                            )
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            margin: EdgeInsets.only(right: 10),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.amber
+                            ),
+                            child: Icon(Icons.update,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(_l.translate('legend waiting'),
+                              style: _t.textTheme.bodyText2,
+                            )
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            margin: EdgeInsets.only(right: 10),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red
+                            ),
+                            child: Icon(Icons.cancel,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(_l.translate('legend rejected'),
+                              style: _t.textTheme.bodyText2,
+                            )
+                          )
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            margin: EdgeInsets.only(right: 10),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.green
+                            ),
+                            child: Icon(Icons.check_circle,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(_l.translate('legend approved'),
+                              style: _t.textTheme.bodyText2,
+                            )
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 20),
                   GridView.count(
                       primary: false,
                       shrinkWrap: true,
