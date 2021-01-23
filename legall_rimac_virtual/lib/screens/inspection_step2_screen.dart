@@ -234,9 +234,7 @@ class InspectionStep2ScreenState extends State<InspectionStep2Screen> {
                                             style: _t.textTheme.button,
                                           ),
                                           SizedBox(height: 10),
-                                          Image.network(photo.helpExampleUrl,
-                                            fit: BoxFit.fitWidth,
-                                          )
+                                          _resourceCache.loadImageHelp(photo.helpExampleUrl)
                                         ],
                                       ),
                                       actions: <Widget>[

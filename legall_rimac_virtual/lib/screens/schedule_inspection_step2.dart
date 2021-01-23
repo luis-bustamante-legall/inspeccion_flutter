@@ -213,9 +213,8 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                                                             style: _t.textTheme.button,
                                                           ),
                                                           SizedBox(height: 10),
-                                                          Image.network(photo.helpExampleUrl,
-                                                            fit: BoxFit.fitWidth,
-                                                          )
+                                                          _resourceCache.loadImageHelp(
+                                                              photo.helpExampleUrl)
                                                         ],
                                                       ),
                                                       actions: <Widget>[

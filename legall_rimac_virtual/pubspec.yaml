@@ -44,7 +44,7 @@ dependencies:
 
   #Video/Image capture
   path_provider: ^1.6.21
-  video_player: ^0.11.1+2
+  video_player: ^1.0.1
   image_picker: ^0.6.7+12
   open_file: ^3.0.3
 
@@ -73,6 +73,25 @@ flutter:
     - assets/i18n/es.json
     - assets/images/legal-logo.png
     - assets/default.json
+    - assets/default/a_c.png
+    - assets/default/consola.png
+    - assets/default/dni_posterio.png
+    - assets/default/dni_reverso.png
+    - assets/default/frontal.png
+    - assets/default/lateral_derecho.png
+    - assets/default/lateral_izquierdo.png
+    - assets/default/llanta_de_repuesto.png
+    - assets/default/llanta_instaladas.jpg
+    - assets/default/motor.png
+    - assets/default/puerta_del_piloto.png
+    - assets/default/radio.jpeg
+    - assets/default/soat.png
+    - assets/default/tacometro.jpeg
+    - assets/default/tarjeta_de_propidad_reverso.png
+    - assets/default/tarjeta_de_propiedad_frontal.png
+    - assets/default/timon.jpeg
+    - assets/default/video360.mp4
+    - assets/default/vin.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

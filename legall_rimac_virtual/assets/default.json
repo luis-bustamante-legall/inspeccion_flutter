@@ -3,105 +3,105 @@
     "group": "Suba las fotos de su DNI",
     "description": "DNI Frontal",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fdni_posterio.png?alt=media&token=fc84a072-cf18-4bd1-8137-18ff54ea89fd",
+    "help_example_url": "asset:dni_posterio.png",
     "type": "initial"
   },{
     "group": "Suba las fotos de su DNI",
     "description": "DNI Posterior",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fdni_reverso.png?alt=media&token=8f8f963e-3879-458b-b368-75710a431e6c",
+    "help_example_url": "assets://dni_reverso.png",
     "type": "initial"
   },{
     "group": "Suba las fotos de Tarjeta de Propiedad",
     "description": "Tarjeta de propiedad frontal",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Ftarjeta_de_propiedad_frontal.png?alt=media&token=34b19817-ad5a-4737-b43d-d909e2ef6b95",
+    "help_example_url": "assets://tarjeta_de_propiedad_frontal.png",
     "type": "initial"
   },{
     "group": "Suba las fotos de Tarjeta de Propiedad",
     "description": "Tarjeta de propiedad posterior",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Ftarjeta_de_propidad_reverso.png?alt=media&token=bc013acc-3fa4-4d62-8b0a-0cbe5aabac13",
+    "help_example_url": "assets://tarjeta_de_propidad_reverso.png",
     "type": "initial"
   },{
     "description": "Certificado SOAT",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fsoat.png?alt=media&token=da2b7193-7cfc-44cc-9756-91e0b5d50fc9",
+    "help_example_url": "assets://soat.png",
     "type": "initial"
   }, {
     "type": "predefined",
     "description": "Frontal",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Ffrontal.png?alt=media&token=ada1feb1-b3a2-4d8a-8755-7d986eefb4d3"
+    "help_example_url": "assets://frontal.png"
   },  {
     "type": "predefined",
     "description": "Posterior",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fposterio.png?alt=media&token=c23d5ace-0d5d-414a-bb8f-f27b0c9be53e"
+    "help_example_url": "assets://posterio.png"
   },  {
     "type": "predefined",
     "description": "Lateral derecho",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Flateral_derecho.png?alt=media&token=04f482ab-a089-43ec-a755-a69083c02edb"
+    "help_example_url": "assets://lateral_derecho.png"
   },  {
     "type": "predefined",
     "description": "Lateral izquierdo",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Flateral_izquierdo.png?alt=media&token=4f85c8ad-0c6d-431c-b4d2-8da48d804dc4"
+    "help_example_url": "assets://lateral_izquierdo.png"
   },  {
     "type": "predefined",
     "description": "Consola",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fconsola.png?alt=media&token=c591718d-01f2-4dad-9064-9ab09509f4b7"
+    "help_example_url": "assets://consola.png"
   },  {
     "type": "predefined",
     "description": "Motor",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fmotor.png?alt=media&token=55923aa8-9f05-4195-a10e-8c66930db46f"
+    "help_example_url": "assets://motor.png"
   },  {
     "type": "predefined",
     "description": "Llanta instalada",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fllanta_instaladas.jpg?alt=media&token=92226ed9-9026-4869-8314-440443c0f58e"
+    "help_example_url": "assets://llanta_instaladas.jpg"
   },  {
     "type": "predefined",
     "description": "Tacómetro",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Ftacometro.jpeg?alt=media&token=5f53c281-e362-4602-9898-bc93ba9b76e5"
+    "help_example_url": "assets://tacometro.jpeg"
   },  {
     "type": "predefined",
     "description": "Puerta Piloto",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fpuerta_del_piloto.jpeg?alt=media&token=21e40a92-66c3-4138-9592-e43514db0848"
+    "help_example_url": "assets://puerta_del_piloto.jpeg"
   },  {
     "type": "predefined",
     "description": "Timón",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Ftimon.jpeg?alt=media&token=e71560e1-9404-456f-bf40-9ae5970f772f"
+    "help_example_url": "assets://timon.jpeg"
   },  {
     "type": "predefined",
     "description": "Radio",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fradio.jpeg?alt=media&token=0bfbbd11-5707-4f5c-932e-b05c54f8e509"
+    "help_example_url": "assets://radio.jpeg"
   },  {
     "type": "predefined",
     "description": "A/C",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fa_c.png?alt=media&token=b2762b2f-d2d0-46c8-80a3-91d45ccbaa75"
+    "help_example_url": "assets://a_c.png"
   },  {
     "type": "predefined",
     "description": "Cambio de llanta",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fllanta_de_repuesto.png?alt=media&token=6fdd3b15-1529-4efd-82a2-a9b1da7b1576"
+    "help_example_url": "assets://llanta_de_repuesto.png"
   },  {
     "type": "predefined",
     "description": "VIN del vehículo",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fvin.png?alt=media&token=5a80fc2d-c357-4a63-94b1-0b01937b6dbe"
+    "help_example_url": "assets://vin.png"
   }],
   "videos": [{
     "description": "Vídeo 360",
-    "help_example_url": "https://firebasestorage.googleapis.com/v0/b/inspeccion-virtual-5f607.appspot.com/o/examples%2Fvideo360.mp4?alt=media&token=41a3682b-9a84-4cb1-9a36-b9e783c8ef0f",
+    "help_example_url": "assets://video360.mp4",
     "help_text": "Empieze por la parte de en frente y gire al rededor del vehículo. El video solo puede durar 20 segundos, asegurese de tomar todos los angulos."
   }]
 }

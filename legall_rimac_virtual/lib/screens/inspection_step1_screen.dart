@@ -7,6 +7,7 @@ import 'package:legall_rimac_virtual/blocs/blocs.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/models.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
+import 'package:legall_rimac_virtual/resource_cache.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 import 'package:legall_rimac_virtual/widgets/chat_button.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
@@ -27,6 +28,7 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
   VideoBloc _videoBloc;
   List<VideoModel> _videos = [];
   List<String> _uploadingVideos = [];
+  ResourceCache _resourceCache = ResourceCache();
 
 
   Widget _videoPlayer({String resourceUrl, String cache}) {
@@ -151,7 +153,7 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
                       emptyIcon: Icons.videocam,
                       onHelp: () async {
                         VideoPlayerController playerController =
-                        VideoPlayerController.network(video.helpExampleUrl);
+                        await _resourceCache.loadVideoHelp(video.helpExampleUrl);
                         playerController.initialize();
                         playerController.setLooping(true);
                         playerController.play();
