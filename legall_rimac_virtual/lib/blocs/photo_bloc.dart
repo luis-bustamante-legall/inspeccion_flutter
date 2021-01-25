@@ -13,6 +13,7 @@ class PhotoBloc
   final PhotosRepository _photosRepository;
   final List<String> _uploadingPhotos = [];
   StreamSubscription _photosSubscription;
+  PhotoType _type;
 
   PhotoBloc({@required PhotosRepository repository})
       : assert(repository != null),
@@ -38,6 +39,7 @@ class PhotoBloc
   Stream<PhotoState> _loadPhoto(LoadPhoto event) async* {
     await _photosSubscription?.cancel();
     try {
+      _type = event.photoType;
       _photosSubscription = _photosRepository
           .get(event.inspectionId,event.photoType)
           .listen((event) {
@@ -67,12 +69,15 @@ class PhotoBloc
       _photosRepository.uploadPhoto(event.photoModel, event.data)
       .then((value) {
           _uploadingPhotos.remove(event.photoModel.id);
-          add(LoadPhoto(event.photoModel.inspectionId, event.photoModel.type));
+          add(LoadPhoto(event.photoModel.inspectionId, _type??event.photoModel.type));
+      }).catchError((ex) {
+        print(ex.toString());
+        add(LoadPhoto(event.photoModel.inspectionId, _type??event.photoModel.type));
       });
     } catch(e) {
       print(e.toString());
       _uploadingPhotos.remove(event.photoModel.id);
-      add(LoadPhoto(event.photoModel.inspectionId, event.photoModel.type));
+      add(LoadPhoto(event.photoModel.inspectionId, _type??event.photoModel.type));
     }
   }
 

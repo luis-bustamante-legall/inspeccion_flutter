@@ -45,7 +45,7 @@ dependencies:
   #Video/Image capture
   path_provider: ^1.6.21
   video_player: ^1.0.1
-  image_picker: ^0.6.7+12
+  image_picker: ^0.6.7+21
   open_file: ^3.0.3
 
   #Firebase stuff
@@ -83,7 +83,7 @@ flutter:
     - assets/default/llanta_de_repuesto.png
     - assets/default/llanta_instaladas.jpg
     - assets/default/motor.png
-    - assets/default/puerta_del_piloto.png
+    - assets/default/puerta_del_piloto.jpeg
     - assets/default/radio.jpeg
     - assets/default/soat.png
     - assets/default/tacometro.jpeg
@@ -92,6 +92,7 @@ flutter:
     - assets/default/timon.jpeg
     - assets/default/video360.mp4
     - assets/default/vin.png
+    - assets/default/posterio.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

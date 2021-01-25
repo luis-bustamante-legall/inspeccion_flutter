@@ -1,13 +1,13 @@
 class Configuration {
   //Deep link config
-  static final scheme = "https";
-  static final path = "/inspeccion-virtual";
-  static final keyId = "hash";
+  static final scheme = "http";
+  static final path = "/virtual";
+  static final keyId = "token";
 
   //Azure config
   static final azureStorageAccount = {
     'protocol': 'https',
-    'accountName': 'legallstorage',
-    'SASToken': 'sv=2019-12-12&ss=f&srt=sco&sp=rwdlc&se=2021-01-23T05:24:49Z&st=2021-01-22T21:24:49Z&spr=https&sig=Nb9o%2FcanU8ov0AOZmGGnUlS4wnnweOFvkxq6xoBI%2FNA%3D'
+    'accountName': 'legalltrinity',
+    'SASToken': 'sv=2019-12-12&ss=f&srt=sco&sp=rwdlc&se=2022-02-02T00:55:38Z&st=2021-01-23T16:55:38Z&spr=https&sig=Z0a4%2FOVBKXsaJFc3n%2Bga6PrAe4dDyKUfglHkD8qPTBE%3D'
   };
 }

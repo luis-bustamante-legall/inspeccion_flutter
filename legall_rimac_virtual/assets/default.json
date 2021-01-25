@@ -3,7 +3,7 @@
     "group": "Suba las fotos de su DNI",
     "description": "DNI Frontal",
     "help_text": "Tomé la foto de manera que se pueda ver claramente como se muestra en el ejemplo.",
-    "help_example_url": "asset:dni_posterio.png",
+    "help_example_url": "assets://dni_posterio.png",
     "type": "initial"
   },{
     "group": "Suba las fotos de su DNI",
@@ -102,6 +102,6 @@
   "videos": [{
     "description": "Vídeo 360",
     "help_example_url": "assets://video360.mp4",
-    "help_text": "Empieze por la parte de en frente y gire al rededor del vehículo. El video solo puede durar 20 segundos, asegurese de tomar todos los angulos."
+    "help_text": "Empiece por la parte de enfrente y gire alrededor del vehículo. El vídeo solo puede durar 20 segundos, asegúrese de tomar todos los ángulos."
   }]
 }

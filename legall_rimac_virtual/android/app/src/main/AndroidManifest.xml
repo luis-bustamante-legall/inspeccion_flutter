@@ -42,8 +42,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="https"
-                    android:host="www.dominio.com"
+                    android:scheme="http"
+                    android:host="inspeccion.legall.com.pe/"
                     />
             </intent-filter>
         </activity>
