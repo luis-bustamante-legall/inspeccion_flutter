@@ -7,7 +7,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="legall_rimac_virtual"
+        android:label="Inspector Virtual"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
