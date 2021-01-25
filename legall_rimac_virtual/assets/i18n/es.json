@@ -68,6 +68,6 @@
   "geolocation permission denied": "La aplicación no obtuvo los permisos suficientes para obtener su ubicación, esta información es necesaria para iniciar la inspección",
   "legend add": "No se ha enviando ninguna foto, debe subir una para revisión.",
   "legend waiting": "La foto está siendo enviada al inspector, espere su revisión.",
-  "legend rejected": "La foto fué revisada pero no fué aceptada, por favor intente con uno nuevo o solicite más intrucciones por el chat.",
-  "legend approved": "La foto fué revisada y fué aceptada. No necesita hacer nada más con esta foto."
+  "legend rejected": "La foto fue revisada pero no fue aceptada, por favor intente con uno nuevo o solicite más intrucciones por el chat.",
+  "legend approved": "La foto fue revisada y fue aceptada. No necesita hacer nada más con esta foto."
 }
