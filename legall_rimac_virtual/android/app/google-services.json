@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1007521182877:android:801bce02127be835525074",
+        "mobilesdk_app_id": "1:1007521182877:android:68806f13975dc163525074",
         "android_client_info": {
-          "package_name": "com.giniem.rimac_virtual"
+          "package_name": "pe.com.legall.inspeccion"
         }
       },
       "oauth_client": [

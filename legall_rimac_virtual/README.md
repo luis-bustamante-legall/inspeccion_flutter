@@ -33,7 +33,7 @@ To assign the Firebase account that we want to use, we must first register the A
 
 ![](.README_images/75b92a4.png)
 
-5. Fill the Android package name field this should be "com.giniem.rimac_virtual" for this project
+5. Fill the Android package name field this should be "pe.com.legall.inspeccion" for this project
 6. Give the app a nickname (If you want)
 7. Click on "Register app"
 
