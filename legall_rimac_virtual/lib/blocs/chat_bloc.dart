@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:meta/meta.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
@@ -42,6 +43,8 @@ class ChatsBloc
       });
     } catch (e, stackTrace) {
       yield ChatsLoaded.withError(e.toString(), stackTrace: stackTrace);
+      FirebaseCrashlytics.instance.recordError(e, stackTrace,
+          reason: 'LoadChats');
     }
   }
 
@@ -51,16 +54,28 @@ class ChatsBloc
   }
 
   Stream<ChatsState> _readAllChats(ReadAllChats readAllChats) async*{
-    await _chatsRepository.readAll(readAllChats.inspectionId);
+    try {
+      await _chatsRepository.readAll(readAllChats.inspectionId);
+    }
+    catch(e,stackTrace) {
+      FirebaseCrashlytics.instance.recordError(e, stackTrace,
+        reason: 'ReadAllChats');
+    }
   }
 
   Stream<ChatsState> _sendChat(SendChat sendChat) async* {
-    await _chatsRepository.addChat(ChatModel(
-      inspectionId: sendChat.inspectionId,
-      source: sendChat.source ?? ChatSource.insured,
-      dateTime: DateTime.now(),
-      body: sendChat.body
-    ));
+    try {
+      await _chatsRepository.addChat(ChatModel(
+          inspectionId: sendChat.inspectionId,
+          source: sendChat.source ?? ChatSource.insured,
+          dateTime: DateTime.now(),
+          body: sendChat.body
+      ));
+    }
+    catch(e,stackTrace) {
+      FirebaseCrashlytics.instance.recordError(e, stackTrace,
+          reason: 'SendChat');
+    }
   }
 
   @override

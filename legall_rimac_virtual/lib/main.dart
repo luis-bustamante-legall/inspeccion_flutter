@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -24,8 +26,16 @@ Future<void> main() async {
   putLumberdashToWork(withClients: [
     PrintLumberdash(),
   ]);
-
   SharedPreferences preferences = await SharedPreferences.getInstance();
+  if (await FirebaseCrashlytics.instance.checkForUnsentReports()) {
+    await FirebaseCrashlytics.instance.sendUnsentReports();
+  }
+  Function originalOnError = FlutterError.onError;
+  FlutterError.onError = (FlutterErrorDetails errorDetails) async {
+    await FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
+    // Forward to original handler.
+    originalOnError(errorDetails);
+  };
   runZonedGuarded(() {
     runApp(MultiRepositoryProvider(
         providers: getRepositoryProviders(preferences),

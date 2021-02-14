@@ -124,11 +124,11 @@ class InspectionStep3ScreenState extends State<InspectionStep3Screen> {
       if (!state.success) {
         messenger.hideCurrentSnackBar();
         messenger.showSnackBar(SnackBar(
-          duration: Duration(minutes: 5),
-          backgroundColor: _t.accentColor,
-          padding: EdgeInsets.zero,
+          duration: Duration(seconds: 4),
+          backgroundColor: Colors.red,
           content: ListTile(
-            leading: CircularProgressIndicator(),
+            contentPadding: EdgeInsets.all(5),
+            leading: Icon(Icons.announcement_rounded),
             title: Text(_l.translate('problems uploading photos'),
               overflow: TextOverflow.ellipsis,
             ),

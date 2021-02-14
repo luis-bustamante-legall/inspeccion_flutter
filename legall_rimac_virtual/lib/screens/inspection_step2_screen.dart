@@ -73,11 +73,11 @@ class InspectionStep2ScreenState extends State<InspectionStep2Screen> {
       if (!state.success) {
         messenger.hideCurrentSnackBar();
         messenger.showSnackBar(SnackBar(
-          duration: Duration(minutes: 5),
-          backgroundColor: _t.accentColor,
-          padding: EdgeInsets.zero,
+          duration: Duration(seconds: 4),
+          backgroundColor: Colors.red,
           content: ListTile(
-            leading: CircularProgressIndicator(),
+            contentPadding: EdgeInsets.all(5),
+            leading: Icon(Icons.announcement_rounded),
             title: Text(_l.translate('problems uploading photos'),
               overflow: TextOverflow.ellipsis,
             ),
@@ -268,65 +268,6 @@ class InspectionStep2ScreenState extends State<InspectionStep2Screen> {
               );
             }
           ),
-          /*GridView.count(
-              primary: false,
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              children: photos.map((photo) =>
-                  GridTile(
-                      child: ImageCard(
-                        icon: _iconFromStatus(photo.status),
-                        working: photo.status == ResourceStatus.uploading,
-                        color: _colorFromStatus(photo.status),
-                        onHelp: () async {
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                title: Text(_l.translate('how take photo')),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(photo.helpText??''),
-                                    SizedBox(height: 10),
-                                    Text(_l.translate('example'),
-                                      style: _t.textTheme.button,
-                                    ),
-                                    SizedBox(height: 10),
-                                    _resourceCache.loadImageHelp(photo.helpExampleUrl)
-                                  ],
-                                ),
-                                actions: <Widget>[
-                                  FlatButton(
-                                    child: Text(_l.translate('accept')),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  )
-                                ],
-                              ));
-                        },
-                        image: null,
-                        title: Text(photo.description,
-                          style: _t.textTheme.button,
-                          textAlign: TextAlign.center,
-                        ),
-                        onTap: () async {
-                          if (photo.status == ResourceStatus.empty||
-                              photo.status == ResourceStatus.rejected) {
-                            var photoFile = await _picker.getImage(
-                                source: ImageSource.camera);
-                            if (photoFile != null) {
-                              _photoBloc.add(UploadPhoto(
-                                  photo,
-                                  await photoFile.readAsBytes()));
-                            }
-                          }
-                        },
-                      )
-                  )
-              ).toList()
-          )*/
           Align(
               alignment: Alignment.centerRight,
               child: Visibility(

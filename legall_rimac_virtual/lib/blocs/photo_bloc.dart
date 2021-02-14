@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:meta/meta.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
@@ -32,6 +33,7 @@ class PhotoBloc
       yield* _addPhoto(event);
     } else if (event is CompleteUploadPhoto) {
       yield event.state;
+      await Future.delayed(Duration.zero);
       add(UpdatePhotos(event.state.photos??[]));
     }
   }
@@ -75,10 +77,12 @@ class PhotoBloc
       .then((value) {
         add(CompleteUploadPhoto(
             PhotoUploadCompleted.successfully(state)));
-      }).catchError((e){
+      }).catchError((e,stackTrace){
         photo.status = photoStatus;
         add(CompleteUploadPhoto(
-            PhotoUploadCompleted.fail(state,e.toString(), null)));
+            PhotoUploadCompleted.fail(state,e.toString(), stackTrace)));
+        FirebaseCrashlytics.instance.recordError(e, stackTrace,
+            reason: 'UploadPhoto');
       });
       if (photo != null)
         photo.status = ResourceStatus.uploading;
@@ -86,6 +90,8 @@ class PhotoBloc
     } catch(e, stackTrace) {
       yield PhotoUploadCompleted.fail(state,e.toString(), stackTrace);
       add(UpdatePhotos(state.photos??[]));
+      FirebaseCrashlytics.instance.recordError(e, stackTrace,
+          reason: 'UploadPhoto');
     }
   }
 
