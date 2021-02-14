@@ -59,21 +59,27 @@ class InspectionWidget extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-                padding: EdgeInsets.all(15),
-                child:Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(model.plate??'-',
-                      style: _t.textTheme.headline6,
-                    ),
-                    Text('${model.brandName} - ${model.modelName}',
-                      style: _t.textTheme.button,
-                    ),
-                    SizedBox( height: 10),
-                    Text(model.insuredName??'-')
-                  ],
-                )
+            Flexible(
+              child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(model.plate??'-',
+                        style: _t.textTheme.headline6,
+                        overflow: TextOverflow.ellipsis
+                      ),
+                      Text('${model.brandName} - ${model.modelName}',
+                        style: _t.textTheme.button,
+                        overflow: TextOverflow.ellipsis
+                      ),
+                      SizedBox( height: 10),
+                      Text(model.insuredName??'-',
+                        overflow: TextOverflow.ellipsis
+                      )
+                    ],
+                  )
+              )
             ),
             Column(
               children: [
