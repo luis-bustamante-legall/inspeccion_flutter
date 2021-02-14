@@ -31,17 +31,15 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
 
 
   Widget _videoPlayer({String resourceUrl, String cache}) {
-    VideoPlayerController _playerController;
-    if (resourceUrl == null && cache == null) {
+    if (resourceUrl == null)
       return null;
-    }
-    else if (cache != null) {
+    VideoPlayerController _playerController;
+    if (cache != null) {
       _playerController = VideoPlayerController.file(File(cache));
     }
     else {
       _playerController = VideoPlayerController.network(resourceUrl);
     }
-
     _playerController.initialize();
     return Container(
       height: 180,

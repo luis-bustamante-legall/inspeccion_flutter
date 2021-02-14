@@ -81,35 +81,39 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
     var photos = state.photos??[];
     if (state is PhotoUploadCompleted) {
       if (!state.success) {
-        messenger.hideCurrentSnackBar();
-        messenger.showSnackBar(SnackBar(
-          duration: Duration(seconds: 4),
-          backgroundColor: Colors.red,
-          content: ListTile(
-            contentPadding: EdgeInsets.all(5),
-            leading: Icon(Icons.announcement_rounded),
-            title: Text(_l.translate('problems uploading photos'),
-              overflow: TextOverflow.ellipsis,
+        Future.delayed(Duration(milliseconds: 50),() {
+          messenger.hideCurrentSnackBar();
+          messenger.showSnackBar(SnackBar(
+            duration: Duration(seconds: 4),
+            backgroundColor: Colors.red,
+            content: ListTile(
+              contentPadding: EdgeInsets.all(5),
+              leading: Icon(Icons.announcement_rounded),
+              title: Text(_l.translate('problems uploading photos'),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-        ));
+          ));
+        });
       }
     }
     else if (state is PhotoLoaded) {
       if (!state.success) {
         print(state.errorMessage);
-        messenger.hideCurrentSnackBar();
-        messenger.showSnackBar(SnackBar(
-          duration: Duration(seconds: 4),
-          backgroundColor: Colors.red,
-          content: ListTile(
-            contentPadding: EdgeInsets.all(5),
-            leading: Icon(Icons.announcement_rounded),
-            title: Text(_l.translate('problems loading photos'),
-              overflow: TextOverflow.ellipsis,
+        Future.delayed(Duration(milliseconds: 50),() {
+          messenger.hideCurrentSnackBar();
+          messenger.showSnackBar(SnackBar(
+            duration: Duration(seconds: 4),
+            backgroundColor: Colors.red,
+            content: ListTile(
+              contentPadding: EdgeInsets.all(5),
+              leading: Icon(Icons.announcement_rounded),
+              title: Text(_l.translate('problems loading photos'),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-        ));
+          ));
+        });
       }
     }
     Map<String,List<PhotoModel>> photoGroups = {};
