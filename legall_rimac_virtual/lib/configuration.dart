@@ -2,7 +2,7 @@ class Configuration {
   //Deep link config
   static final scheme = "http";
   static final path = "/virtual";
-  static final keyId = "token";
+  static final keyId = "hash";
 
   //Azure config
   static final azureStorageAccount = {
