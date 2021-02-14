@@ -1,22 +1,30 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/services.dart';
-import 'package:legall_rimac_virtual/app_theme_data.dart';
-import 'package:legall_rimac_virtual/repositories.dart';
-import 'package:legall_rimac_virtual/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:legall_rimac_virtual/app_theme_data.dart';
+import 'package:legall_rimac_virtual/blocs/app_bloc_delegate.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
+import 'package:legall_rimac_virtual/repositories.dart';
+import 'package:legall_rimac_virtual/routes.dart';
+import 'package:lumberdash/lumberdash.dart';
+import 'package:print_lumberdash/print_lumberdash.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseAuth.instance.signInAnonymously();
+
+  //Logging
+  BlocSupervisor.delegate = AppBlocDelegate();
+  putLumberdashToWork(withClients: [
+    PrintLumberdash(),
+  ]);
+
   SharedPreferences preferences = await SharedPreferences.getInstance();
   runZonedGuarded(() {
     runApp(MultiRepositoryProvider(
