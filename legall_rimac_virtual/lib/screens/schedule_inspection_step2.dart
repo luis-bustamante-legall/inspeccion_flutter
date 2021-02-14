@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,8 +25,6 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
   InspectionBloc _inspectionBloc;
   SettingsRepository _settingsRepository;
   PhotoBloc _photoBloc;
-  Map<String,List<PhotoModel>> _photos = {};
-  List<String> _uploadingPhotos = [];
   ResourceCache _resourceCache = ResourceCache();
   DateTime _datePicked;
   
@@ -35,7 +34,7 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
     _settingsRepository = RepositoryProvider.of<SettingsRepository>(context);
     _inspectionBloc = BlocProvider.of<InspectionBloc>(context);
     _photoBloc = BlocProvider.of<PhotoBloc>(context);
-    _photoBloc.add(LoadPhoto(
+    _photoBloc.add(LoadPhotos(
         _settingsRepository.getInspectionId(),
         PhotoType.initial));
   }
@@ -75,11 +74,214 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
     }
   }
 
+  Widget _buildLoadedState(BuildContext context, PhotoState state, InspectionState inspectionState) {
+    ThemeData _t = Theme.of(context);
+    AppLocalizations _l = AppLocalizations.of(context);
+    var messenger = Scaffold.of(context);
+    var photos = state.photos??[];
+    if (state is PhotoUploadCompleted) {
+      if (!state.success) {
+        messenger.hideCurrentSnackBar();
+        messenger.showSnackBar(SnackBar(
+          duration: Duration(minutes: 5),
+          backgroundColor: _t.accentColor,
+          padding: EdgeInsets.zero,
+          content: ListTile(
+            leading: CircularProgressIndicator(),
+            title: Text(_l.translate('problems uploading photos'),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ));
+      }
+    }
+    else if (state is PhotoLoaded) {
+      if (!state.success) {
+        print(state.errorMessage);
+        messenger.hideCurrentSnackBar();
+        messenger.showSnackBar(SnackBar(
+          duration: Duration(seconds: 4),
+          backgroundColor: Colors.red,
+          content: ListTile(
+            contentPadding: EdgeInsets.all(5),
+            leading: Icon(Icons.announcement_rounded),
+            title: Text(_l.translate('problems loading photos'),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ));
+      }
+    }
+    Map<String,List<PhotoModel>> photoGroups = {};
+    for(var photo in photos) {
+      if (photoGroups.containsKey(photo.group)) {
+        photoGroups[photo.group].add(photo);
+      } else {
+        photoGroups[photo.group] = [photo];
+      }
+    }
+    return Column(
+        children: photoGroups.entries.map((entry) {
+          var gridView = GridView.count(
+              primary: false,
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              children: entry.value.map((photo) =>
+                  GridTile(
+                      child: ImageCard(
+                        onHelp: () async {
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title: Text(_l.translate('how take photo')),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(photo.helpText??''),
+                                    SizedBox(height: 10),
+                                    Text(_l.translate('example'),
+                                      style: _t.textTheme.button,
+                                    ),
+                                    SizedBox(height: 10),
+                                    _resourceCache.loadImageHelp(
+                                        photo.helpExampleUrl)
+                                  ],
+                                ),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text(_l.translate('accept')),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              ));
+                        },
+                        icon: _iconFromStatus(photo.status),
+                        working: photo.status == ResourceStatus.uploading,
+                        color: _colorFromStatus(photo.status),
+                        image:  photo.resourceUrl != null ?
+                            CachedNetworkImageProvider(photo.resourceUrl,
+                                cacheKey: 'image_${photo.id}_${photo.dateTime?.millisecondsSinceEpoch}'
+                            ): null,
+                        title: Text(photo.description,
+                          style: _t.textTheme.button,
+                          textAlign: TextAlign.center,
+                        ),
+                        onTap: () async {
+                          if (photo.status == ResourceStatus.empty||
+                              photo.status == ResourceStatus.rejected) {
+                            var photoFile = await _picker.getImage(
+                                source: ImageSource.camera);
+                            if (photoFile != null) {
+                              _photoBloc.add(UploadPhoto(
+                                  photo,
+                                  await photoFile.readAsBytes()));
+                            }
+                          }
+                        },
+                      )
+                  )
+              ).toList()
+          );
+          if (entry.key != null) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text(entry.key,
+                      style: _t.textTheme.subtitle1
+                  ),
+                ),
+                gridView
+              ],
+            );
+          } else {
+            return gridView;
+          }
+        }).toList()..add(Column(
+          children: [
+            SizedBox(height: 10,),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Visibility(
+                visible: !photoGroups.entries.any((map) => map.value.any((photo) => photo.status != ResourceStatus.approved)),
+                child: RaisedButton(
+                  color: _t.accentColor,
+                  child: BlocListener<InspectionBloc,InspectionState>(
+                    listener: (context,newInspectionState) async {
+                      if (newInspectionState is InspectionUpdated) {
+                        if (newInspectionState.success) {
+                          await showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              child: AlertDialog(
+                                title: Text(_l.translate('schedule inspection')),
+                                content: Text(_l.translate('the schedule was confirmed')),
+                                actions: [
+                                  FlatButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(_l.translate('ok'))
+                                  )
+                                ],
+                              )
+                          );
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, AppRoutes.home,
+                                  (Route<
+                                  dynamic> route) => false);
+
+                        }
+                      }
+                    },
+                    child: Text(_l.translate('schedule inspection').toUpperCase(),
+                      style: _t.accentTextTheme.button,
+                    ),
+                  ),
+                  onPressed: () {
+                    if (inspectionState is InspectionLoaded) {
+                      var schedule = inspectionState
+                          .inspectionModel.schedule;
+                      if (schedule.isEmpty) {
+                        schedule.add(InspectionSchedule(
+                            dateTime: _datePicked,
+                            type: InspectionScheduleType
+                                .scheduled
+                        ));
+                      } else {
+                        schedule.last.type = InspectionScheduleType
+                            .scheduled;
+                        schedule.last.dateTime = _getDateTime(inspectionState
+                            .inspectionModel.schedule);
+                      }
+                      var inspectionModel = inspectionState
+                          .inspectionModel.copyWith(
+                          schedule: schedule
+                      );
+                      _inspectionBloc.add(
+                          UpdateInspectionData(
+                              inspectionModel,
+                              UpdateInspectionType.schedule
+                          ));
+                    }
+                  },
+                ),
+              ),
+            )
+          ],
+        ))
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     ThemeData _t = Theme.of(context);
     AppLocalizations _l = AppLocalizations.of(context);
-    
 
     return Scaffold(
         appBar: AppBar(
@@ -158,197 +360,7 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                     ),
                     BlocBuilder<PhotoBloc,PhotoState>(
                       builder: (context,state) {
-                          if (state is PhotoLoaded || state is PhotoUploading) {
-                            if (state is PhotoLoaded) {
-                              if (state.success) {
-                                _photos = {};
-                                for(var photo in state.photos) {
-                                  if (_photos.containsKey(photo.group)) {
-                                    _photos[photo.group].add(photo);
-                                  } else {
-                                    _photos[photo.group] = [photo];
-                                  }
-                                }
-                              } else {
-                                print(state.errorMessage);
-                                Future.delayed(Duration(milliseconds: 100),() {
-                                  var messenger = Scaffold.of(context);
-                                  messenger.hideCurrentSnackBar();
-                                  messenger.showSnackBar(SnackBar(
-                                    duration: Duration(seconds: 4),
-                                    backgroundColor: Colors.red,
-                                    content: ListTile(
-                                      leading: Icon(Icons.announcement_rounded),
-                                      title: Text(_l.translate('problems loading photos'),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ));
-                                });
-                              }
-                            } else if (state is PhotoUploading) {
-                              _uploadingPhotos = state.uploadingPhotos;
-                            }
-                            return Column(
-                              children: _photos.entries.map((entry) {
-                                var gridView = GridView.count(
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    crossAxisCount: 2,
-                                    children: entry.value.map((photo) =>
-                                        GridTile(
-                                            child: ImageCard(
-                                              onHelp: () async {
-                                                showDialog(
-                                                    context: context,
-                                                    builder: (_) => AlertDialog(
-                                                      title: Text(_l.translate('how take photo')),
-                                                      content: Column(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(photo.helpText??''),
-                                                          SizedBox(height: 10),
-                                                          Text(_l.translate('example'),
-                                                            style: _t.textTheme.button,
-                                                          ),
-                                                          SizedBox(height: 10),
-                                                          _resourceCache.loadImageHelp(
-                                                              photo.helpExampleUrl)
-                                                        ],
-                                                      ),
-                                                      actions: <Widget>[
-                                                        FlatButton(
-                                                          child: Text(_l.translate('accept')),
-                                                          onPressed: () {
-                                                            Navigator.of(context).pop();
-                                                          },
-                                                        )
-                                                      ],
-                                                    ));
-                                              },
-                                              icon: _iconFromStatus(photo.status),
-                                              working: _uploadingPhotos.contains(photo.id),
-                                              color: _colorFromStatus(photo.status),
-                                              image: _resourceCache.get(
-                                                id: photo.id,
-                                                dateTime: photo.dateTime,
-                                                resourceUrl: photo.resourceUrl,
-                                                localCache: photo.localCache
-                                              ),
-                                              title: Text(photo.description,
-                                                style: _t.textTheme.button,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              onTap: () async {
-                                                if (photo.status == ResourceStatus.empty||
-                                                    photo.status == ResourceStatus.rejected) {
-                                                  var photoFile = await _picker.getImage(
-                                                      source: ImageSource.camera);
-                                                  if (photoFile != null) {
-                                                    _photoBloc.add(UploadPhoto(
-                                                        photo,
-                                                        await photoFile.readAsBytes()));
-                                                  }
-                                                }
-                                              },
-                                            )
-                                        )
-                                   ).toList()
-                                );
-                                if (entry.key != null) {
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.all(10),
-                                        child: Text(entry.key,
-                                          style: _t.textTheme.subtitle1
-                                        ),
-                                      ),
-                                      gridView
-                                    ],
-                                  );
-                                } else {
-                                  return gridView;
-                                }
-                              }).toList()..add(Column(
-                                children: [
-                                  SizedBox(height: 10,),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Visibility(
-                                      visible: !_photos.entries.any((map) => map.value.any((photo) => photo.status != ResourceStatus.approved)),
-                                      child: RaisedButton(
-                                        color: _t.accentColor,
-                                        child: BlocListener<InspectionBloc,InspectionState>(
-                                          listener: (context,newInspectionState) async {
-                                            if (newInspectionState is InspectionUpdated) {
-                                              if (newInspectionState.success) {
-                                                await showDialog(
-                                                  context: context,
-                                                  barrierDismissible: false,
-                                                  child: AlertDialog(
-                                                    title: Text(_l.translate('schedule inspection')),
-                                                    content: Text(_l.translate('the schedule was confirmed')),
-                                                    actions: [
-                                                      FlatButton(
-                                                        onPressed: () {
-                                                          Navigator.pop(context);
-                                                        },
-                                                        child: Text(_l.translate('ok'))
-                                                      )
-                                                    ],
-                                                  )
-                                                );
-                                                Navigator.pushNamedAndRemoveUntil(
-                                                  context, AppRoutes.home,
-                                                      (Route<
-                                                      dynamic> route) => false);
-
-                                              }
-                                            }
-                                          },
-                                          child: Text(_l.translate('schedule inspection').toUpperCase(),
-                                            style: _t.accentTextTheme.button,
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          if (inspectionState is InspectionLoaded) {
-                                            var schedule = inspectionState
-                                                .inspectionModel.schedule;
-                                            if (schedule.isEmpty) {
-                                              schedule.add(InspectionSchedule(
-                                                  dateTime: _datePicked,
-                                                  type: InspectionScheduleType
-                                                      .scheduled
-                                              ));
-                                            } else {
-                                              schedule.last.type = InspectionScheduleType
-                                                  .scheduled;
-                                              schedule.last.dateTime = _getDateTime(inspectionState
-                                                  .inspectionModel.schedule);
-                                            }
-                                            var inspectionModel = inspectionState
-                                                .inspectionModel.copyWith(
-                                                schedule: schedule
-                                            );
-                                            _inspectionBloc.add(
-                                                UpdateInspectionData(
-                                                    inspectionModel,
-                                                    UpdateInspectionType.schedule
-                                                ));
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ))
-                            );
-                          } else {
-                            return Container();
-                          }
+                        return _buildLoadedState(context, state, inspectionState);
                       }
                     )
                   ],

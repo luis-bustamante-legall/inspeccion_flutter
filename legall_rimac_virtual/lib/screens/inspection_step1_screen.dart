@@ -13,6 +13,7 @@ import 'package:legall_rimac_virtual/widgets/chat_button.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:legall_rimac_virtual/widgets/phone_call_button.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:open_file/open_file.dart';
 
@@ -26,8 +27,6 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
   ImagePicker _picker = ImagePicker();
   SettingsRepository _settingsRepository;
   VideoBloc _videoBloc;
-  List<VideoModel> _videos = [];
-  List<String> _uploadingVideos = [];
   ResourceCache _resourceCache = ResourceCache();
 
 
@@ -107,138 +106,160 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
           ChatButton()
         ],
       ),
-      body: BlocBuilder<VideoBloc,VideoState>(
-        builder: (context,state) {
-          if (state is VideoLoaded || state is VideoUploading) {
-            if (state is VideoLoaded) {
-              if (state.success) {
-                _videos = state.videos;
-              } else {
-                Future.delayed(Duration(milliseconds: 100),() {
-                  var messenger = Scaffold.of(context);
-                  messenger.hideCurrentSnackBar();
-                  messenger.showSnackBar(SnackBar(
-                    duration: Duration(seconds: 4),
-                    backgroundColor: Colors.red,
-                    content: ListTile(
-                      leading: Icon(Icons.announcement_rounded),
-                      title: Text(_l.translate('problems loading video'),
+      body: BlocListener<VideoBloc,VideoState>(
+        listener: (context,state) {
+          if (state is VideoUploadCompleted) {
+            if (!state.success) {
+              Future.delayed(Duration(milliseconds: 100),() {
+                var messenger = Scaffold.of(context);
+                messenger.hideCurrentSnackBar();
+                messenger.showSnackBar(SnackBar(
+                  duration: Duration(seconds: 4),
+                  backgroundColor: Colors.red,
+                  content: ListTile(
+                    leading: Icon(Icons.announcement_rounded),
+                    title: Text(_l.translate('problems uploading videos'),
                       overflow: TextOverflow.ellipsis,
-                      ),
                     ),
-                  ));
-                });
+                  ),
+                ));
+              });
+            }
+          }
+        },
+        child: BlocBuilder<VideoBloc,VideoState>(
+          builder: (context,state) {
+            var videos = <VideoModel>[];
+            var uploadingVideos = <String>[];
+            if (state is VideoLoaded || state is VideoUploading) {
+              if (state is VideoLoaded) {
+                if (state.success) {
+                  videos = state.videos;
+                } else {
+                  Future.delayed(Duration(milliseconds: 100),() {
+                    var messenger = Scaffold.of(context);
+                    messenger.hideCurrentSnackBar();
+                    messenger.showSnackBar(SnackBar(
+                      duration: Duration(seconds: 4),
+                      backgroundColor: Colors.red,
+                      content: ListTile(
+                        leading: Icon(Icons.announcement_rounded),
+                        title: Text(_l.translate('problems loading video'),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ));
+                  });
+                }
+              } else if (state is VideoUploading) {
+                videos = state.videos;
+                uploadingVideos = state.uploading;
               }
-            } else if (state is VideoUploading)
-              _uploadingVideos = state.uploadingVideos;
+            }
             return ListView(
               padding: EdgeInsets.all(20),
               children: [
                 Text(_l.translate('load video 360')),
                 SizedBox(height: 20,),
                 Column(
-                children: _videos.map((video) =>
-                  SizedBox(
-                    height: 250,
-                    child: ImageCard(
-                      child: _videoPlayer(
-                          resourceUrl: video.resourceUrl,
-                          cache: video.localCache),
-                      working: _uploadingVideos.contains(video.id),
-                      title: Text(video?.description??'',
-                        style: _t.textTheme.button,
-                      ),
-                      icon: _iconFromStatus(video.status),
-                      color: _colorFromStatus(video.status),
-                      emptyIcon: Icons.videocam,
-                      onHelp: () async {
-                        VideoPlayerController playerController =
-                        await _resourceCache.loadVideoHelp(video.helpExampleUrl);
-                        playerController.initialize();
-                        playerController.setLooping(true);
-                        playerController.play();
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              title: Text(_l.translate('how take video 360')),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(video.helpText??''),
-                                  SizedBox(height: 10),
-                                  Text(_l.translate('example'),
-                                    style: _t.textTheme.button,
-                                  ),
-                                  SizedBox(height: 10),
-                                  Transform.scale(
-                                      scale: 1 / playerController.value.aspectRatio,
-                                      child:Center(
-                                          child: AspectRatio(
-                                            aspectRatio: playerController.value.aspectRatio,
-                                            child: VideoPlayer(playerController),
+                  children: videos.map((video) =>
+                      SizedBox(
+                        height: 250,
+                        child: ImageCard(
+                          child: _videoPlayer(
+                              resourceUrl: video.resourceUrl,
+                              cache: video.localCache),
+                          working: uploadingVideos.contains(video.id),
+                          title: Text(video?.description??'',
+                            style: _t.textTheme.button,
+                          ),
+                          icon: _iconFromStatus(video.status),
+                          color: _colorFromStatus(video.status),
+                          emptyIcon: Icons.videocam,
+                          onHelp: () async {
+                            VideoPlayerController playerController =
+                            await _resourceCache.loadVideoHelp(video.helpExampleUrl);
+                            playerController.initialize();
+                            playerController.setLooping(true);
+                            playerController.play();
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: Text(_l.translate('how take video 360')),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(video.helpText??''),
+                                      SizedBox(height: 10),
+                                      Text(_l.translate('example'),
+                                        style: _t.textTheme.button,
+                                      ),
+                                      SizedBox(height: 10),
+                                      Transform.scale(
+                                          scale: 1 / playerController.value.aspectRatio,
+                                          child:Center(
+                                              child: AspectRatio(
+                                                aspectRatio: playerController.value.aspectRatio,
+                                                child: VideoPlayer(playerController),
+                                              )
                                           )
                                       )
-                                  )
-                                ],
-                              ),
-                              actions: <Widget>[
-                                FlatButton(
-                                  child: Text(_l.translate('accept')),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                )
-                              ],
-                            ));
-                      },
-                      onTap: () async {
-                        if (video.status == ResourceStatus.empty ||
-                            video.status == ResourceStatus.rejected) {
-                          var videoPicker = await _picker.getVideo(
-                              source: ImageSource.camera,
-                              maxDuration: Duration(seconds: 20)
-                          );
-                          if (videoPicker != null) {
-                            _videoBloc.add(UploadVideo(
-                                video, await videoPicker.readAsBytes()));
-                          }
-                        } else {
-                          try {
-                            await OpenFile.open(video.localCache);
-                          } catch(ex) {
-                            print(ex.toString());
-                          }
-                        }
-                      },
-                    ),
-                  )
+                                    ],
+                                  ),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child: Text(_l.translate('accept')),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ],
+                                ));
+                          },
+                          onTap: () async {
+                            if (video.status == ResourceStatus.empty ||
+                                video.status == ResourceStatus.rejected) {
+                              var videoPicker = await _picker.getVideo(
+                                  source: ImageSource.camera,
+                                  maxDuration: Duration(seconds: 20)
+                              );
+                              if (videoPicker != null) {
+                                _videoBloc.add(UploadVideo(
+                                    video, await videoPicker.readAsBytes()));
+                              }
+                            } else {
+                              try {
+                                await OpenFile.open(video.localCache??video.resourceUrl);
+                              } catch(ex) {
+                                print(ex.toString());
+                              }
+                            }
+                          },
+                        ),
+                      )
                   ).toList(),
                 ),
                 SizedBox(height: 50,),
                 Visibility(
-                  visible: !_videos.any((video) => video.status != ResourceStatus.approved),
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: RaisedButton(
-                        color: _t.accentColor,
-                        child: Text(_l.translate('continue').toUpperCase(),
-                          style: _t.accentTextTheme.button,
-                        ),
-                        onPressed: () async {
-                          Navigator.pushNamed(context, AppRoutes.inspectionStep2);
-                        },
-                      )
-                  )
+                    visible: !videos.any((video) => video.status != ResourceStatus.approved),
+                    child: Align(
+                        alignment: Alignment.centerRight,
+                        child: RaisedButton(
+                          color: _t.accentColor,
+                          child: Text(_l.translate('continue').toUpperCase(),
+                            style: _t.accentTextTheme.button,
+                          ),
+                          onPressed: () async {
+                            Navigator.pushNamed(context, AppRoutes.inspectionStep2);
+                          },
+                        )
+                    )
                 )
               ],
             );
-          } else {
-            return Center(
-              child: CircularProgressIndicator()
-            );
-          }
-        },
+          },
+        )
       )
     );
   }

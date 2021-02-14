@@ -47,6 +47,7 @@ dependencies:
   video_player: ^1.0.1
   image_picker: ^0.6.7+21
   open_file: ^3.0.3
+  cached_network_image: ^2.5.0
 
   #Firebase stuff
   firebase_core: ^0.5.1

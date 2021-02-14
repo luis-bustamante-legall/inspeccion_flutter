@@ -31,21 +31,13 @@ class PhotosRepository {
   Future<void> uploadPhoto(PhotoModel photo,Uint8List data) async {
       var appDir = await getApplicationDocumentsDirectory();
       //Upload image
-      await storage.upload('/photos/${photo.id}.png', data, 'image/png');
-      //Cache file
-      var cacheFile = File('${appDir.path}/${photo.id}.png');
-      if (! await cacheFile.exists())
-        await cacheFile.create(recursive: true);
-      await cacheFile.writeAsBytes(data, flush: true);
+      await storage.upload('/photos/${photo.id}', data, 'image/png');
       //Updating Firebase
-      photo.resourceUrl = await storage.downloadURL('/photos/${photo.id}.png');
+      photo.resourceUrl = await storage.downloadURL('/photos/${photo.id}');
       photo.dateTime = DateTime.now();
       photo.status = ResourceStatus.uploaded;
       return _photosCollection.doc(photo.id)
-          .set(
-            photo.toJSON(),
-            SetOptions(merge: true)
-      );
+          .update(photo.toJSON());
   }
 
   Future<String> addPhoto(PhotoModel photo) async {

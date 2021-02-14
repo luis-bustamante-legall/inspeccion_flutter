@@ -4,13 +4,14 @@ import 'package:legall_rimac_virtual/models/models.dart';
 class BrandsRepository {
   final _brandCollection = FirebaseFirestore.instance.collection('brands');
 
-  Stream<List<BrandModel>> search(String searchTerm) {
-    return _brandCollection
-        .snapshots()
-        .map((docs) => docs
-          .docs
-          .map((doc) => BrandModel.fromJSON(data: doc.data(),id: doc.id))
-          .where((brand) => brand?.brandName?.toLowerCase()?.contains(searchTerm)?? false).toList());
+  Future<List<BrandModel>> search(String searchTerm) async {
+    return (await _brandCollection
+        .where('brand_name',isGreaterThanOrEqualTo: searchTerm.toUpperCase())
+        .limit(20)
+        .get())
+        .docs
+        .map((doc) => BrandModel.fromJSON(data: doc.data(),id: doc.id))
+        .toList();
   }
   
   Future<BrandModel> get(String brandId) async {

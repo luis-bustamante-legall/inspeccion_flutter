@@ -5,13 +5,15 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:http/http.dart' as http;
 import '../models/models.dart';
 import '../repositories/repositories.dart';
 
 class VideoBloc
     extends Bloc<VideoEvent, VideoState> {
   final VideosRepository _videosRepository;
-  List<String> _uploadingVideos = [];
+  final List<String> _uploadingVideos = [];
+
   StreamSubscription _videosSubscription;
 
   VideoBloc({@required VideosRepository repository})
@@ -30,6 +32,9 @@ class VideoBloc
       yield* _updateVideo(event);
     } else if (event is UploadVideo) {
       yield* _uploadVideo(event);
+    } else if (event is CompleteUploadVideo) {
+      yield event.state;
+      add(UpdateVideo(event.videos));
     }
   }
 
@@ -42,7 +47,7 @@ class VideoBloc
         add(UpdateVideo(event.toList()));
       });
     } catch (e, stackTrace) {
-      yield VideoLoaded.withError(e.toString(), stackTrace: stackTrace);
+      yield VideoLoaded.fail(e.toString(), stackTrace: stackTrace);
     }
   }
 
@@ -52,25 +57,54 @@ class VideoBloc
       var cacheFile = File('${appDir.path}/${video.id}.mp4');
       if (await cacheFile.exists()) {
         video.localCache = cacheFile.path;
+      } else if (video.resourceUrl != null){
+        http.get(video.resourceUrl).then((response) => {
+          if (response.statusCode == HttpStatus.ok) {
+            cacheFile.writeAsBytesSync(response.bodyBytes,flush: true)
+          }
+        });
       }
     }
-    yield VideoLoaded.successfully(event.videos);
+    if (_uploadingVideos.isEmpty) {
+      if (state is VideoLoaded)
+        yield VideoRefresh();
+      yield VideoLoaded.successfully(event.videos);
+    }
+    else {
+      if (state is VideoUploading)
+        yield VideoRefresh();
+      yield VideoUploading(event.videos,_uploadingVideos);
+    }
   }
 
   Stream<VideoState> _uploadVideo(UploadVideo event) async* {
-    _uploadingVideos.add(event.videoModel.id);
+    var videos = <VideoModel>[];
     try {
-      yield VideoUploading(_uploadingVideos);
-      await _videosRepository.uploadVideo(event.videoModel, event.data);
+      var currentState = state;
+      _uploadingVideos.add(event.videoModel.id);
+      if (currentState is VideoLoaded)
+        videos = currentState.videos;
+      else if (currentState is VideoUploading)
+        videos = currentState.videos;
+      yield VideoInitUpload();
+      yield VideoUploading(videos,_uploadingVideos);
+      _videosRepository.uploadVideo(event.videoModel, event.data)
+      .then((value) {
+        _uploadingVideos.remove(event.videoModel.id);
+        add(CompleteUploadVideo(
+            VideoUploadCompleted.successfully(event.videoModel.id),videos));
+      }).catchError((e){
+        _uploadingVideos.remove(event.videoModel.id);
+        add(CompleteUploadVideo(
+            VideoUploadCompleted.fail(e.toString(), null),videos));
+      });
+    } catch(e, stackTrace) {
+      yield VideoUploadCompleted.fail(e.toString(), stackTrace);
       _uploadingVideos.remove(event.videoModel.id);
-    } catch(e) {
-      print(e);
-      _uploadingVideos.remove(event.videoModel.id);
-      add(LoadVideo(event.videoModel.inspectionId));
+      add(UpdateVideo(videos));
     }
   }
-
-
+  
   @override
   Future<void> close() {
     _videosSubscription?.cancel();
@@ -87,7 +121,7 @@ abstract class VideoEvent extends Equatable {
 
 class LoadVideo extends VideoEvent {
   final String inspectionId;
-
+  
   const LoadVideo(this.inspectionId);
 
   @override
@@ -110,16 +144,23 @@ class UploadVideo extends VideoEvent {
   const UploadVideo(this.videoModel,this.data);
 
   @override
-  List<Object> get props => [VideoModel,data];
+  List<Object> get props => [videoModel,data];
 }
 
 class AddVideo extends VideoEvent {
-  final VideoModel videoModel;
+  final VideoModel photoModel;
 
-  const AddVideo(this.videoModel);
+  const AddVideo(this.photoModel);
 
   @override
-  List<Object> get props => [videoModel];
+  List<Object> get props => [photoModel];
+}
+
+class CompleteUploadVideo extends VideoEvent {
+  final VideoUploadCompleted state;
+  final List<VideoModel> videos;
+
+  CompleteUploadVideo(this.state,this.videos);
 }
 
 abstract class VideoState extends Equatable {
@@ -132,6 +173,34 @@ abstract class VideoState extends Equatable {
 class VideoUninitialized extends VideoState {}
 
 class VideoLoading extends VideoState {}
+class VideoInitUpload extends VideoState {}
+class VideoRefresh extends VideoState {}
+class VideoUploadCompleted extends VideoState {
+  final bool success;
+  final String errorMessage;
+  final StackTrace stackTrace;
+  final String videoId;
+
+  VideoUploadCompleted(this.success,this.errorMessage,this.stackTrace,this.videoId);
+
+  factory VideoUploadCompleted.successfully(String videoId)
+  => VideoUploadCompleted(true, null,null, videoId);
+
+  factory VideoUploadCompleted.fail(String error, StackTrace stackTrace)
+  => VideoUploadCompleted(false,error,stackTrace, null);
+}
+
+class VideoUploading extends VideoState {
+  final List<String> uploading;
+  final List<VideoModel> videos;
+
+  VideoUploading(
+      this.videos,
+      this.uploading);
+  
+  @override
+  List<Object> get props => [uploading, videos];
+}
 
 class VideoLoaded extends VideoState {
   final bool success;
@@ -147,21 +216,13 @@ class VideoLoaded extends VideoState {
     return VideoLoaded(true, videos, null, null);
   }
 
-  factory VideoLoaded.withError(final String errorMessage,
+  factory VideoLoaded.fail(final String errorMessage,
       {final StackTrace stackTrace}) {
     assert(errorMessage != null);
     return VideoLoaded(false, null, errorMessage, stackTrace);
   }
 
   @override
-  List<Object> get props => [videos];
+  List<Object> get props => [success,errorMessage,stackTrace, videos];
 }
 
-class VideoUploading extends VideoState {
-  final List<String> uploadingVideos;
-
-  const VideoUploading(this.uploadingVideos);
-
-  @override
-  List<Object> get props => [uploadingVideos];
-}

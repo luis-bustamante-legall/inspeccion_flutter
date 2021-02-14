@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:legall_rimac_virtual/blocs/blocs.dart';
 import 'package:meta/meta.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
@@ -9,7 +8,6 @@ import '../repositories/repositories.dart';
 class BrandBloc
     extends Bloc<BrandEvent, BrandState> {
   final BrandsRepository _brandsRepository;
-  StreamSubscription _brandsSubscription;
 
   BrandBloc({@required BrandsRepository repository})
       : assert(repository != null),
@@ -36,13 +34,8 @@ class BrandBloc
   }
 
   Stream<BrandState> _searchBrands(String searchTerm) async* {
-    await _brandsSubscription?.cancel();
     try {
-      _brandsSubscription = _brandsRepository
-          .search(searchTerm)
-          .listen((event) {
-            add(ResultBrands(event.toList()));
-      });
+      add(ResultBrands(await _brandsRepository.search(searchTerm)));
     } catch (e, stackTrace) {
       yield BrandResults.withError(e.toString(), stackTrace: stackTrace);
     }
@@ -55,7 +48,6 @@ class BrandBloc
 
   @override
   Future<void> close() {
-    _brandsSubscription?.cancel();
     return super.close();
   }
 }

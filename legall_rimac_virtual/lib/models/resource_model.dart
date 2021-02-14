@@ -22,10 +22,10 @@ abstract class ResourceModel {
   });
 }
 
-
 enum ResourceStatus {
   empty,
   uploaded,
   approved,
-  rejected
+  rejected,
+  uploading
 }
