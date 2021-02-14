@@ -55,6 +55,10 @@ dependencies:
   firebase_storage: ^5.0.0
   cloud_firestore: ^0.14.2
 
+  #bloc logging
+  lumberdash: ^2.1.1
+  print_lumberdash: ^2.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
