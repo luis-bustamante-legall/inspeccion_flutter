@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/services.dart';
 import 'package:legall_rimac_virtual/app_theme_data.dart';
 import 'package:legall_rimac_virtual/repositories.dart';
@@ -15,9 +18,14 @@ Future<void> main() async {
   await Firebase.initializeApp();
   await FirebaseAuth.instance.signInAnonymously();
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  runApp(MultiRepositoryProvider(
-      providers: getRepositoryProviders(preferences),
-      child:  LegallRimacVirtualApp()));
+  runZonedGuarded(() {
+    runApp(MultiRepositoryProvider(
+        providers: getRepositoryProviders(preferences),
+        child:  LegallRimacVirtualApp()));
+  }, (error, stackTrace) {
+    print('Crashlytics record generated.');
+    FirebaseCrashlytics.instance.recordError(error, stackTrace);
+  });
 }
 
 class LegallRimacVirtualApp extends StatefulWidget  {
