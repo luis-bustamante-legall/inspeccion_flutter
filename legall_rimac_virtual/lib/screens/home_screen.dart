@@ -19,8 +19,6 @@ class HomeScreenState extends State<HomeScreen> {
   AppLocalizations _l;
   DeepLinkBloc _deepLinkBloc;
   InspectionBloc _inspectionBloc;
-  String _homeTitle = "...";
-  bool _showLogo = false;
 
   @override
   void initState() {
@@ -33,22 +31,7 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     _l = AppLocalizations.of(context);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_homeTitle)
-      ),
-      floatingActionButton: Visibility(
-        visible: _showLogo,
-        child: Padding(
-        padding: EdgeInsets.all(15),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: Image.asset('assets/images/legal-logo.png', height: 70)
-          )
-        )
-      ),
-      body: BlocListener<DeepLinkBloc,DeepLinkState>(
+    return BlocListener<DeepLinkBloc,DeepLinkState>(
         listener: (context,state) {
           print(state);
           if (state is DeepLinkInvalid) {
@@ -67,43 +50,49 @@ class HomeScreenState extends State<HomeScreen> {
           }
         },
         child: BlocBuilder<InspectionBloc,InspectionState>(
-          builder: (context,state) {
-            if (state is InspectionLoaded) {
-              Future.delayed(Duration(milliseconds: 1),(){
-                setState(() {
-                  _homeTitle = state.inspectionModel.titleToShow??'Rimac Virtual';
-                  _showLogo = state.inspectionModel.showLegallLogo;
-                });
-              });
-              var children = <Widget>[];
-              children.addAll(state.inspectionModel.schedule.reversed.map((schedule) =>
-                  InspectionWidget(
-                      model: state.inspectionModel,
-                      schedule: schedule,
-                      onTap: state.inspectionModel.status != InspectionStatus.complete && (
-                          schedule.type == InspectionScheduleType.scheduled ||
-                          schedule.type == InspectionScheduleType.unconfirmed
-                      ) ? () {
-                        if (schedule.type == InspectionScheduleType.scheduled)
-                          Navigator.pushNamed(context, AppRoutes.inspection);
-                        else
-                          Navigator.pushNamed(context, AppRoutes.scheduleInspectionStep1,
-                            arguments: state.inspectionModel
-                          );
-                      }: null
-                  )
-              ));
-              return ListView(
-                children: children
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
+            builder: (context,state) {
+              if (state is InspectionLoaded) {
+                return Scaffold(
+                    appBar: AppBar(
+                        title: Text(state.inspectionModel.titleToShow??_l.translate('app title'))
+                    ),
+                    floatingActionButton: Visibility(
+                        visible: (state?.inspectionModel?.showLegallLogo??false),
+                        child: Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: Image.asset('assets/images/legal-logo.png', height: 70)
+                            )
+                        )
+                    ),
+                    body: ListView(
+                        children: state.inspectionModel.schedule.reversed.map((schedule) =>
+                            InspectionWidget(
+                                model: state.inspectionModel,
+                                schedule: schedule,
+                                onTap: state.inspectionModel.status != InspectionStatus.complete && (
+                                    schedule.type == InspectionScheduleType.scheduled ||
+                                        schedule.type == InspectionScheduleType.unconfirmed
+                                ) ? () {
+                                  if (schedule.type == InspectionScheduleType.scheduled)
+                                    Navigator.pushNamed(context, AppRoutes.inspection);
+                                  else
+                                    Navigator.pushNamed(context, AppRoutes.scheduleInspectionStep1,
+                                        arguments: state.inspectionModel
+                                    );
+                                }: null
+                            )
+                        ).toList()
+                    )
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
             }
-          }
         )
-      )
     );
   }
 }
