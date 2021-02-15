@@ -224,7 +224,7 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
                               );
                               if (videoPicker != null) {
                                 _videoBloc.add(UploadVideo(
-                                    video, await videoPicker.readAsBytes()));
+                                    video, File(videoPicker.path)));
                               }
                             } else {
                               try {

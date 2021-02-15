@@ -21,22 +21,20 @@ class VideosRepository {
         VideoModel.fromJSON(doc.data(),id: doc.id)).toList());
   }
 
-  Future<void> uploadVideo(VideoModel video,Uint8List data) async {
+  Future<void> uploadVideo(VideoModel video,File file) async {
     var appDir = await getApplicationDocumentsDirectory();
     //Upload video
-    await storage.upload('/videos/${video.id}.mp4', data, 'video/mp4');
+    await storage.uploadFile('/videos/${video.id}.mp4', file, 'video/mp4');
     //Cache file
     var cacheFile = File('${appDir.path}/${video.id}.mp4');
     if (! await cacheFile.exists())
       await cacheFile.create(recursive: true);
-    await cacheFile.writeAsBytes(data, flush: true);
+    await file.copy(cacheFile.path);
     //Updating Firebase
     video.resourceUrl = await storage.downloadURL('/videos/${video.id}.mp4');
     video.status = ResourceStatus.uploaded;
     return _videosCollection.doc(video.id)
-        .set(video.toJSON(),
-        SetOptions(merge: true)
-    );
+        .update(video.toJSON());
   }
 
 }

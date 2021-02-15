@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:legall_rimac_virtual/repositories/repositories.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:legall_rimac_virtual/resource_cache.dart';
+import 'package:legall_rimac_virtual/thumbnail.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
 
 import '../routes.dart';
@@ -166,7 +168,7 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                         working: photo.status == ResourceStatus.uploading,
                         color: _colorFromStatus(photo.status),
                         image:  photo.resourceUrl != null ?
-                            CachedNetworkImageProvider(photo.resourceUrl,
+                            CachedNetworkImageProvider(Thumbnail.getUrl(photo.resourceUrl),
                                 cacheKey: 'image_${photo.id}_${photo.dateTime?.millisecondsSinceEpoch}'
                             ): null,
                         title: Text(photo.description,
@@ -180,8 +182,7 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                                 source: ImageSource.camera);
                             if (photoFile != null) {
                               _photoBloc.add(UploadPhoto(
-                                  photo,
-                                  await photoFile.readAsBytes()));
+                                  photo,File(photoFile.path)));
                             }
                           }
                         },
@@ -303,19 +304,20 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('${inspectionState.inspectionModel?.brandName??'-'} - ${inspectionState.inspectionModel?.modelName??'-'}',
-                                    style: _t.textTheme.button,
-                                  ),
-                                  SizedBox( height: 10),
-                                  Text(inspectionState.inspectionModel?.insuredName??'-')
-                                ],
-                              )
-                            ],
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('${inspectionState.inspectionModel?.brandName??'-'} - ${inspectionState.inspectionModel?.modelName??'-'}',
+                                  style: _t.textTheme.button,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox( height: 10),
+                                Text(inspectionState.inspectionModel?.insuredName??'-',
+                                  overflow: TextOverflow.ellipsis,
+                                )
+                              ],
+                            )
                           ),
                           Text(inspectionState.inspectionModel?.plate??'-',
                             style: _t.textTheme.headline4.copyWith(

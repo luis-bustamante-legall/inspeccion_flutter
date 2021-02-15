@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:typed_data';
+import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -73,7 +73,7 @@ class PhotoBloc
       var photo = (state.photos??[])
           .firstWhere((e) => e.id == event.photoModel.id,orElse: () => null);
       var photoStatus = photo?.status;
-      _photosRepository.uploadPhoto(event.photoModel, event.data)
+      _photosRepository.uploadPhoto(event.photoModel, event.file)
       .then((value) {
         add(CompleteUploadPhoto(
             PhotoUploadCompleted.successfully(state)));
@@ -133,12 +133,12 @@ class UpdatePhotos extends PhotoEvent {
 
 class UploadPhoto extends PhotoEvent {
   final PhotoModel photoModel;
-  final Uint8List data;
+  final File file;
 
-  const UploadPhoto(this.photoModel,this.data);
+  const UploadPhoto(this.photoModel,this.file);
 
   @override
-  List<Object> get props => [photoModel,data];
+  List<Object> get props => [photoModel,file];
 }
 
 class AddPhoto extends PhotoEvent {

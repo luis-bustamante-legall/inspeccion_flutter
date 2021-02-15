@@ -6,6 +6,7 @@ import 'package:legall_rimac_virtual/data_helper.dart';
 import 'package:legall_rimac_virtual/models/models.dart';
 import 'package:legall_rimac_virtual/models/resource_model.dart';
 import 'package:legall_rimac_virtual/storage/storage.dart';
+import 'package:legall_rimac_virtual/thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
 
 class PhotosRepository {
@@ -28,12 +29,13 @@ class PhotosRepository {
         PhotoModel.fromJSON(doc.data(),id: doc.id)).toList());
   }
 
-  Future<void> uploadPhoto(PhotoModel photo,Uint8List data) async {
-      var appDir = await getApplicationDocumentsDirectory();
+  Future<void> uploadPhoto(PhotoModel photo,File file) async {
+      var thumbnail = await Thumbnail.make(file);
       //Upload image
-      await storage.upload('/photos/${photo.id}', data, 'image/png');
+      await storage.uploadFile('/photos/${photo.id}_full',file, 'image/png');
+      await storage.uploadFile('/photos/${photo.id}_thumb',thumbnail, 'image/png');
       //Updating Firebase
-      photo.resourceUrl = await storage.downloadURL('/photos/${photo.id}');
+      photo.resourceUrl = await storage.downloadURL('/photos/${photo.id}_full');
       photo.dateTime = DateTime.now();
       photo.status = ResourceStatus.uploaded;
       return _photosCollection.doc(photo.id)

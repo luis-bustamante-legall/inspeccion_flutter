@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,6 +10,7 @@ import 'package:legall_rimac_virtual/models/resource_model.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
 import 'package:legall_rimac_virtual/resource_cache.dart';
 import 'package:legall_rimac_virtual/routes.dart';
+import 'package:legall_rimac_virtual/thumbnail.dart';
 import 'package:legall_rimac_virtual/widgets/chat_button.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
 import 'package:image_picker/image_picker.dart';
@@ -157,107 +159,109 @@ class InspectionStep3ScreenState extends State<InspectionStep3Screen> {
         });
       }
     }
-    return ListView(
-        padding: EdgeInsets.all(20),
+    return Column(
         children: [
-          Text(_l.translate('add photos')),
-          SizedBox(height: 20,),
-          GridView.builder(
-              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2),
-              primary: false,
-              shrinkWrap: true,
-              itemCount: photos.length + 1,
-              itemBuilder: (BuildContext context, int index) {
-                if (index == photos.length) {
-                 return GridTile(
-                    child: Card(
-                      child: InkWell(
-                        onTap: () async {
-                          var description = await _showTextDialog(
-                              maxLength: 100,
-                              label: _l.translate('description'),
-                              title:  _l.translate('photo description')
-                          );
+          Flexible(
+            child: GridView.builder(
+                padding: EdgeInsets.all(15),
+                gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2),
+                primary: false,
+                shrinkWrap: true,
+                itemCount: photos.length + 1,
+                itemBuilder: (BuildContext context, int index) {
+                  if (index == photos.length) {
+                    return GridTile(
+                      child: Card(
+                        child: InkWell(
+                          onTap: () async {
+                            var description = await _showTextDialog(
+                                maxLength: 100,
+                                label: _l.translate('description'),
+                                title:  _l.translate('photo description')
+                            );
 
-                          if (description != null) {
-                            _photoBloc.add(AddPhoto(
-                                PhotoModel(
-                                  inspectionId: _settingsRepository.getInspectionId(),
-                                  description: description,
-                                  creator: PhotoCreator.insured,
-                                  status: ResourceStatus.empty,
-                                  type: PhotoType.additional,
-                                  dateTime: DateTime.now(),
-                                )
-                            ));
-                          }
-                        },
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add,
-                                color: _t.accentColor,
-                              ),
-                              Text(_l.translate('new photo'),
-                                style: _t.textTheme.headline6.copyWith(
+                            if (description != null) {
+                              _photoBloc.add(AddPhoto(
+                                  PhotoModel(
+                                    inspectionId: _settingsRepository.getInspectionId(),
+                                    description: description,
+                                    creator: PhotoCreator.insured,
+                                    status: ResourceStatus.empty,
+                                    type: PhotoType.additional,
+                                    dateTime: DateTime.now(),
+                                  )
+                              ));
+                            }
+                          },
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add,
                                   color: _t.accentColor,
                                 ),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
+                                Text(_l.translate('new photo'),
+                                  style: _t.textTheme.headline6.copyWith(
+                                    color: _t.accentColor,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    );
+                  }
+                  var photo = photos.elementAt(index);
+                  return GridTile(
+                      child: ImageCard(
+                        icon: _iconFromStatus(photo.status),
+                        working: photo.status == ResourceStatus.uploading,
+                        color: _colorFromStatus(photo.status),
+                        image: photo.resourceUrl != null ?
+                        CachedNetworkImageProvider(Thumbnail.getUrl(photo.resourceUrl),
+                            cacheKey: 'image_${photo.id}_${photo.dateTime?.millisecondsSinceEpoch}'
+                        ): null,
+                        title: Text(photo.description,
+                          style: _t.textTheme.button,
+                          textAlign: TextAlign.center,
+                        ),
+                        onTap: () async {
+                          if (photo.status == ResourceStatus.empty||
+                              photo.status == ResourceStatus.rejected) {
+                            var photoFile = await _picker.getImage(
+                                source: ImageSource.camera);
+                            if (photoFile != null) {
+                              _photoBloc.add(UploadPhoto(
+                                  photo,File(photoFile.path)));
+                            }
+                          }
+                        },
+                      )
                   );
                 }
-                var photo = photos.elementAt(index);
-                return GridTile(
-                    child: ImageCard(
-                      icon: _iconFromStatus(photo.status),
-                      working: photo.status == ResourceStatus.uploading,
-                      color: _colorFromStatus(photo.status),
-                      image: photo.resourceUrl != null ?
-                      CachedNetworkImageProvider(photo.resourceUrl,
-                          cacheKey: 'image_${photo.id}_${photo.dateTime?.millisecondsSinceEpoch}'
-                      ): null,
-                      title: Text(photo.description,
-                        style: _t.textTheme.button,
-                        textAlign: TextAlign.center,
-                      ),
-                      onTap: () async {
-                        if (photo.status == ResourceStatus.empty||
-                            photo.status == ResourceStatus.rejected) {
-                          var photoFile = await _picker.getImage(
-                              source: ImageSource.camera);
-                          if (photoFile != null) {
-                            _photoBloc.add(UploadPhoto(
-                                photo,
-                                await photoFile.readAsBytes()));
-                          }
-                        }
-                      },
-                    )
-                );
-              }
+            )
           ),
-          Align(
-              alignment: Alignment.centerRight,
-              child: Visibility(
-                visible: !(photos.any((photo) =>
-                photo.status != ResourceStatus.approved)),
-                child: RaisedButton(
-                  child: Text(_l.translate('continue').toUpperCase(),
-                      style: _t.accentTextTheme.button
+          Padding(
+            padding: EdgeInsets.all(15),
+            child: Align(
+                alignment: Alignment.centerRight,
+                child: Visibility(
+                  visible: !(photos.any((photo) =>
+                  photo.status != ResourceStatus.approved)),
+                  child: RaisedButton(
+                    child: Text(_l.translate('continue').toUpperCase(),
+                        style: _t.accentTextTheme.button
+                    ),
+                    color: _t.accentColor,
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.inspectionStep4);
+                    },
                   ),
-                  color: _t.accentColor,
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.inspectionStep4);
-                  },
-                ),
-              )
+                )
+            ),
           )
         ]
     );
@@ -271,6 +275,26 @@ class InspectionStep3ScreenState extends State<InspectionStep3Screen> {
         appBar: AppBar(
           title: Text(_l.translate('inspection step',arguments: {"step": "3" })),
           actions: [
+            IconButton(
+              icon: Icon(Icons.help),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Text(_l.translate('help')),
+                      content: Text(_l.translate('add photos')),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text(_l.translate('accept')),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ],
+                    )
+                );
+              }
+            ),
             PhoneCallButton(),
             ChatButton()
           ],

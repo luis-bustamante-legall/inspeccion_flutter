@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -91,7 +90,7 @@ class VideoBloc
         videos = currentState.videos;
       yield VideoInitUpload();
       yield VideoUploading(videos,_uploadingVideos);
-      _videosRepository.uploadVideo(event.videoModel, event.data)
+      _videosRepository.uploadVideo(event.videoModel, event.file)
       .then((value) {
         _uploadingVideos.remove(event.videoModel.id);
         add(CompleteUploadVideo(
@@ -146,12 +145,12 @@ class UpdateVideo extends VideoEvent {
 
 class UploadVideo extends VideoEvent {
   final VideoModel videoModel;
-  final Uint8List data;
+  final File file;
 
-  const UploadVideo(this.videoModel,this.data);
+  const UploadVideo(this.videoModel,this.file);
 
   @override
-  List<Object> get props => [videoModel,data];
+  List<Object> get props => [videoModel,file];
 }
 
 class AddVideo extends VideoEvent {
