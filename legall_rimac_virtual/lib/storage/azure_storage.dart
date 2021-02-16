@@ -45,7 +45,7 @@ class AzureStorage extends Storage {
     );
     if (createResp.statusCode == httpCreated) {
       print('Uploading: $path - size: ${data.length}');
-      final sliceSize = 1048576.0; //1M
+      final sliceSize = 3145728.0; //3M
       final sliceCount = (data.length / sliceSize).ceil();
       try {
         for(var index = 0; index < sliceCount; index ++) {
@@ -92,7 +92,7 @@ class AzureStorage extends Storage {
     );
     if (createResp.statusCode == httpCreated) {
       print('Uploading: $path - size: $fileLength');
-      final sliceSize = 1048576.0; //1M
+      final sliceSize = 3145728.0; //3M
       final sliceCount = (fileLength / sliceSize).ceil();
       try {
         var fileStream = await file.open();

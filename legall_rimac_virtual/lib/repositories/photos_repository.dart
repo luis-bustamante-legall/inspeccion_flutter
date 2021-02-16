@@ -6,7 +6,7 @@ import 'package:legall_rimac_virtual/data_helper.dart';
 import 'package:legall_rimac_virtual/models/models.dart';
 import 'package:legall_rimac_virtual/models/resource_model.dart';
 import 'package:legall_rimac_virtual/storage/storage.dart';
-import 'package:legall_rimac_virtual/thumbnail.dart';
+import 'package:legall_rimac_virtual/image_thumbnail.dart';
 import 'package:path_provider/path_provider.dart';
 
 class PhotosRepository {
@@ -30,7 +30,7 @@ class PhotosRepository {
   }
 
   Future<void> uploadPhoto(PhotoModel photo,File file) async {
-      var thumbnail = await Thumbnail.make(file);
+      var thumbnail = await ImageThumbnail.make(file);
       //Upload image
       await storage.uploadFile('/photos/${photo.id}_full',file, 'image/png');
       await storage.uploadFile('/photos/${photo.id}_thumb',thumbnail, 'image/png');

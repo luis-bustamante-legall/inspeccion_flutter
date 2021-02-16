@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 import 'package:image/image.dart' as img;
 
-class Thumbnail {
+class ImageThumbnail {
   static Future<File> make(File file) async {
     var receivePort = ReceivePort();
     var isolate = await Isolate.spawn(_isolateMakeThumb, receivePort.sendPort);
