@@ -30,12 +30,12 @@ Future<void> main() async {
   if (await FirebaseCrashlytics.instance.checkForUnsentReports()) {
     await FirebaseCrashlytics.instance.sendUnsentReports();
   }
-  /*Function originalOnError = FlutterError.onError;
+  Function originalOnError = FlutterError.onError;
   FlutterError.onError = (FlutterErrorDetails errorDetails) async {
     await FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
     // Forward to original handler.
     originalOnError(errorDetails);
-  };*/
+  };
   runZonedGuarded(() {
     runApp(MultiRepositoryProvider(
         providers: getRepositoryProviders(preferences),

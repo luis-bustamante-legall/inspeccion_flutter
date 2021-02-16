@@ -42,6 +42,7 @@ class VideosRepository {
     await storage.upload('/videos/${video.id}_thumb', thumbnail, null);
     //Updating Firebase
     video.resourceUrl = await storage.downloadURL('/videos/${video.id}_video');
+    video.dateTime = DateTime.now();
     video.status = ResourceStatus.uploaded;
     return _videosCollection.doc(video.id)
         .update(video.toJSON());
