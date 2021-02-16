@@ -3,6 +3,7 @@ import 'package:legall_rimac_virtual/models/resource_model.dart';
 
 class VideoModel extends ResourceModel {
   String id;
+  String thumbnailUrl;
 
   VideoModel({
     this.id,
@@ -12,6 +13,7 @@ class VideoModel extends ResourceModel {
     String helpExampleUrl,
     DateTime dateTime,
     String resourceUrl,
+    this.thumbnailUrl,
     ResourceStatus status
   }): super(
       inspectionId:inspectionId,

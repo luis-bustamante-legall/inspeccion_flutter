@@ -22,7 +22,7 @@ class ChatsRepository {
     var chats = await _chatsCollection
       .where('inspection_id',isEqualTo: inspectionId)
       .where('read',isEqualTo: false)
-      .where('source',isEqualTo: 'inspector')
+      .where('source',whereIn:['inspector','system'])
       .get();
     return FirebaseFirestore.instance.runTransaction((transaction) async {
       for(var chat in chats.docs) {

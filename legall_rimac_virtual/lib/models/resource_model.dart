@@ -7,7 +7,6 @@ abstract class ResourceModel {
   String helpExampleUrl;
   DateTime dateTime;
   String resourceUrl;
-  String localCache;
   ResourceStatus status;
 
   @protected

@@ -45,10 +45,11 @@ dependencies:
   #Video/Image capture
   path_provider: ^1.6.21
   video_player: ^1.0.1
-  image_picker: ^0.6.7+21
+  image_picker: ^0.6.7+22
   open_file: ^3.0.3
   cached_network_image: ^2.5.0
   image: ^2.1.19
+  video_thumbnail: ^0.2.5+1
 
   #Firebase stuff
   firebase_core: ^0.7.0

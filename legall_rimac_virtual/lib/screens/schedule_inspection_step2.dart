@@ -10,7 +10,7 @@ import 'package:legall_rimac_virtual/repositories/repositories.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:legall_rimac_virtual/resource_cache.dart';
-import 'package:legall_rimac_virtual/thumbnail.dart';
+import 'package:legall_rimac_virtual/image_thumbnail.dart';
 import 'package:legall_rimac_virtual/widgets/image_card.dart';
 
 import '../routes.dart';
@@ -168,7 +168,7 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                         working: photo.status == ResourceStatus.uploading,
                         color: _colorFromStatus(photo.status),
                         image:  photo.resourceUrl != null ?
-                            CachedNetworkImageProvider(Thumbnail.getUrl(photo.resourceUrl),
+                            CachedNetworkImageProvider(ImageThumbnail.getUrl(photo.resourceUrl),
                                 cacheKey: 'image_${photo.id}_${photo.dateTime?.millisecondsSinceEpoch}'
                             ): null,
                         title: Text(photo.description,

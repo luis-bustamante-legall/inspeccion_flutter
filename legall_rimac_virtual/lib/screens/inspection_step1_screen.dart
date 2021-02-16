@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -164,9 +165,15 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
                       SizedBox(
                         height: 250,
                         child: ImageCard(
-                          child: _videoPlayer(
-                              resourceUrl: video.resourceUrl,
-                              cache: video.localCache),
+                          child: video.thumbnailUrl == null && video.resourceUrl != null?
+                          _videoPlayer(
+                              resourceUrl: video.resourceUrl
+                          ):null,
+                          image: video.thumbnailUrl != null ?
+                          CachedNetworkImageProvider(
+                            video.thumbnailUrl,
+                            cacheKey: 'video_${video.id}_${video.dateTime?.millisecondsSinceEpoch}'
+                          ): null,
                           working: uploadingVideos.contains(video.id),
                           title: Text(video?.description??'',
                             style: _t.textTheme.button,
@@ -228,7 +235,13 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
                               }
                             } else {
                               try {
-                                await OpenFile.open(video.localCache??video.resourceUrl);
+                                var appDir = await getApplicationDocumentsDirectory();
+                                await for (var file in appDir.list()) {
+                                  if (file.path.contains(video.id)) {
+                                    await OpenFile.open(file.path);
+                                    return;
+                                  }
+                                }
                               } catch(ex) {
                                 print(ex.toString());
                               }

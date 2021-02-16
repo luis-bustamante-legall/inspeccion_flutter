@@ -9,7 +9,6 @@ import 'package:legall_rimac_virtual/models/chat_model.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
 import 'package:legall_rimac_virtual/widgets/chat_widget.dart';
 import 'package:legall_rimac_virtual/widgets/phone_call_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatScreen extends StatefulWidget {
   @override

@@ -4,8 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:meta/meta.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 import '../models/models.dart';
 import '../repositories/repositories.dart';
 
@@ -54,17 +52,10 @@ class VideoBloc
   }
 
   Stream<VideoState> _updateVideo(UpdateVideo event) async* {
-    var appDir = await getApplicationDocumentsDirectory();
     for(var video in event.videos) {
-      var cacheFile = File('${appDir.path}/${video.id}.mp4');
-      if (await cacheFile.exists()) {
-        video.localCache = cacheFile.path;
-      } else if (video.resourceUrl != null){
-        http.get(video.resourceUrl).then((response) => {
-          if (response.statusCode == HttpStatus.ok) {
-            cacheFile.writeAsBytesSync(response.bodyBytes,flush: true)
-          }
-        });
+      if (video.resourceUrl != null && video.resourceUrl.contains('_video')) {
+        video.thumbnailUrl = video.resourceUrl.replaceFirst('_video','_thumb');
+        print(video.thumbnailUrl);
       }
     }
     if (_uploadingVideos.isEmpty) {
