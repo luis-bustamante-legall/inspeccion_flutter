@@ -11,26 +11,42 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 class MainActivity: FlutterActivity() {
     private val CHANNEL = "https.legall_rimac_virtual/channel"
     private var startString: String? = null
     private val EVENTS = "https.legall_rimac_virtual/events"
     private var linksReceiver: BroadcastReceiver? = null
+    private val crashlytics = FirebaseCrashlytics.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        crashlytics.log("onCreate method invoked on MainActivity!");
         super.onCreate(savedInstanceState, persistentState)
         val intent = intent
         if (intent.dataString != null) {
+            crashlytics.log("Intent's dataString: [${intent.dataString}]");
             startString = intent.dataString
         }
     }
 
     override fun onNewIntent(intent: Intent) {
+        crashlytics.log("onNewIntent method invoked on MainActivity!");
         super.onNewIntent(intent)
+        crashlytics.log("Intent's action: [${intent.action}, dataString: [${intent.dataString}]");
         if (intent.action === Intent.ACTION_VIEW && intent.dataString != null) {
             linksReceiver?.onReceive(this.applicationContext, intent)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        crashlytics.log("onStop method invoked on MainActivity!");
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        crashlytics.log("onDestroy method invoked on MainActivity!");
     }
 
     fun createChangeReceiver(events: EventChannel.EventSink): BroadcastReceiver? {
