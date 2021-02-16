@@ -19,6 +19,7 @@ class InspectionScreen extends StatefulWidget {
 class InspectionScreenState extends State<InspectionScreen> {
   final _dateTimeFormat = DateFormat('dd MMM yyyy, hh:mm a');
   InspectionBloc _inspectionBloc;
+  bool _updatingInspection = false;
 
   Future<LocationData> _getLocation() async {
     AppLocalizations _l = AppLocalizations.of(context);
@@ -90,6 +91,22 @@ class InspectionScreenState extends State<InspectionScreen> {
     );
     var result = await location.getLocation();
     Navigator.pop(context);
+    _updatingInspection = true;
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        child: SimpleDialog(
+          title: Text(_l.translate('processing')),
+          children: [
+            Padding(
+                padding: EdgeInsets.all(20),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                )
+            )
+          ],
+        )
+    );
     return result;
   }
 
@@ -276,6 +293,8 @@ class InspectionScreenState extends State<InspectionScreen> {
                                     )
                                 );
                               } else if (state.success && state.type == UpdateInspectionType.data) {
+                                if (_updatingInspection)
+                                  Navigator.pop(context);
                                 Navigator.pushNamed(context, AppRoutes.inspectionStep1,arguments: state.inspectionModel);
                               } else if (state.type == UpdateInspectionType.data) {
                                 Future.delayed(Duration(milliseconds: 5),() {
