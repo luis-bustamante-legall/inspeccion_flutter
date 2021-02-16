@@ -69,7 +69,8 @@ class ChatsBloc
           inspectionId: sendChat.inspectionId,
           source: sendChat.source ?? ChatSource.insured,
           dateTime: DateTime.now(),
-          body: sendChat.body
+          body: sendChat.body,
+          read: sendChat.read
       ));
     }
     catch(e,stackTrace) {
@@ -120,9 +121,10 @@ class ReadAllChats extends ChatsEvent {
 class SendChat extends ChatsEvent {
   final String inspectionId;
   final ChatSource source;
+  final bool read;
   final String body;
 
-  SendChat(this.inspectionId,{this.source,this.body});
+  SendChat(this.inspectionId,{this.source,this.body,this.read});
 
   @override
   List<Object> get props => [inspectionId,source,body];

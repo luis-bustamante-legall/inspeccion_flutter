@@ -52,7 +52,7 @@ class ChatButtonState extends State<ChatButton> {
               var inspectorChats = state
                   .chats
                   .where((chat) =>
-              chat.source == ChatSource.inspector && !chat.read);
+              (chat.source == ChatSource.inspector || chat.source == ChatSource.system) && !chat.read);
               setState(() {
                 _chatPending = inspectorChats.length;
               });

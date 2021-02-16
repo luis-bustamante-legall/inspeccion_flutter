@@ -4,7 +4,6 @@ import 'package:legall_rimac_virtual/blocs/blocs.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/chat_model.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
-import '../routes.dart';
 
 class PhoneCallButton extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -17,7 +16,8 @@ class PhoneCallButton extends StatelessWidget {
             RepositoryProvider.of<SettingsRepository>(context);
           chatsBloc.add(SendChat(settingsRepository.getInspectionId(),
             source: ChatSource.system,
-            body: _l.translate('a call was requested')
+            body: _l.translate('a call was requested'),
+            read: false
           ));
         },
         icon: Icon(Icons.phone_callback,
