@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'dart:io';
+import 'package:file_lumberdash/file_lumberdash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -13,6 +14,7 @@ import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/repositories.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 import 'package:lumberdash/lumberdash.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:print_lumberdash/print_lumberdash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,11 +22,16 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseAuth.instance.signInAnonymously();
-
+  var appDocDir = await getApplicationDocumentsDirectory();
+  String appDocPath = appDocDir.path;
+  final currentDate = DateTime.now();
   //Logging
   BlocSupervisor.delegate = AppBlocDelegate();
   putLumberdashToWork(withClients: [
     PrintLumberdash(),
+    FileLumberdash(
+      filePath: '$appDocPath/${currentDate.year}-${currentDate.month}-${currentDate.day}-logs.txt',
+    )
   ]);
   SharedPreferences preferences = await SharedPreferences.getInstance();
   if (await FirebaseCrashlytics.instance.checkForUnsentReports()) {

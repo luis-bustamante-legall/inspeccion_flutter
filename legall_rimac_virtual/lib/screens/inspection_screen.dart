@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:legall_rimac_virtual/models/inspection_model.dart';
 import 'package:intl/intl.dart';
 import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 import 'package:location/location.dart';
+import 'package:lumberdash/lumberdash.dart';
 
 import '../routes.dart';
 
@@ -25,89 +27,118 @@ class InspectionScreenState extends State<InspectionScreen> {
     AppLocalizations _l = AppLocalizations.of(context);
     Location location = new Location();
     bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
+    try {
+      PermissionStatus _permissionGranted;
+      logMessage('Check for location service ...');
+      _serviceEnabled = await location.serviceEnabled();
+      logMessage('Location service is ${_serviceEnabled ? 'on' : 'off'}');
       if (!_serviceEnabled) {
-        await showDialog(
+        logMessage('Request enable service...');
+        _serviceEnabled = await location.requestService();
+        if (!_serviceEnabled) {
+          logMessage('Unavailable enable service');
+          await showDialog(
+              context: context,
+              barrierDismissible: false,
+              child: AlertDialog(
+                title: Text(_l.translate('geolocation unavailable')),
+                content: Text(_l.translate('geolocation service off')),
+                actions: [
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(_l.translate('ok'))
+                  )
+                ],
+              )
+          );
+          return null;
+        }
+      }
+      logMessage('Check location service for permissions');
+      _permissionGranted = await location.hasPermission();
+      if (_permissionGranted == PermissionStatus.denied) {
+        logMessage('Location permission denied by system');
+        _permissionGranted = await location.requestPermission();
+        if (_permissionGranted != PermissionStatus.granted) {
+          logMessage('Location permission denied by user');
+          await showDialog(
+              context: context,
+              barrierDismissible: false,
+              child: AlertDialog(
+                title: Text(_l.translate('geolocation unavailable')),
+                content: Text(_l.translate('geolocation permission denied')),
+                actions: [
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(_l.translate('ok'))
+                  )
+                ],
+              )
+          );
+          return null;
+        }
+      }
+      showDialog(
           context: context,
           barrierDismissible: false,
-          child: AlertDialog(
-            title: Text(_l.translate('geolocation unavailable')),
-            content: Text(_l.translate('geolocation service off')),
-            actions: [
-              FlatButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(_l.translate('ok'))
+          child: SimpleDialog(
+            title: Text(_l.translate('locating')),
+            children: [
+              Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  )
               )
             ],
           )
-        );
-        return null;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        await showDialog(
-            context: context,
-            barrierDismissible: false,
-            child: AlertDialog(
-              title: Text(_l.translate('geolocation unavailable')),
-              content: Text(_l.translate('geolocation permission denied')),
-              actions: [
-                FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(_l.translate('ok'))
-                )
-              ],
-            )
-        );
-        return null;
-      }
-    }
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        child: SimpleDialog(
-          title: Text(_l.translate('locating')),
-          children: [
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Center(
-                child: CircularProgressIndicator(),
+      );
+      logMessage('Getting location ...');
+      var result = await location.getLocation();
+      logMessage('Get location done');
+      Navigator.pop(context);
+      _updatingInspection = true;
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          child: SimpleDialog(
+            title: Text(_l.translate('processing')),
+            children: [
+              Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  )
               )
-            )
-          ],
-        )
-    );
-    var result = await location.getLocation();
-    Navigator.pop(context);
-    _updatingInspection = true;
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        child: SimpleDialog(
-          title: Text(_l.translate('processing')),
-          children: [
-            Padding(
-                padding: EdgeInsets.all(20),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                )
-            )
-          ],
-        )
-    );
-    return result;
+            ],
+          )
+      );
+      return result;
+    } catch(ex,stackTrace) {
+      Navigator.popUntil(context, ModalRoute.withName(AppRoutes.inspection));
+      print(ex.toString());
+      FirebaseCrashlytics.instance.recordError(ex, stackTrace,
+          reason: 'Get location');
+      Future.delayed(Duration(milliseconds: 100),() {
+        var messenger = Scaffold.of(context);
+        messenger.hideCurrentSnackBar();
+        messenger.showSnackBar(SnackBar(
+          duration: Duration(seconds: 4),
+          backgroundColor: Colors.red,
+          content: ListTile(
+            leading: Icon(Icons.announcement_rounded),
+            title: Text(_l.translate('geolocation unavailable'),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ));
+      });
+      return null;
+    }
   }
 
   @override
@@ -293,8 +324,7 @@ class InspectionScreenState extends State<InspectionScreen> {
                                     )
                                 );
                               } else if (state.success && state.type == UpdateInspectionType.data) {
-                                if (_updatingInspection)
-                                  Navigator.pop(context);
+                                Navigator.popUntil(context, ModalRoute.withName(AppRoutes.inspection));
                                 Navigator.pushNamed(context, AppRoutes.inspectionStep1,arguments: state.inspectionModel);
                               } else if (state.type == UpdateInspectionType.data) {
                                 Future.delayed(Duration(milliseconds: 5),() {
