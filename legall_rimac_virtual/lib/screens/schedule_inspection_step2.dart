@@ -221,19 +221,21 @@ class ScheduleInspectionStep2State extends State<ScheduleInspectionStep2> {
                         if (newInspectionState.success) {
                           await showDialog(
                               context: context,
-                              barrierDismissible: false,
-                              child: AlertDialog(
-                                title: Text(_l.translate('schedule inspection')),
-                                content: Text(_l.translate('the schedule was confirmed')),
-                                actions: [
-                                  FlatButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text(_l.translate('ok'))
-                                  )
-                                ],
-                              )
+                              barrierDismissible: false, builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(_l.translate('schedule inspection')),
+                                  content: Text(_l.translate('the schedule was confirmed')),
+                                  actions: [
+                                    FlatButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(_l.translate('ok'))
+                                    )
+                                  ],
+                                );
+                          },
+
                           );
                           Navigator.pushNamedAndRemoveUntil(
                               context, AppRoutes.home,

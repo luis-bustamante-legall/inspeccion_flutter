@@ -63,6 +63,9 @@ dependencies:
   print_lumberdash: ^2.1.0
   file_lumberdash: ^0.0.1
 
+dependency_overrides:
+  intl: ^0.17.0-nullsafety.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

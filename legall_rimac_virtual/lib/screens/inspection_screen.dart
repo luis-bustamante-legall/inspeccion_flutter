@@ -39,19 +39,21 @@ class InspectionScreenState extends State<InspectionScreen> {
           logMessage('Unavailable enable service');
           await showDialog(
               context: context,
-              barrierDismissible: false,
-              child: AlertDialog(
-                title: Text(_l.translate('geolocation unavailable')),
-                content: Text(_l.translate('geolocation service off')),
-                actions: [
-                  FlatButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(_l.translate('ok'))
-                  )
-                ],
-              )
+              barrierDismissible: false, builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(_l.translate('geolocation unavailable')),
+                  content: Text(_l.translate('geolocation service off')),
+                  actions: [
+                    FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(_l.translate('ok'))
+                    )
+                  ],
+                );
+          },
+
           );
           return null;
         }
@@ -65,37 +67,41 @@ class InspectionScreenState extends State<InspectionScreen> {
           logMessage('Location permission denied by user');
           await showDialog(
               context: context,
-              barrierDismissible: false,
-              child: AlertDialog(
-                title: Text(_l.translate('geolocation unavailable')),
-                content: Text(_l.translate('geolocation permission denied')),
-                actions: [
-                  FlatButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(_l.translate('ok'))
-                  )
-                ],
-              )
+              barrierDismissible: false, builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(_l.translate('geolocation unavailable')),
+                  content: Text(_l.translate('geolocation permission denied')),
+                  actions: [
+                    FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(_l.translate('ok'))
+                    )
+                  ],
+                );
+          },
+
           );
           return null;
         }
       }
       showDialog(
           context: context,
-          barrierDismissible: false,
-          child: SimpleDialog(
-            title: Text(_l.translate('locating')),
-            children: [
-              Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  )
-              )
-            ],
-          )
+          barrierDismissible: false, builder: (BuildContext context) {
+            return  SimpleDialog(
+              title: Text(_l.translate('locating')),
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    )
+                )
+              ],
+            );
+      },
+
       );
       logMessage('Getting location ...');
       var result = await location.getLocation();
@@ -104,18 +110,20 @@ class InspectionScreenState extends State<InspectionScreen> {
       _updatingInspection = true;
       showDialog(
           context: context,
-          barrierDismissible: false,
-          child: SimpleDialog(
-            title: Text(_l.translate('processing')),
-            children: [
-              Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  )
-              )
-            ],
-          )
+          barrierDismissible: false, builder: (BuildContext context) {
+            return SimpleDialog(
+              title: Text(_l.translate('processing')),
+              children: [
+                Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    )
+                )
+              ],
+            );
+      },
+
       );
       return result;
     } catch(ex,stackTrace) {
@@ -309,19 +317,21 @@ class InspectionScreenState extends State<InspectionScreen> {
                               if (state.success && state.type == UpdateInspectionType.schedule) {
                                 await showDialog(
                                     context: context,
-                                    barrierDismissible: false,
-                                    child: AlertDialog(
-                                      title: Text(_l.translate('schedule inspection')),
-                                      content: Text(_l.translate('inspection rescheduled')),
-                                      actions: [
-                                        FlatButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text(_l.translate('ok'))
-                                        )
-                                      ],
-                                    )
+                                    barrierDismissible: false, builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text(_l.translate('schedule inspection')),
+                                        content: Text(_l.translate('inspection rescheduled')),
+                                        actions: [
+                                          FlatButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(_l.translate('ok'))
+                                          )
+                                        ],
+                                      );
+                                },
+
                                 );
                               } else if (state.success && state.type == UpdateInspectionType.data) {
                                 Navigator.popUntil(context, ModalRoute.withName(AppRoutes.inspection));
