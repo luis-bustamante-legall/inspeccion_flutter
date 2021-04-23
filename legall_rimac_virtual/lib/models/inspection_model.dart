@@ -6,6 +6,7 @@ import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 class InspectionModel {
   //Inspection data
   String inspectionId;
+  int informeId;
   String additionalInfo;
   GeoPoint location;
 
@@ -33,6 +34,7 @@ class InspectionModel {
 
   InspectionModel({
     this.inspectionId,
+    this.informeId,
     this.appColor,
     this.titleToShow,
     this.additionalInfo,
@@ -54,6 +56,7 @@ class InspectionModel {
 
   InspectionModel copyWith({
     String inspectionId,
+    int informeId,
     String appColor,
     String insuranceCompany,
     String titleToShow,
@@ -73,6 +76,7 @@ class InspectionModel {
     List<InspectionSchedule> schedule
   }) => InspectionModel(
     inspectionId: inspectionId??this.inspectionId,
+    informeId: informeId??this.informeId,
     appColor: appColor??this.appColor,
     insuranceCompany: insuranceCompany??this.insuranceCompany,
     showLegallLogo: showLegallLogo??this.showLegallLogo,
@@ -95,6 +99,7 @@ class InspectionModel {
   factory InspectionModel.fromJSON(Map<String,dynamic> json,{String id}) {
     return InspectionModel(
       inspectionId: id,
+      informeId:json["informe_id"] ,
       appColor: json['app_color'],
       titleToShow: json['title_to_show'],
       insuranceCompany: json['insurance_company'],

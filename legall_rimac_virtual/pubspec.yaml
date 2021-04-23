@@ -58,6 +58,9 @@ dependencies:
   cloud_firestore: ^0.16.0
   firebase_crashlytics: ^0.4.0+1
 
+  #Rest
+  http:
+
   #bloc logging
   lumberdash: ^2.1.1
   print_lumberdash: ^2.1.0

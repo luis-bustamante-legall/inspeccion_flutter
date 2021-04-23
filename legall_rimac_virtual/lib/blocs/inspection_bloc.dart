@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:legall_rimac_virtual/repositories/rest_repository.dart';
 import 'package:meta/meta.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
@@ -10,6 +11,7 @@ class InspectionBloc
     extends Bloc<InspectionEvent, InspectionState> {
   final InspectionsRepository _inspectionsRepository;
   final SettingsRepository _settingsRepository;
+  final RestRepository _restRepository=RestRepository();
   StreamSubscription _inspectionsSubscription;
 
   InspectionBloc({
@@ -77,7 +79,8 @@ class InspectionBloc
           await _inspectionsRepository.updateStatus(event.inspectionModel);
           break;
         case UpdateInspectionType.schedule:
-          await _inspectionsRepository.updateSchedule(event.inspectionModel);
+          //await _inspectionsRepository.updateSchedule(event.inspectionModel);
+          await _restRepository.updateScheduleRest(event.inspectionModel);
           break;
       }
       yield InspectionUpdated.successfully(event.type, event.inspectionModel);

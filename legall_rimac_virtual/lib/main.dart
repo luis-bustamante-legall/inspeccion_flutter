@@ -12,6 +12,7 @@ import 'package:legall_rimac_virtual/app_theme_data.dart';
 import 'package:legall_rimac_virtual/blocs/app_bloc_delegate.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/repositories.dart';
+import 'package:legall_rimac_virtual/repositories/rest_repository.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 import 'package:lumberdash/lumberdash.dart';
 import 'package:path_provider/path_provider.dart';
@@ -22,6 +23,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseAuth.instance.signInAnonymously();
+
+  final _restRespository=RestRepository();
+  await _restRespository.initRepository();
+  _restRespository.login();
+
   var appDocDir = await getApplicationDocumentsDirectory();
   String appDocPath = appDocDir.path;
   final currentDate = DateTime.now();

@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:legall_rimac_virtual/models/models.dart';
-import 'dart:convert';
+
 
 class InspectionsRepository {
   final _inspectionCollection = FirebaseFirestore.instance.collection('inspections');
@@ -95,4 +97,7 @@ class InspectionsRepository {
         .update(inspectionModel.toJSONWithSchedule()
     );
   }
+
+
+
 }
