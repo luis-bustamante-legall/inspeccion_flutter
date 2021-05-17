@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:legall_rimac_virtual/data_helper.dart';
 import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
+import 'package:intl/intl.dart';
 
 class InspectionModel {
   //Inspection data
@@ -144,6 +145,17 @@ class InspectionModel {
   Map<String,dynamic> toJSONWithSchedule() {
     return {
       'schedule': schedule.map((sch) => sch.toJSON()).toList()
+    };
+  }
+
+  Map<String,dynamic> toJSONWithNotification() {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('dd/MM/yyyy kk:mm').format(now);
+
+    return {
+      'plate': plate,
+      'insured_name': insuredName,
+      'current_date': formattedDate
     };
   }
 }

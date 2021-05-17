@@ -80,6 +80,7 @@ class InspectionBloc
           break;
         case UpdateInspectionType.schedule:
           //await _inspectionsRepository.updateSchedule(event.inspectionModel);
+          await _inspectionsRepository.updateNotification(event.inspectionModel);
           await _restRepository.updateScheduleRest(event.inspectionModel);
           break;
       }
