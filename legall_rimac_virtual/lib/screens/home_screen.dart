@@ -69,7 +69,7 @@ class HomeScreenState extends State<HomeScreen> {
                         alignment: Alignment.bottomRight,
                         child: Image.asset('assets/images/legal-logo.png',
                             height: 70)))),
-            body: StreamBuilder<QuerySnapshot>(
+            body: StreamBuilder<QuerySnapshot<Map<String,Object>>>(
                 stream: _inspectionCollection
                     .where("insured_name",
                         isEqualTo: state.inspectionModel.insuredName)
@@ -87,8 +87,10 @@ class HomeScreenState extends State<HomeScreen> {
                     });
                     return FutureBuilder<InspeccionesResponse>(
                       future: _restRepository.getInspecciones(listInspeccionesFirebase[0].insuredName),
-                      builder: (BuildContext context, AsyncSnapshot<InspeccionesResponse> snapshot) {
+                      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                        print("EL tamano es ${snapshot.data}");
                         if(snapshot.hasData){
+                          print("EL tamano es ${snapshot.data.list.length}");
                           final response = snapshot.data;
                           List<InspectionModel> listData=[];
                           response.list.forEach((elementResponse) {

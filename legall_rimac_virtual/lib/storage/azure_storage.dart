@@ -31,7 +31,7 @@ class AzureStorage extends Storage {
 
   @override
   Future<void> upload(String path, Uint8List data, String mimeType) async {
-    var createResp = await http.put(_urlFromPath(path),
+    var createResp = await http.put(Uri.parse(_urlFromPath(path)),
       headers: {
         'x-ms-version': '2020-02-10',
         'x-ms-type':'file',
@@ -55,7 +55,7 @@ class AzureStorage extends Storage {
               endIndex = data.length;
           var slice = data.sublist(startIndex,endIndex);
           print('range: $startIndex - ${endIndex-1} - size: ${slice.length}');
-          var uploadResp = await http.put(_urlFromPath(path, comp: 'range'),
+          var uploadResp = await http.put(Uri.parse(_urlFromPath(path, comp: 'range')),
             headers: {
               'x-ms-version': '2020-02-10',
               'x-ms-date': 'now',
@@ -78,7 +78,7 @@ class AzureStorage extends Storage {
 
   Future<void> uploadFile(String path,File file,String contentType) async {
     var fileLength = await file.length();
-    var createResp = await http.put(_urlFromPath(path),
+    var createResp = await http.put(Uri.parse(_urlFromPath(path)),
         headers: {
           'x-ms-version': '2020-02-10',
           'x-ms-type':'file',
@@ -103,7 +103,7 @@ class AzureStorage extends Storage {
             endIndex = fileLength;
           var slice = await fileStream.read(sliceSize.toInt());
           print('range: $startIndex - ${endIndex-1} - size: ${slice.length}');
-          var uploadResp = await http.put(_urlFromPath(path, comp: 'range'),
+          var uploadResp = await http.put(Uri.parse(_urlFromPath(path, comp: 'range')),
             headers: {
               'x-ms-version': '2020-02-10',
               'x-ms-date': 'now',

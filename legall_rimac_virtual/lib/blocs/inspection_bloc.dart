@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:legall_rimac_virtual/repositories/rest_repository.dart';
 import 'package:meta/meta.dart';
 import '../models/models.dart';
@@ -56,8 +56,8 @@ class InspectionBloc
         });
     } catch (e, stackTrace) {
       yield InspectionLoaded.withError(e.toString(), stackTrace: stackTrace);
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'LoadInspection');
+      // FirebaseCrashlytics.instance.recordError(e, stackTrace,
+      //     reason: 'LoadInspection');
     }
   }
 
@@ -89,8 +89,8 @@ class InspectionBloc
     } catch(ex,stackTrace) {
       yield InspectionUpdated.withError(ex.toString(),stackTrace: stackTrace);
       yield InspectionLoaded.successfully(event.inspectionModel);
-      FirebaseCrashlytics.instance.recordError(ex, stackTrace,
-          reason: 'UpdateInspectionData');
+      // FirebaseCrashlytics.instance.recordError(ex, stackTrace,
+      //     reason: 'UpdateInspectionData');
     }
   }
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1007521182877-q2e91nmcha90tjk66g6msvtok1v9n94b.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1007521182877-q2e91nmcha90tjk66g6msvtok1v9n94b</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB3q368EG1C3lNs7y1m6Vx9nooD0kyeQCo</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1007521182877</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>pe.com.legall.inspeccion</string>
+	<key>PROJECT_ID</key>
+	<string>inspeccion-virtual-5f607</string>
+	<key>STORAGE_BUCKET</key>
+	<string>inspeccion-virtual-5f607.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1007521182877:ios:96433ed228f45b3b525074</string>
+	<key>DATABASE_URL</key>
+	<string>https://inspeccion-virtual-5f607.firebaseio.com</string>
+</dict>
+</plist>

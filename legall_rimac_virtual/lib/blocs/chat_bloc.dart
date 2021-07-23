@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:meta/meta.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
@@ -43,8 +42,6 @@ class ChatsBloc
       });
     } catch (e, stackTrace) {
       yield ChatsLoaded.withError(e.toString(), stackTrace: stackTrace);
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'LoadChats');
     }
   }
 
@@ -58,8 +55,8 @@ class ChatsBloc
       await _chatsRepository.readAll(readAllChats.inspectionId);
     }
     catch(e,stackTrace) {
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-        reason: 'ReadAllChats');
+      // FirebaseCrashlytics.instance.recordError(e, stackTrace,
+      //   reason: 'ReadAllChats');
     }
   }
 
@@ -74,8 +71,8 @@ class ChatsBloc
       ));
     }
     catch(e,stackTrace) {
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'SendChat');
+      // FirebaseCrashlytics.instance.recordError(e, stackTrace,
+      //     reason: 'SendChat');
     }
   }
 

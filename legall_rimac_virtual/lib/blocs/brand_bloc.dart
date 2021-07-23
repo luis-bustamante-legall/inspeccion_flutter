@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:meta/meta.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
@@ -39,8 +39,8 @@ class BrandBloc
       add(ResultBrands(await _brandsRepository.search(searchTerm)));
     } catch (e, stackTrace) {
       yield BrandResults.withError(e.toString(), stackTrace: stackTrace);
-      FirebaseCrashlytics.instance.recordError(e, stackTrace,
-          reason: 'SearchBrand');
+      // FirebaseCrashlytics.instance.recordError(e, stackTrace,
+      //     reason: 'SearchBrand');
     }
   }
 

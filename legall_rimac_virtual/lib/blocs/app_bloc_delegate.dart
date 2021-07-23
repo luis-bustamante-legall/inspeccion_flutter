@@ -1,4 +1,3 @@
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lumberdash/lumberdash.dart';
 
@@ -13,7 +12,7 @@ class AppBlocDelegate extends BlocDelegate {
   @override
   void onError(Bloc bloc, Object error, StackTrace stacktrace) {
     super.onError(bloc, error, stacktrace);
-    FirebaseCrashlytics.instance.recordError(error, stacktrace);
+    //FirebaseCrashlytics.instance.recordError(error, stacktrace);
     logError(error, stacktrace: stacktrace);
   }
 }

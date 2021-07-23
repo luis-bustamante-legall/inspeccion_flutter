@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:legall_rimac_virtual/blocs/deeplink_bloc.dart';
-import 'package:legall_rimac_virtual/data_helper.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/main.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
 import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
-import 'package:legall_rimac_virtual/repositories/repositories.dart';
 import 'package:legall_rimac_virtual/routes.dart';
+import 'package:legall_rimac_virtual/widgets/progress_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -20,12 +20,17 @@ class SplashScreen extends StatefulWidget {
 class SplashScreenState extends State<SplashScreen> {
   var _height = 115.0;
   DeepLinkBloc _deepLinkBloc;
+  ProgressDialog progressDialog;
+  SharedPreferences preferences;
+  String inspectionId = "";
+  TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _deepLinkBloc = BlocProvider.of<DeepLinkBloc>(context);
     _deepLinkBloc.add(CaptureDeepLink());
+    SharedPreferences.getInstance().then((value) => preferences = value);
   }
 
   void _ready(InspectionModel inspectionModel) {
@@ -57,10 +62,10 @@ class SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     ThemeData _t = Theme.of(context);
     AppLocalizations _l = AppLocalizations.of(context);
+    progressDialog = ProgressDialog(context);
 
-    return Container(
-      color: Colors.white,
-      child: BlocListener<DeepLinkBloc, DeepLinkState>(
+    return Scaffold(
+      body: BlocListener<DeepLinkBloc, DeepLinkState>(
         listener: (context, state) {
           if (state is DeepLinkCaptured) {
             _ready(state.inspectionModel);
@@ -100,19 +105,21 @@ class SplashScreenState extends State<SplashScreen> {
                     'assets/images/legal-logo.png',
                     height: 200,
                   ),
-                  AnimatedContainer(
-                    height: _height,
-                    duration: Duration(milliseconds: 300),
-                    child: Padding(
-                      padding: EdgeInsets.all(40),
-                      child: Center(
-                        child: SizedBox(
-                          height: 35,
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    ),
-                  )
+                  Platform.isAndroid
+                      ? AnimatedContainer(
+                          height: _height,
+                          duration: Duration(milliseconds: 300),
+                          child: Padding(
+                            padding: EdgeInsets.all(40),
+                            child: Center(
+                              child: SizedBox(
+                                height: 35,
+                                child: CircularProgressIndicator(),
+                              ),
+                            ),
+                          ),
+                        )
+                      : _createSectionIngresaCodigo()
                 ],
               ),
             ),
@@ -129,5 +136,77 @@ class SplashScreenState extends State<SplashScreen> {
         ]),
       ),
     );
+  }
+
+  Widget _createSectionIngresaCodigo() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 40),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 30),
+          TextButton(
+            onPressed: () async {
+              Clipboard.getData(Clipboard.kTextPlain).then((value) {
+                _controller.text = value.text;
+                inspectionId = value.text;
+              });
+            },
+            child: Text("Pegar Código"),
+          ),
+          SizedBox(height: 15),
+          TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: new BorderSide(color: Colors.teal),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              labelText: "Código de inspección",
+              hintText: "Ingresa tu código de inspección",
+            ),
+            onChanged: (value) => inspectionId = value,
+          ),
+          OutlinedButton(
+            onPressed: () {
+              if (inspectionId.isNotEmpty) {
+                progressDialog.show();
+                preferences.setString("inspectionId", inspectionId);
+
+                _deepLinkBloc.captureDeepLink2().then((state) {
+                  progressDialog.hide();
+                  if (state is DeepLinkCaptured) {
+                    _ready(state.inspectionModel);
+                  } else if (state is DeepLinkInitial) {
+                    _ready(state.inspectionModel);
+                  } else {
+                    showLinkInvalido();
+                  }
+                });
+              }
+            },
+            child: Text(
+              "Validar",
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            style: OutlinedButton.styleFrom(backgroundColor: Colors.blue),
+          )
+        ],
+      ),
+    );
+  }
+
+  void showLinkInvalido() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text("El link ingresado es inválido"),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () => Navigator.pop(context), child: Text("OK"))
+            ],
+          );
+        });
   }
 }

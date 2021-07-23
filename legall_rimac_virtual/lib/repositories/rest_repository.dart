@@ -73,8 +73,14 @@ class RestRepository {
     print("RestApi path GET:$url");
     print("RestApi header :$headers");
     print("RestApi response :${utf8.decode(resp.bodyBytes)}");
-
-    return InspeccionesResponse.fromJson(response);
+    InspeccionesResponse data;
+    try{
+      data =InspeccionesResponse.fromJson(response);
+    }catch( e){
+      print("dasdsadasd  ${e}");
+    }
+    print("ADSdasdasda  ${data.list.length}");
+    return data;
   }
 
   Future<void> login() async {

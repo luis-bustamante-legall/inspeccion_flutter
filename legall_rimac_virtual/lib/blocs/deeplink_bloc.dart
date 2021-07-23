@@ -6,8 +6,7 @@ import 'package:legall_rimac_virtual/configuration.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
 import 'package:legall_rimac_virtual/repositories/repositories.dart';
 
-class DeepLinkBloc
-    extends Bloc<DeepLinkEvent, DeepLinkState> {
+class DeepLinkBloc extends Bloc<DeepLinkEvent, DeepLinkState> {
   final platform = MethodChannel('https.legall_rimac_virtual/channel');
   final events = EventChannel('https.legall_rimac_virtual/events');
   final SettingsRepository settingsRepository;
@@ -20,10 +19,8 @@ class DeepLinkBloc
       print(uri.path);
       print(uri.scheme);
       print(uri.queryParameters);
-      if (!uri.isScheme(Configuration.scheme))
-        return false;
-      if (uri.path != Configuration.path)
-        return false;
+      if (!uri.isScheme(Configuration.scheme)) return false;
+      if (uri.path != Configuration.path) return false;
       if (!uri.queryParametersAll.containsKey(Configuration.keyId))
         return false;
       return true;
@@ -38,36 +35,32 @@ class DeepLinkBloc
     return uri.queryParameters[Configuration.keyId];
   }
 
-  DeepLinkBloc({this.settingsRepository,this.inspectionsRepository});
+  DeepLinkBloc({this.settingsRepository, this.inspectionsRepository});
 
   @override
   DeepLinkState get initialState => DeepLinkEmpty();
 
   @override
-  Stream<DeepLinkState> mapEventToState(
-      DeepLinkEvent event) async* {
+  Stream<DeepLinkState> mapEventToState(DeepLinkEvent event) async* {
     if (event is CaptureDeepLink) {
       yield DeepLinkWaiting();
       yield* _captureDeepLink(event);
     } else if (event is CapturedDeepLink) {
       yield DeepLinkWaiting();
       if (event.link != null && _validateLink(event.link)) {
-        var model = await inspectionsRepository.fromId(
-            _getToken(event.link));
+        var model = await inspectionsRepository.fromId(_getToken(event.link));
         print("'${_getToken(event.link)}'");
         if (model != null) {
           settingsRepository.setInspectionId(model.inspectionId);
           yield DeepLinkCaptured(model);
-        }
-        else
-          yield DeepLinkInvalid();  
-      }
-      else
+        } else
+          yield DeepLinkInvalid();
+      } else
         yield DeepLinkInvalid();
     }
   }
 
-  Stream<DeepLinkState> _captureDeepLink(CaptureDeepLink event) async*{
+  Stream<DeepLinkState> _captureDeepLink(CaptureDeepLink event) async* {
     var initialLink = await platform.invokeMethod('initialLink');
     if (initialLink != null) {
       add(CapturedDeepLink(initialLink));
@@ -80,14 +73,23 @@ class DeepLinkBloc
         } else {
           yield DeepLinkEmpty();
         }
-      }
-      else
+      } else
         yield DeepLinkEmpty();
     }
     _streamSubscription?.cancel();
     _streamSubscription = events.receiveBroadcastStream().listen((event) {
       add(CapturedDeepLink(event));
     });
+  }
+
+  Future<DeepLinkState> captureDeepLink2() async {
+    var _settingId = settingsRepository.getInspectionId();
+    var model = await inspectionsRepository.fromId(_settingId);
+    if (model != null) {
+      settingsRepository.setInspectionId(model.inspectionId);
+      return  DeepLinkCaptured(model);
+    } else
+      return  DeepLinkInvalid();
   }
 
   @override
