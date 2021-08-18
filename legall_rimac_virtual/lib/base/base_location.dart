@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:lumberdash/lumberdash.dart';
 abstract class BaseLocation {
   void newCoordinates(Coordinates coordinates);
 
@@ -11,8 +10,6 @@ abstract class BaseLocation {
   void permissionDontAccept();
 
   void initConsultaLocalizacion();
-
-  StreamSubscription<Position> locationSubscription;
 
   void validateRequestPermission({bool onlyFirst = true}) async {
     LocationPermission permission = await Geolocator.checkPermission();
@@ -39,24 +36,20 @@ abstract class BaseLocation {
   }
 
   void getLocationUpdate(bool onlyFirst) async {
-    if (locationSubscription == null) {
       initConsultaLocalizacion();
-      locationSubscription =
-          Geolocator.getPositionStream(forceAndroidLocationManager: true)
-              .listen((Position position) {
-        _callbackLocation(position.latitude, position.longitude);
-      });
-    }
+          Geolocator.getCurrentPosition(forceAndroidLocationManager: true)
+          .then((Position position) {
+            _callbackLocation(position.latitude, position.longitude);
+          });
   }
 
   void _callbackLocation(double latitude, double longitude) async {
-    locationSubscription?.cancel();
     final coordinates = new Coordinates(latitude, longitude);
     newCoordinates(coordinates);
   }
 
   void disposeLocation() {
-    locationSubscription?.cancel();
+    //locationSubscription?.cancel();
   }
 
 }

@@ -10,6 +10,7 @@ import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 import 'package:legall_rimac_virtual/repositories/rest_repository.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 import 'package:legall_rimac_virtual/widgets/inspection_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -21,10 +22,12 @@ class HomeScreenState extends State<HomeScreen> {
   DeepLinkBloc _deepLinkBloc;
   InspectionBloc _inspectionBloc;
   RestRepository _restRepository;
+  SharedPreferences sharedPreferences;
 
   @override
   void initState() {
     super.initState();
+    SharedPreferences.getInstance().then((value) => sharedPreferences=value);
     _restRepository = RestRepository();
     _deepLinkBloc = BlocProvider.of<DeepLinkBloc>(context);
     _inspectionBloc = BlocProvider.of<InspectionBloc>(context);
@@ -88,14 +91,13 @@ class HomeScreenState extends State<HomeScreen> {
                     return FutureBuilder<InspeccionesResponse>(
                       future: _restRepository.getInspecciones(listInspeccionesFirebase[0].insuredName),
                       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                        print("EL tamano es ${snapshot.data}");
                         if(snapshot.hasData){
-                          print("EL tamano es ${snapshot.data.list.length}");
                           final response = snapshot.data;
                           List<InspectionModel> listData=[];
+                          final inspeccionAll = sharedPreferences.getString('inspectionIdAll') ??"";
                           response.list.forEach((elementResponse) {
                             listInspeccionesFirebase.forEach((inspFirebase) {
-                              if(elementResponse.placa==inspFirebase.plate){
+                              if(elementResponse.placa==inspFirebase.plate && inspeccionAll.contains(inspFirebase.inspectionId)){
                                 listData.add(inspFirebase);
                               }
                             });

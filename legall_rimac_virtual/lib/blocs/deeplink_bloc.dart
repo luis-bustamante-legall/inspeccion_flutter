@@ -52,6 +52,7 @@ class DeepLinkBloc extends Bloc<DeepLinkEvent, DeepLinkState> {
         print("'${_getToken(event.link)}'");
         if (model != null) {
           settingsRepository.setInspectionId(model.inspectionId);
+          settingsRepository.setInspectionIdAll(model.inspectionId);
           yield DeepLinkCaptured(model);
         } else
           yield DeepLinkInvalid();
@@ -87,6 +88,7 @@ class DeepLinkBloc extends Bloc<DeepLinkEvent, DeepLinkState> {
     var model = await inspectionsRepository.fromId(_settingId);
     if (model != null) {
       settingsRepository.setInspectionId(model.inspectionId);
+      settingsRepository.setInspectionIdAll(model.inspectionId);
       return  DeepLinkCaptured(model);
     } else
       return  DeepLinkInvalid();

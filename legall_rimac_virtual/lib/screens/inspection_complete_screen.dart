@@ -3,11 +3,13 @@ import 'package:geocoder/geocoder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/services/base.dart';
+import 'package:legall_rimac_virtual/base/base_location.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:legall_rimac_virtual/routes.dart';
 import 'package:intl/intl.dart';
+import 'package:legall_rimac_virtual/widgets/progress_dialog.dart';
 
 
 class InspectionCompleteScreen extends StatefulWidget {
@@ -15,23 +17,28 @@ class InspectionCompleteScreen extends StatefulWidget {
   State<StatefulWidget> createState() => InspectionCompleteScreenState();
 }
 
-class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
+class InspectionCompleteScreenState extends State<InspectionCompleteScreen>{
   Completer<GoogleMapController> _controller = Completer();
   final Geocoding _geoCoding = Geocoder.local;
   String _addressDesc;
+  double latitude = 0.0;
+  double longitude = 0.0;
+
 
   @override
   Widget build(BuildContext context) {
-    final InspectionModel model =  ModalRoute.of(context).settings.arguments;
+    final Coordinates coordinates =  ModalRoute.of(context).settings.arguments;
+    latitude = coordinates.latitude;
+    longitude=coordinates.longitude;
     ThemeData _t = Theme.of(context);
     AppLocalizations _l = AppLocalizations.of(context);
 
     final CameraPosition _kGooglePlex = CameraPosition(
-      target: LatLng(model.location.latitude, model.location.longitude),
+      target: LatLng(latitude, longitude),
       zoom: 15.23,
     );
 
-    _geoCoding.findAddressesFromCoordinates(Coordinates(model.location.latitude, model.location.longitude))
+    _geoCoding.findAddressesFromCoordinates(Coordinates(latitude, longitude))
     .then((address) {
       if (address.isNotEmpty) {
         setState(() {
@@ -85,7 +92,7 @@ class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
                         Text(_l.translate('gps coors'),
                           style: _t.textTheme.subtitle2,
                         ),
-                        Text('${model.location.latitude}, ${model.location.longitude}')
+                        Text('${latitude}, ${longitude}')
                       ],
                     )
                   )
@@ -102,7 +109,7 @@ class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
                     markers: [
                       Marker(
                         markerId: MarkerId('primary'),
-                        position: LatLng(model.location.latitude, model.location.longitude)
+                        position: LatLng(latitude, longitude)
                       )
                     ].toSet(),
                     initialCameraPosition: _kGooglePlex,
@@ -129,4 +136,5 @@ class InspectionCompleteScreenState extends State<InspectionCompleteScreen> {
         )
     );
   }
+
 }

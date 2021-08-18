@@ -9,6 +9,7 @@ import 'package:legall_rimac_virtual/blocs/blocs.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
 import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
+import 'package:legall_rimac_virtual/repositories/settings_repository.dart';
 
 import '../routes.dart';
 
@@ -23,16 +24,15 @@ class InspectionScreenState extends State<InspectionScreen>
   InspectionBloc _inspectionBloc;
   bool initInspeccion = false;
   InspectionModel model;
+  InspectionModel newModel;
+  SettingsRepository _settingsRepository;
 
   @override
   void newCoordinates(Coordinates coordinates) {
-    Navigator.pop(context);
+    //Navigator.pop(context);
 
     if (coordinates.latitude != 0.0 && coordinates.longitude != 0.0) {
-      var newModel = model.copyWith(
-          location: GeoPoint(coordinates.latitude, coordinates.longitude));
-      _inspectionBloc
-          .add(UpdateInspectionData(newModel, UpdateInspectionType.data));
+      newModel = model.copyWith(location: GeoPoint(coordinates.latitude, coordinates.longitude));
     }
   }
 
@@ -48,7 +48,7 @@ class InspectionScreenState extends State<InspectionScreen>
 
   @override
   void initConsultaLocalizacion() {
-    showDialogLocalizando();
+    //showDialogLocalizando();
   }
 
   void showDialogPermissionDontAccept() {
@@ -236,6 +236,10 @@ class InspectionScreenState extends State<InspectionScreen>
   @override
   void initState() {
     super.initState();
+    _settingsRepository = RepositoryProvider.of<SettingsRepository>(context);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      validateRequestPermission();
+    });
     WidgetsBinding.instance.addObserver(this);
     _inspectionBloc = BlocProvider.of<InspectionBloc>(context);
   }
@@ -468,10 +472,12 @@ class InspectionScreenState extends State<InspectionScreen>
                             child: RaisedButton(
                               onPressed: model.status != InspectionStatus.onHold
                                   ? () async {
-                                      initInspeccion = true;
-                                      validateRequestPermission();
-                                    }
-                                  : null,
+                                if(newModel!=null){
+                                  _settingsRepository.setInspectionId(newModel.inspectionId);
+                                  initInspeccion = true;
+                                  _inspectionBloc.add(UpdateInspectionData(newModel, UpdateInspectionType.data));
+                                }
+                              }: null,
                               color: _t.accentColor,
                               child: Text(
                                 _l.translate('start inspection').toUpperCase(),
@@ -493,6 +499,7 @@ class InspectionScreenState extends State<InspectionScreen>
           },
         ));
   }
+
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

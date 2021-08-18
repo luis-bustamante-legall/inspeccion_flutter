@@ -85,11 +85,12 @@ class InspectionStep1ScreenState extends State<InspectionStep1Screen> {
   
   @override
   void initState() {
-    super.initState();
     _settingsRepository = RepositoryProvider.of<SettingsRepository>(context);
     _videoBloc = BlocProvider.of<VideoBloc>(context);
     _videoBloc.add(LoadVideo(
         _settingsRepository.getInspectionId()));
+    super.initState();
+
   }
 
   @override

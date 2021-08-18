@@ -7,8 +7,19 @@ class SettingsRepository {
   String getInspectionId() {
     return _sharedPreferences.getString('inspectionId');
   }
+  String getInspectionIdAll() {
+    return _sharedPreferences.getString('inspectionIdAll');
+  }
 
   void setInspectionId(String inspectionId) {
     _sharedPreferences.setString('inspectionId', inspectionId);
   }
+
+  void setInspectionIdAll(String inspectionId) {
+    String allInspeccion = _sharedPreferences.getString('inspectionIdAll') ?? "";
+    if(!allInspeccion.contains(inspectionId)){
+      _sharedPreferences.setString('inspectionIdAll', "$allInspeccion$inspectionId");
+    }
+  }
+
 }

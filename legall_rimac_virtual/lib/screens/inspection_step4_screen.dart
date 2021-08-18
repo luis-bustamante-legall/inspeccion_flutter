@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoder/model.dart';
+import 'package:legall_rimac_virtual/base/base_location.dart';
 import 'package:legall_rimac_virtual/blocs/blocs.dart';
 import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
@@ -15,14 +17,19 @@ class InspectionStep4Screen extends StatefulWidget {
   State<StatefulWidget> createState() => InspectionStep4ScreenState();
 }
 
-class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
+class InspectionStep4ScreenState extends State<InspectionStep4Screen> with BaseLocation{
   final _textController = TextEditingController();
   final _formKey = GlobalObjectKey<FormState>('form');
   InspectionBloc _inspectionBloc;
+  double latitude = 0.0;
+  double longitude = 0.0;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      validateRequestPermission();
+    });
     _inspectionBloc = BlocProvider.of<InspectionBloc>(context);
   }
 
@@ -72,7 +79,8 @@ class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
                   listener: (context,state) {
                     if (state is InspectionUpdated) {
                       if (state.success) {
-                        Navigator.pushReplacementNamed(context, AppRoutes.inspectionComplete, arguments: state.inspectionModel);
+                        Coordinates coordinates = Coordinates(latitude,longitude);
+                        Navigator.pushReplacementNamed(context, AppRoutes.inspectionComplete, arguments: coordinates);
                       } else {
                         Future.delayed(Duration(milliseconds: 100),() {
                           var messenger = Scaffold.of(context);
@@ -121,4 +129,26 @@ class InspectionStep4ScreenState extends State<InspectionStep4Screen> {
         )
     );
   }
+
+  @override
+  void gpsDisabled() {
+    // TODO: implement gpsDisabled
+  }
+
+  @override
+  void initConsultaLocalizacion() {
+    //showDialogLocalizando();
+  }
+
+  @override
+  void newCoordinates(Coordinates coordinates) {
+    latitude = coordinates.latitude;
+    longitude = coordinates.longitude;
+  }
+
+  @override
+  void permissionDontAccept() {
+    // TODO: implement permissionDontAccept
+  }
+
 }
