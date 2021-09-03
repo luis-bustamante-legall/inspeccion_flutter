@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:legall_rimac_virtual/models/inspecciones_response.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
+import 'package:legall_rimac_virtual/models/list_photo_detail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RestRepository {
@@ -77,9 +78,30 @@ class RestRepository {
     try{
       data =InspeccionesResponse.fromJson(response);
     }catch( e){
-      print("dasdsadasd  ${e}");
+      print("Exception getInspecciones  ${e}");
     }
-    print("ADSdasdasda  ${data.list.length}");
+    print("getInspecciones  ${data.list.length}");
+    return data;
+  }
+
+  Future<List<PhotoDetail>> getDetailPhotos() async {
+    //Create Path Url
+    var url = Uri.parse(baseUrl + "/inspector/files/detail-upload");
+
+    print("RestApi path GET:$url");
+
+    final resp = await http.get(url);
+
+    final response = json.decode(utf8.decode(resp.bodyBytes));
+
+    print("RestApi path GET:$url");
+    print("RestApi response :${utf8.decode(resp.bodyBytes)}");
+    List<PhotoDetail> data;
+    try{
+      data =ListPhotoDetail.fromJson(response).listPhotoDetail;
+    }catch( e){
+      print("Exception getDetailPhotos  ${e}");
+    }
     return data;
   }
 
