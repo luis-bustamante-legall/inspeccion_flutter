@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:legall_rimac_virtual/repositories/rest_repository.dart';
 // import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:meta/meta.dart';
 import '../models/models.dart';
@@ -10,6 +11,7 @@ import '../repositories/repositories.dart';
 class PhotoBloc
     extends Bloc<PhotoEvent, PhotoState> {
   final PhotosRepository _photosRepository;
+  final RestRepository _restRepository = RestRepository();
 
   StreamSubscription _photosSubscription;
 
@@ -45,7 +47,17 @@ class PhotoBloc
       _photosSubscription = _photosRepository
           .get(event.inspectionId,event.photoType)
           .listen((event) {
-        add(UpdatePhotos(event.toList()));
+            List<PhotoModel> listPhotoModel = [];
+            _restRepository.getDetailPhotos().then((value){
+              event.toList().forEach((element) {
+                value.forEach((photoDetail) {
+                  if(element.description==photoDetail.descripcion && photoDetail.requerido){
+                    listPhotoModel.add(element);
+                  }
+                });
+              });
+              add(UpdatePhotos(listPhotoModel));
+            });
       });
     } catch (e, stackTrace) {
       yield PhotoLoaded.fail(e.toString(), stackTrace: stackTrace);
