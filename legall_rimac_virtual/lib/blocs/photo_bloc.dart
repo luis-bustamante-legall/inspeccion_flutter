@@ -51,11 +51,12 @@ class PhotoBloc
             _restRepository.getDetailPhotos().then((value){
               event.toList().forEach((element) {
                 value.forEach((photoDetail) {
-                  if(element.description==photoDetail.descripcion && photoDetail.requerido){
+                  if(element.description.toLowerCase()==photoDetail.descripcion.toLowerCase() && photoDetail.requerido){
                     listPhotoModel.add(element);
                   }
                 });
               });
+              print(event.toList().map((e) => e.description).toList());
               add(UpdatePhotos(listPhotoModel));
             });
       });
