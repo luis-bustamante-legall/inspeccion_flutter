@@ -184,7 +184,7 @@ class InspectionStep3ScreenState extends State<InspectionStep3Screen> {
                               _photoBloc.add(AddPhoto(
                                   PhotoModel(
                                     inspectionId: _settingsRepository.getInspectionId(),
-                                    description: description,
+                                    description: "* $description",
                                     creator: PhotoCreator.insured,
                                     status: ResourceStatus.empty,
                                     type: PhotoType.additional,
