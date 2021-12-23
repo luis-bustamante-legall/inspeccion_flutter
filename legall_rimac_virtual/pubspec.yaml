@@ -53,12 +53,19 @@ dependencies:
   video_thumbnail: ^0.2.5+1
 
   #Firebase stuff
-  firebase_core: ^1.0.3
+#  firebase_core: ^1.0.3
 #  firebase_crashlytics: ^2.0.0
-  firebase_messaging: ^10.0.0
-  firebase_auth: ^1.1.1
-  firebase_storage: ^8.0.2
-  cloud_firestore: ^2.0.0
+#  firebase_messaging: ^10.0.0
+#  firebase_auth: ^1.1.1
+#  firebase_storage: ^8.0.2
+#  cloud_firestore: ^2.4.0
+
+  firebase_core: ^1.4.0
+  firebase_crashlytics: ^2.1.1
+  firebase_messaging: ^10.0.4
+  firebase_auth: ^1.4.0
+  firebase_storage: ^8.1.0
+  cloud_firestore: ^2.4.0
 
   #Rest
   http:

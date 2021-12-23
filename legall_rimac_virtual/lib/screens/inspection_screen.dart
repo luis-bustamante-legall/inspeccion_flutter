@@ -441,6 +441,7 @@ class InspectionScreenState extends State<InspectionScreen>
                                       );
                                     },
                                   );
+                                  Navigator.pop(context);
                                 } else if (state.success &&
                                     state.type == UpdateInspectionType.data) {
                                   Navigator.popUntil(
