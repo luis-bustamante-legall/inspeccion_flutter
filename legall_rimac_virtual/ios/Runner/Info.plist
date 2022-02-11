@@ -2,12 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Debe aceptar este permiso para ayudarlo a entrar su ubicación</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Legall Rimac</string>
+	<string>Legall Inspecciones</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,11 +43,15 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Debe aceptar este permiso para que pueda enviar las fotos requeridas</string>
+	<string>Debe aceptar este permiso para que pueda enviar las fotos requeridas de la inspeccion</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Debe aceptar este permiso para ayudarlo a entrar su ubicación</string>
+	<string>Debes aceptar este permiso para validar que la inspeccion se realiza en el area autorizada</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Debes aceptar este permiso para validar que la inspeccion se realiza en el area autorizada</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Permiso necesario para grabar el sonido del video que envia de la inspeccion</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Debe aceptar este permiso para que pueda enviar las fotos requeridas</string>
+	<string>Debe aceptar este permiso para que pueda enviar las fotos requeridas de la inspeccion</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

@@ -50,12 +50,15 @@ class PhotoBloc
             List<PhotoModel> listPhotoModel = [];
             _restRepository.getDetailPhotos().then((value){
               event.toList().forEach((element) {
+                bool photoAdded = false;
                 value.forEach((photoDetail) {
-                  if(element.description==photoDetail.descripcion && photoDetail.requerido){
+                  if((element.description.toLowerCase()==photoDetail.descripcion.toLowerCase() && photoDetail.requerido)||(element.description.startsWith("*")&&!photoAdded)){
+                    photoAdded=true;
                     listPhotoModel.add(element);
                   }
                 });
               });
+              print(event.toList().map((e) => e.description).toList());
               add(UpdatePhotos(listPhotoModel));
             });
       });

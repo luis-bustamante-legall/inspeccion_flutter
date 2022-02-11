@@ -42,6 +42,8 @@ class RestRepository {
 
     final resp = await http.put(url, body: json.encode(body), headers: headers);
 
+    print("------------------------------------------");
+    print("RestApi inspectionModel : $inspectionModel");
     print("RestApi path :$path y el status code es ${resp.statusCode}");
     print("RestApi body :$body");
     //print("RestApi response :${utf8.decode(resp.bodyBytes)}");

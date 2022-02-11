@@ -99,9 +99,9 @@ class InspectionModel {
 
   factory InspectionModel.fromJSON(Map<String,dynamic> json,{String id}) {
     return InspectionModel(
-      inspectionId: id,
-      informeId:json["informe_id"] ,
-      appColor: json['app_color'],
+      inspectionId: id ??"",
+      informeId:json["informe_id"] ??0,
+      appColor: json['app_color']??"",
       titleToShow: json['title_to_show'],
       insuranceCompany: json['insurance_company'],
       showLegallLogo: json['show_legall_logo']??true,

@@ -32,14 +32,20 @@ class PhotosRepository {
   Future<void> uploadPhoto(PhotoModel photo,File file) async {
       var thumbnail = await ImageThumbnail.make(file);
       //Upload image
-      await storage.uploadFile('/photos/${photo.id}_full',file, 'image/png');
-      await storage.uploadFile('/photos/${photo.id}_thumb',thumbnail, 'image/png');
+      String fechaActual = getDateFormatted();
+      await storage.uploadFile('/photos/$fechaActual${photo.id}_full',file, 'image/png');
+      await storage.uploadFile('/photos/$fechaActual${photo.id}_thumb',thumbnail, 'image/png');
       //Updating Firebase
-      photo.resourceUrl = await storage.downloadURL('/photos/${photo.id}_full');
+      photo.resourceUrl = await storage.downloadURL('/photos/$fechaActual${photo.id}_full');
       photo.dateTime = DateTime.now();
       photo.status = ResourceStatus.uploaded;
       return _photosCollection.doc(photo.id)
           .update(photo.toJSON());
+  }
+
+  String getDateFormatted(){
+    final date = new DateTime.now();
+    return "${date.hour}${date.minute}${date.second}_";
   }
 
   Future<String> addPhoto(PhotoModel photo) async {

@@ -36,7 +36,15 @@ var routes = {
           create: (context) => InspectionBloc(
               repository: RepositoryProvider.of<InspectionsRepository>(context),
               settings: RepositoryProvider.of<SettingsRepository>(context))
-      )
+      ),
+      BlocProvider(
+          create: (context) => ChatsBloc(
+              repository: RepositoryProvider.of<ChatsRepository>(context))
+      ),
+      BlocProvider(
+          create: (context) => PhotoBloc(
+              repository: RepositoryProvider.of<PhotosRepository>(context))
+      ),
     ],
     child: InspectionScreen(),
   ),

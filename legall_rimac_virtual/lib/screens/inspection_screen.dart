@@ -10,6 +10,8 @@ import 'package:legall_rimac_virtual/localizations.dart';
 import 'package:legall_rimac_virtual/models/inspection_model.dart';
 import 'package:legall_rimac_virtual/models/inspection_schedule_model.dart';
 import 'package:legall_rimac_virtual/repositories/settings_repository.dart';
+import 'package:legall_rimac_virtual/widgets/chat_button.dart';
+import 'package:legall_rimac_virtual/widgets/phone_call_button.dart';
 
 import '../routes.dart';
 
@@ -32,7 +34,8 @@ class InspectionScreenState extends State<InspectionScreen>
     //Navigator.pop(context);
 
     if (coordinates.latitude != 0.0 && coordinates.longitude != 0.0) {
-      newModel = model.copyWith(location: GeoPoint(coordinates.latitude, coordinates.longitude));
+      newModel = model.copyWith(
+          location: GeoPoint(coordinates.latitude, coordinates.longitude));
     }
   }
 
@@ -253,8 +256,8 @@ class InspectionScreenState extends State<InspectionScreen>
     final schedule = model.schedule.last;
     return Scaffold(
         appBar: AppBar(
-          title: Text(_l.translate('scheduled inspection')),
-        ),
+            title: Text(_l.translate('scheduled inspection')),
+            actions: [PhoneCallButton(), ChatButton()]),
         body: BlocBuilder<InspectionBloc, InspectionState>(
           builder: (context, state) {
             if (state is InspectionLoaded) {
@@ -438,6 +441,7 @@ class InspectionScreenState extends State<InspectionScreen>
                                       );
                                     },
                                   );
+                                  Navigator.pop(context);
                                 } else if (state.success &&
                                     state.type == UpdateInspectionType.data) {
                                   Navigator.popUntil(
@@ -472,12 +476,16 @@ class InspectionScreenState extends State<InspectionScreen>
                             child: RaisedButton(
                               onPressed: model.status != InspectionStatus.onHold
                                   ? () async {
-                                if(newModel!=null){
-                                  _settingsRepository.setInspectionId(newModel.inspectionId);
-                                  initInspeccion = true;
-                                  _inspectionBloc.add(UpdateInspectionData(newModel, UpdateInspectionType.data));
-                                }
-                              }: null,
+                                      if (newModel != null) {
+                                        _settingsRepository.setInspectionId(
+                                            newModel.inspectionId);
+                                        initInspeccion = true;
+                                        _inspectionBloc.add(
+                                            UpdateInspectionData(newModel,
+                                                UpdateInspectionType.data));
+                                      }
+                                    }
+                                  : null,
                               color: _t.accentColor,
                               child: Text(
                                 _l.translate('start inspection').toUpperCase(),
@@ -499,7 +507,6 @@ class InspectionScreenState extends State<InspectionScreen>
           },
         ));
   }
-
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
