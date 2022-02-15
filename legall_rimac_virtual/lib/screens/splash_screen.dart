@@ -24,6 +24,7 @@ class SplashScreenState extends State<SplashScreen> {
   SharedPreferences preferences;
   String inspectionId = "";
   TextEditingController _controller = TextEditingController();
+  Size size;
 
   @override
   void initState() {
@@ -63,77 +64,75 @@ class SplashScreenState extends State<SplashScreen> {
     ThemeData _t = Theme.of(context);
     AppLocalizations _l = AppLocalizations.of(context);
     progressDialog = ProgressDialog(context);
+    size = MediaQuery.of(context).size;
 
     return Scaffold(
       body: BlocListener<DeepLinkBloc, DeepLinkState>(
         listener: (context, state) {
           if (state is DeepLinkCaptured) {
-            _ready(state.inspectionModel);
+            // _ready(state.inspectionModel);
           } else if (state is DeepLinkInitial) {
-            _ready(state.inspectionModel);
-            _ready(state.inspectionModel);
+            // _ready(state.inspectionModel);
+            // _ready(state.inspectionModel);
           } else if (state is DeepLinkEmpty || state is DeepLinkInvalid) {
             var isInvalid = state is DeepLinkInvalid;
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(
-                      _l.translate(isInvalid ? 'invalid link' : 'empty link')),
-                  content: Text(_l.translate('no valid link available')),
-                  actions: [
-                    FlatButton(
-                        onPressed: () {
-                          exit(0);
-                        },
-                        child: Text(_l.translate('close app'))),
-                  ],
-                );
-              },
-            );
+            // showDialog(
+            //   context: context,
+            //   barrierDismissible: false,
+            //   builder: (BuildContext context) {
+            //     return AlertDialog(
+            //       title: Text(
+            //           _l.translate(isInvalid ? 'invalid link' : 'empty link')),
+            //       content: Text(_l.translate('no valid link available')),
+            //       actions: [
+            //         FlatButton(
+            //             onPressed: () {
+            //               exit(0);
+            //             },
+            //             child: Text(_l.translate('close app'))),
+            //       ],
+            //     );
+            //   },
+            // );
           }
         },
-        child: Column(children: [
-          Expanded(
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/images/legal-logo.png',
-                    height: 200,
-                  ),
-                  Platform.isAndroid
-                      ? AnimatedContainer(
-                          height: _height,
-                          duration: Duration(milliseconds: 300),
-                          child: Padding(
-                            padding: EdgeInsets.all(40),
-                            child: Center(
-                              child: SizedBox(
-                                height: 35,
-                                child: CircularProgressIndicator(),
-                              ),
+        child: SingleChildScrollView(
+          child: Container(
+            height: size.height,
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('assets/images/legal-logo.png', height: 200),
+                false
+                    ? AnimatedContainer(
+                        height: _height,
+                        duration: Duration(milliseconds: 300),
+                        child: Padding(
+                          padding: EdgeInsets.all(40),
+                          child: Center(
+                            child: SizedBox(
+                              height: 35,
+                              child: CircularProgressIndicator(),
                             ),
                           ),
-                        )
-                      : _createSectionIngresaCodigo()
-                ],
-              ),
+                        ),
+                      )
+                    : _createSectionIngresaCodigo(),
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      'v1.1',
+                      style: _t.textTheme.headline6,
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
-          Center(
-            child: Padding(
-              padding: EdgeInsets.all(20),
-              child: Text(
-                'v1.1',
-                style: _t.textTheme.headline6,
-              ),
-            ),
-          )
-        ]),
+        ),
       ),
     );
   }
@@ -152,11 +151,12 @@ class SplashScreenState extends State<SplashScreen> {
                 inspectionId = value.text;
               });
             },
-            child: Text("Pegar Código"),
+            child: Text("Pegar Enlace"),
           ),
           SizedBox(height: 15),
           TextField(
             controller: _controller,
+            maxLines: 3,
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderSide: new BorderSide(color: Colors.teal),
@@ -169,9 +169,9 @@ class SplashScreenState extends State<SplashScreen> {
           ),
           OutlinedButton(
             onPressed: () {
-              if (inspectionId.isNotEmpty) {
+              if (inspectionId.contains("http://inspeccion.legall.com.pe/virtual?hash=")) {
                 progressDialog.show();
-                preferences.setString("inspectionId", inspectionId);
+                preferences.setString("inspectionId", inspectionId.substring(45));
 
                 _deepLinkBloc.captureDeepLink2().then((state) {
                   progressDialog.hide();
@@ -183,6 +183,8 @@ class SplashScreenState extends State<SplashScreen> {
                     showLinkInvalido();
                   }
                 });
+              }else{
+                showLinkInvalido();
               }
             },
             child: Text(
